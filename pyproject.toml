@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "JGDtrans"
+authors = [
+    { name = "Kentaro Tatsumi", email = "paqira.2019@gmail.com" },
+]
+description = "Coordinate Transformer by Gridded Correction Parameter (par file)"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = [
+    "GIS",
+    "Coordinate Transformation",
+    "par file",
+    "TKY2JGD",
+    "PatchJGD",
+    "PatchJGD(H)",
+    "PatchJGD(HV)",
+    "HyokoRev",
+    "SemiDyna",
+    "SemiDynaEXE",
+    "geonetF3",
+    "ITRF2014",
+]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = [
+    'typing-extensions>=4.9',
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+doc = [
+    "sphinx>=7.2",
+    "myst_nb>=1.0",
+    "sphinx_book_theme>=1.1"
+]
+
+[tool.setuptools]
+packages = ["JGDtrans"]
+
+[tool.setuptools.dynamic]
+version = { attr = "JGDtrans.__version__" }
+
+[project.urls]
+"Repository" = "https://github.com/paqira/JGDtrans-py"
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+select = [
+    "E",
+    "F",
+    "W",
+    "C90",
+    "I",
+    "N",
+    "B",
+    "D",
+]
+ignore = [
+    "N999",
+    "D104",
+    "D105",
+]
+line-length = 120
+exclude = ["__main__.py"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.isort]
+required-imports = ["from __future__ import annotations"]
+
+
