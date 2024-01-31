@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import re
-from typing import Callable, NamedTuple, TextIO
-
-from typing_extensions import Literal
+from typing import Callable, Literal, NamedTuple, TextIO
 
 from . import error as _error
 from . import transformer as _trans

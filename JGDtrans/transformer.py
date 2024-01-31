@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import math
 import textwrap
+from collections.abc import Mapping
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Mapping, NamedTuple
+from typing import Final, Literal, NamedTuple
 
-from typing_extensions import Final, Literal, Self
+from typing_extensions import Self
 
 from . import error as _error
 from . import mesh as _mesh

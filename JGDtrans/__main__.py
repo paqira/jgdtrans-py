@@ -4,17 +4,18 @@ import argparse
 import codecs
 import glob
 import json
-import locale
 import os
 import re
 import sys
 import textwrap
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass
 from itertools import chain
 from pathlib import Path
-from typing import Mapping, Self, Any, Iterable, Literal, TypeAlias, Sequence, Final
+from typing import Any, Final, Literal, TypeAlias
 
 import tomlkit
+from typing_extensions import Self
 
 import JGDtrans
 
