@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Mapping
 
-from typing_extensions import Literal, NotRequired, Required, TypedDict, TypeAlias
+from typing_extensions import Literal, NotRequired, Required, TypeAlias, TypedDict
 
 __all__ = [
     "FormatType",
