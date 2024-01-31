@@ -17,7 +17,7 @@ __all__ = [
 ]
 
 
-@dataclass(frozen=True, unsafe_hash=True, slots=True)
+@dataclass(frozen=True, unsafe_hash=True)
 class Point(Sequence[float]):
     """A triplet latitude, longitude and altitude.
 
