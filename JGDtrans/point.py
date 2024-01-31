@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
-from typing import Iterator, overload
+from typing import Literal, overload
 
-from typing_extensions import Literal, Self
+from typing_extensions import Self
 
 from . import mesh as _mesh
 from . import transformer as _trans
@@ -17,7 +17,7 @@ __all__ = [
 ]
 
 
-@dataclass(frozen=True, unsafe_hash=True, slots=True)
+@dataclass(frozen=True, unsafe_hash=True)
 class Point(Sequence[float]):
     """A triplet latitude, longitude and altitude.
 
