@@ -63,8 +63,6 @@ class DMS(unittest.TestCase):
 
         self.assertEqual(utils.DMS(1, 36, 6, 13, 0.58925), utils.DMS.from_str("360613.58925"))
         self.assertEqual(utils.DMS(1, 140, 5, 16, 0.27815), utils.DMS.from_str("1400516.27815"))
-        print(repr(utils.DMS(1, 140, 5, 16, 0.27815)))
-        print(repr(utils.DMS(1, 36, 6, 13, 0.58925)))
 
     def test_to_dd(self):
         expected = 36.103774791666666
