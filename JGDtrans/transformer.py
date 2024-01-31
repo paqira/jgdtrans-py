@@ -195,7 +195,7 @@ class StatisticalSummary(NamedTuple):
     """The statistics of altitude"""
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Transformer:
     """The coordinate Transformer, and represents a deserializing result of par file.
 

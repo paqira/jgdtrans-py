@@ -114,7 +114,7 @@ def from_dms(s: str) -> float:
     return DMS.from_str(s).to_dd()
 
 
-@dataclass(slots=True, frozen=True)
+@dataclass(frozen=True)
 class DMS:
     """Represents latitude and/or longitude in DMS notation.
 

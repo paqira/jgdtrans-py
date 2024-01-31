@@ -37,7 +37,7 @@ class MeshUnit(IntEnum):
     """5 [km]"""
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class MeshCoord:
     """Represents mech coordinate, namely, discrete latitude and/or longitude.
 
@@ -360,7 +360,7 @@ class MeshCoord:
         return MeshCoord(self.first, self.second, self.third - unit)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class MeshNode:
     """Represents mesh node, a pair of the :class:`MeshCoord` objs.
 
@@ -574,7 +574,7 @@ class MeshNode:
         return point.latitude, point.longitude
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class MeshCell:
     """Represents the unit mesh cell (mesh cell or cell shortly).
 
