@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install black ruff
+        run: |
+          pip install --upgrade pip
+          pip install black ruff
+      - name: Check
+        run: |
+          black JGDtrans
+          ruff JGDtrans
+      - name: Test
+        run: |
+          python3 -m unittest discover -v -s test
