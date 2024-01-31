@@ -27,7 +27,7 @@ You can install `JGDtrans` from PyPI:
 pip install JGDtrans
 ```
 
-`JGDtrans` depends on `typing-extensions` only.
+`JGDtrans` depends on `typing-extensions` only, and requires `python>=3.9`.
 
 This package does not contain parameter files, download it from GIAJ.
 
