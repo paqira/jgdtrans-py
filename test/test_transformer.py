@@ -4,7 +4,7 @@ from typing import Sequence
 import JGDtrans
 
 DATA = {
-    'TKY2JGD': {
+    "TKY2JGD": {
         "unit": 1,
         "parameter": {
             # forward
@@ -41,7 +41,7 @@ DATA = {
             },
         },
     },
-    'PatchJGD(HV)': {
+    "PatchJGD(HV)": {
         "unit": 1,
         "parameter": {
             # forward
@@ -102,7 +102,7 @@ DATA = {
                 "altitude": 0.10087,
             },
         },
-    }
+    },
 }
 
 
@@ -181,7 +181,7 @@ class Transformer(unittest.TestCase):
         origin = (38.2985120586605, 141.5559006163195, 0)
 
         # merged param PatchJGD and PatchJGD(H)
-        trans = JGDtrans.from_dict(DATA['PatchJGD(HV)'])
+        trans = JGDtrans.from_dict(DATA["PatchJGD(HV)"])
 
         actual = tuple(trans.forward(*origin))
         expected = (38.298495306, 141.555963019, -1.263)
@@ -220,7 +220,7 @@ class Transformer(unittest.TestCase):
         self.assert_equal_point_exact(expected, actual)
 
         actual = tuple(trans.backward(*actual))
-        expected = (36.10377479166668, 140.08785504166664, -4.2175864502150125955E-10)
+        expected = (36.10377479166668, 140.08785504166664, -4.2175864502150125955e-10)
         self.assert_equal_point_exact(expected, actual)
 
     def test_transform(self):

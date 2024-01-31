@@ -92,53 +92,21 @@ class DMS(unittest.TestCase):
                     expected = utils.DMS(1, deg, min, sec, 0.0)
                     actual = utils.DMS.from_dd(expected.to_dd())
 
-                    self.assertEqual(
-                        expected.sign, actual.sign,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertEqual(
-                        expected.degree, actual.degree,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertEqual(
-                        expected.minute, actual.minute,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertEqual(
-                        expected.second, actual.second,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertAlmostEqual(
-                        expected.fract, actual.fract,
-                        delta=3e-10,
-                        msg=f"{expected!r} {actual!r}"
-                    )
+                    self.assertEqual(expected.sign, actual.sign, msg=f"{expected!r} {actual!r}")
+                    self.assertEqual(expected.degree, actual.degree, msg=f"{expected!r} {actual!r}")
+                    self.assertEqual(expected.minute, actual.minute, msg=f"{expected!r} {actual!r}")
+                    self.assertEqual(expected.second, actual.second, msg=f"{expected!r} {actual!r}")
+                    self.assertAlmostEqual(expected.fract, actual.fract, delta=3e-10, msg=f"{expected!r} {actual!r}")
 
                     # minus
                     expected = utils.DMS(-1, deg, min, sec, 0.0)
                     actual = utils.DMS.from_dd(expected.to_dd())
 
-                    self.assertEqual(
-                        expected.sign, actual.sign,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertEqual(
-                        expected.degree, actual.degree,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertEqual(
-                        expected.minute, actual.minute,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertEqual(
-                        expected.second, actual.second,
-                        msg=f"{expected!r} {actual!r}"
-                    )
-                    self.assertAlmostEqual(
-                        expected.fract, actual.fract,
-                        delta=3e-10,
-                        msg=f"{expected!r} {actual!r}"
-                    )
+                    self.assertEqual(expected.sign, actual.sign, msg=f"{expected!r} {actual!r}")
+                    self.assertEqual(expected.degree, actual.degree, msg=f"{expected!r} {actual!r}")
+                    self.assertEqual(expected.minute, actual.minute, msg=f"{expected!r} {actual!r}")
+                    self.assertEqual(expected.second, actual.second, msg=f"{expected!r} {actual!r}")
+                    self.assertAlmostEqual(expected.fract, actual.fract, delta=3e-10, msg=f"{expected!r} {actual!r}")
 
 
 class ToProper(unittest.TestCase):

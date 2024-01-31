@@ -76,11 +76,7 @@ class MeshCodeTest(unittest.TestCase):
         expected = MeshCoord(54, 1, 0)
         self.assertEqual(expected, actual)
 
-        args = [
-            (0, 2),
-            (-1, 1),
-            (66.666667, 1)
-        ]
+        args = [(0, 2), (-1, 1), (66.666667, 1)]
         for arg in args:
             with self.subTest():
                 with self.assertRaises(ValueError, msg="error"):
@@ -95,11 +91,7 @@ class MeshCodeTest(unittest.TestCase):
         expected = MeshCoord(40, 0, 5)
         self.assertEqual(expected, actual)
 
-        args = [
-            (0, 2),
-            (-1, 1),
-            (181, 1)
-        ]
+        args = [(0, 2), (-1, 1), (181, 1)]
         for arg in args:
             with self.subTest():
                 with self.assertRaises(ValueError, msg="error"):
@@ -203,33 +195,21 @@ class MeshCodeTest(unittest.TestCase):
         coord = MeshCoord(0, 0, 0)
         while coord < bound:
             with self.subTest(kind="latitude", node=coord, v=str(coord.to_latitude())):
-                self.assertEqual(
-                    coord,
-                    MeshCoord.from_latitude(coord.to_latitude(), 1)
-                )
+                self.assertEqual(coord, MeshCoord.from_latitude(coord.to_latitude(), 1))
             coord = coord.next_up(1)
         else:
             with self.subTest(kind="latitude", node=coord, v=str(coord.to_latitude())):
-                self.assertEqual(
-                    coord,
-                    MeshCoord.from_latitude(coord.to_latitude(), 1)
-                )
+                self.assertEqual(coord, MeshCoord.from_latitude(coord.to_latitude(), 1))
 
         bound = MeshCoord(80, 0, 0)
         coord = MeshCoord(0, 0, 0)
         while coord < bound:
             with self.subTest(kind="longitude", node=coord, v=str(coord.to_longitude())):
-                self.assertEqual(
-                    coord,
-                    MeshCoord.from_longitude(coord.to_longitude(), 1)
-                )
+                self.assertEqual(coord, MeshCoord.from_longitude(coord.to_longitude(), 1))
             coord = coord.next_up(1)
         else:
             with self.subTest(kind="latitude", node=coord, v=str(coord.to_latitude())):
-                self.assertEqual(
-                    coord,
-                    MeshCoord.from_longitude(coord.to_longitude(), 1)
-                )
+                self.assertEqual(coord, MeshCoord.from_longitude(coord.to_longitude(), 1))
 
 
 class MeshNodeTest(unittest.TestCase):

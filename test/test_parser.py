@@ -77,9 +77,7 @@ class TKY2JGD(unittest.TestCase):
         expected = JGDtrans.Transformer(
             unit=1,
             description="\n" * 1,
-            parameter={
-                12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)
-            },
+            parameter={12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)},
         )
         self.assertEqual(expected, actual, msg="no EOF \\n")
 
@@ -89,9 +87,7 @@ class TKY2JGD(unittest.TestCase):
         expected = JGDtrans.Transformer(
             unit=1,
             description="\n" * 1,
-            parameter={
-                12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)
-            },
+            parameter={12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)},
         )
         self.assertEqual(expected, actual, msg="with EOF \\n")
 
@@ -132,9 +128,7 @@ class PatchJGD(unittest.TestCase):
         expected = JGDtrans.Transformer(
             unit=1,
             description="\n" * 15,
-            parameter={
-                12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)
-            },
+            parameter={12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)},
         )
         self.assertEqual(expected, actual, msg="no EOF \\n")
 
@@ -144,9 +138,7 @@ class PatchJGD(unittest.TestCase):
         expected = JGDtrans.Transformer(
             unit=1,
             description="\n" * 15,
-            parameter={
-                12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)
-            },
+            parameter={12345678: JGDtrans.transformer.Parameter(0.00001, 0.00002, 0.0)},
         )
         self.assertEqual(expected, actual, msg="with EOF \\n")
 
