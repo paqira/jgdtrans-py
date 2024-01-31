@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Mapping, TypeAlias
+from typing import Mapping
 
-from typing_extensions import Literal, NotRequired, Required, TypedDict
+from typing_extensions import Literal, NotRequired, Required, TypedDict, TypeAlias
 
 __all__ = [
     "FormatType",
