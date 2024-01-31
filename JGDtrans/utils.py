@@ -5,7 +5,9 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass
-from typing import Literal, Self
+from typing import Literal
+
+from typing_extensions import Self
 
 __all__ = [
     "round_latitude",
@@ -114,7 +116,7 @@ def from_dms(s: str) -> float:
     return DMS.from_str(s).to_dd()
 
 
-@dataclass(slots=True, frozen=True)
+@dataclass(frozen=True)
 class DMS:
     """Represents latitude and/or longitude in DMS notation.
 

@@ -9,7 +9,7 @@ authors = [
 ]
 description = "Coordinate Transformer by Gridded Correction Parameter (par file)"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 keywords = [
     "GIS",
     "Coordinate Transformation",
