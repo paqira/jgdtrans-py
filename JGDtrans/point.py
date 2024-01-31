@@ -1,4 +1,5 @@
 """Provides :class:`Point`."""
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -66,13 +67,9 @@ class Point(Sequence[float]):
         return 3
 
     @overload
-    def __getitem__(self, item: int) -> float:
-        ...
-
+    def __getitem__(self, item: int) -> float: ...
     @overload
-    def __getitem__(self, item: slice) -> Sequence[float]:
-        ...
-
+    def __getitem__(self, item: slice) -> Sequence[float]: ...
     def __getitem__(self, item: int | slice) -> float | Sequence[float]:
         return (self.latitude, self.longitude, self.altitude)[item]
 

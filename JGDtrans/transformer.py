@@ -260,9 +260,11 @@ class Transformer:
             self.unit,
             len(self.parameter),
             id(self.parameter),
-            repr(textwrap.shorten(self.description, width=11))
-            if isinstance(self.description, str)
-            else self.description,
+            (
+                repr(textwrap.shorten(self.description, width=11))
+                if isinstance(self.description, str)
+                else self.description
+            ),
         )
 
     @classmethod
