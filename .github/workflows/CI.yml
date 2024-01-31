@@ -31,4 +31,4 @@ jobs:
           ruff JGDtrans
       - name: Test
         run: |
-          python3 -m unittest discover -v -s test
+          python3 -m unittest discover -s test
