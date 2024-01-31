@@ -5,7 +5,8 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass
-from typing import Literal, Self
+
+from typing_extensions import Literal, Self
 
 __all__ = [
     "round_latitude",
