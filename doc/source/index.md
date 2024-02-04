@@ -34,7 +34,8 @@ Features:
 - Supports verified backward transformation
 - Supports all TKY2JGD [^2], PatchJGD and PatchJGD(H) [^3],
   HyokoRev [^4], SemiDynaEXE [^5], geonetF3 and ITRF2014 (POS2JGD) [^6]
-  - including Tokyo Datum to JGD2000 (EPSG:4301 to EPSG:4612) and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
+  - For example, Tokyo Datum to JGD2000 (EPSG:4301 to EPSG:4612)
+  - and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
 - Clean implementation
 
 Example:
@@ -68,7 +69,7 @@ This package does not contain parameter files, the GIAJ distributes such files [
 
 このパッケージはパラメータファイルを提供しません。公式サイトよりダウンロードしてください [^7]。
 
-We refer to _TKY2JGD for Windows Ver.1.3.79_ [^9].
+We use _TKY2JGD for Windows Ver.1.3.79_ [^8] as a reference.
 
 [^1]: Geospatial Information Authority of Japan (GIAJ, 国土地理院): <https://www.gsi.go.jp/>,
       (English) <https://www.gsi.go.jp/ENGLISH/>.
@@ -81,11 +82,11 @@ We refer to _TKY2JGD for Windows Ver.1.3.79_ [^9].
       PatchJGD, PatchJGD(H) and HyokoRev: <https://www.gsi.go.jp/sokuchikijun/sokuchikijun41012.html>;
       SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
       geonetF3 and ITRF2014 (POS2JGD): <https://positions.gsi.go.jp/cdcs/>.
-[^8]: Rust implementation: <https://github.com/paqira/jgdtrans-rs>.
-[^9]: TKY2JGD for Windows Ver.1.3.79 (reference implementation):
+[^8]: TKY2JGD for Windows Ver.1.3.79 (reference implementation):
       <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html> 
       released under [国土地理院コンテンツ利用規約](https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html)
       which compatible to CC BY 4.0.
+[^9]: Rust implementation: <https://github.com/paqira/jgdtrans-rs>.
 
 ## Indices and tables
 
