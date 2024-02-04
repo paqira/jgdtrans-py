@@ -36,13 +36,6 @@ dependencies = [
 ]
 dynamic = ["version"]
 
-[project.optional-dependencies]
-doc = [
-    "sphinx>=7.2",
-    "myst_nb>=1.0",
-    "sphinx_book_theme>=1.1"
-]
-
 [tool.setuptools]
 packages = ["JGDtrans"]
 
@@ -56,7 +49,14 @@ version = { attr = "JGDtrans.__version__" }
 line-length = 120
 
 [tool.ruff]
-select = [
+line-length = 120
+exclude = [
+    "test",
+    "doc",
+    "__main__.py"
+]
+
+lint.select = [
     "E",
     "F",
     "W",
@@ -66,18 +66,16 @@ select = [
     "B",
     "D",
 ]
-ignore = [
-    "N999",
-    "D104",
-    "D105",
+lint.ignore = [
+    "N999", # Invalid module name:
+    "D104", #  Missing docstring in public package
+    "D105", # Missing docstring in magic method
 ]
-line-length = 120
-exclude = ["__main__.py"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.isort]
-required-imports = ["from __future__ import annotations"]
-
-
+[tool.ruff.lint.isort]
+required-imports = [
+    "from __future__ import annotations",
+]
