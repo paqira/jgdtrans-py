@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath("../../JGDtrans"))
 # -- Project information -----------------------------------------------------
 
 project = "JGDtrans"
-copyright = "2023-2024, Kentaro Tatsumi"
+copyright = "2023--2024, Kentaro Tatsumi"
 author = "Kentaro Tatsumi"
 
 # -- General configuration ---------------------------------------------------
@@ -27,11 +27,10 @@ author = "Kentaro Tatsumi"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    # "myst_parser",
     "myst_nb",
-    # 'sphinx.ext.autosectionlabel',
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
-    # 'sphinx.ext.todo',
 ]
 
 autosectionlabel_prefix_document = True
@@ -40,17 +39,12 @@ myst_enable_extensions = [
     "deflist",
     "attrs_inline",
     "dollarmath",
-    # "colon_fence",
-    #
-    # "heading_anchors",
 ]
 
 myst_heading_anchors = 2
 
 source_suffix = {
     ".rst": "restructuredtext",
-    # '.ipynb': 'myst-nb',
-    # '.myst': 'myst-nb',
 }
 
 # Add any paths that contain templates here, relative to this directory.
