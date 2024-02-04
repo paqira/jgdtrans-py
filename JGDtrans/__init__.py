@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Final
+
 from . import (
     error,  # noqa: F401
     mesh,  # noqa: F401
@@ -14,11 +16,11 @@ from .parser import load, loads
 from .point import Point
 from .transformer import Transformer, from_dict
 
-__version__ = "0.1.1"
+__version__: Final = "0.1.1"
 
-__home__ = ".jgdtrans"
-__config__ = "config.toml"
-__cli__ = "JGDtrans"
+__home__: Final = ".jgdtrans"
+__config__: Final = "config.toml"
+__cli__: Final = "JGDtrans"
 
 __all__ = [
     #
