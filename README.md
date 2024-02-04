@@ -16,7 +16,7 @@ Features:
   - 精度を保証した逆変換のサポート
 - Supports all TKY2JGD, PatchJGD and PatchJGD(H), HyokoRev, SemiDynaEXE, geonetF3 and ITRF2014 (POS2JGD)
   - For example, Tokyo Datum to JGD2000 (EPSG:4301 to EPSG:4612)
-  - and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
+    and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
   - 上記の全てをサポート
 - Clean implementation
   - 保守が容易な実装

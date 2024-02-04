@@ -35,7 +35,7 @@ Features:
 - Supports all TKY2JGD [^2], PatchJGD and PatchJGD(H) [^3],
   HyokoRev [^4], SemiDynaEXE [^5], geonetF3 and ITRF2014 (POS2JGD) [^6]
   - For example, Tokyo Datum to JGD2000 (EPSG:4301 to EPSG:4612)
-  - and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
+    and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
 - Clean implementation
 
 Example:
