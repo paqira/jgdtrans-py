@@ -1,7 +1,8 @@
 # JGDtrans
 
-Unofficial Python impl. of coordinate transformer by _Gridded Correction Parameter_
-which Geospatial Information Authority of Japan (GIAJ, formerly GSIJ) distributing.
+Unofficial coordinate transformer by _Gridded Correction Parameter_
+which Geospatial Information Authority of Japan (GIAJ, formerly GSIJ) distributing
+for Python.
 
 国土地理院が公開しているパラメータファイル（par ファイル）による座標変換（順逆変換）の非公式な実装です。
 
@@ -14,7 +15,8 @@ Features:
 - Supports verified backward transformation
   - 精度を保証した逆変換のサポート
 - Supports all TKY2JGD, PatchJGD and PatchJGD(H), HyokoRev, SemiDynaEXE, geonetF3 and ITRF2014 (POS2JGD)
-  e.g. Tokyo Datum to JGD2000 (EPSG:4301 to EPSG:4612) and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
+  - For example, Tokyo Datum to JGD2000 (EPSG:4301 to EPSG:4612)
+  - and JGD2000 to JGD2011 (EPSG:4612 to EPSG:6668)
   - 上記の全てをサポート
 - Clean implementation
   - 保守が容易な実装
