@@ -27,7 +27,7 @@ jobs:
           pip install .
       - name: Check
         run: |
-          black JGDtrans
+          black --check JGDtrans
           ruff JGDtrans
       - name: Test
         run: |
