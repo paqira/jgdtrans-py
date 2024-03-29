@@ -44,21 +44,21 @@ with open('SemiDyna2023.par') as fp:
     tf = JGDtrans.load(fp, format="SemiDynaEXE")
 
 # Geospatial Information Authority of Japan
-origin = (36.10377479, 140.087855041)
+origin = (36.10377479, 140.087855041, 2.34)
 
 # forward transformation
 result = tf.forward(*origin)
-# prints Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578102994)
+# prints Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
 print(result)
 
 # backward transformation
 point = tf.backward(*result)
-# prints Point(latitude=36.10377479000002, longitude=140.087855041, altitude=-4.217551585750101e-10)
+# prints Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
 print(point)
 
 # verified backward transformation
 q = tf.backward_safe(*result)
-# prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
+# prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.339999999578243)
 print(q)
 ```
 
