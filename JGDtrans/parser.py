@@ -259,28 +259,28 @@ def parse_par(
             _mesh_code = mesh_code(line)
         except ValueError:
             raise _error.ParseError(
-                f"unexpected value for 'meshcode', " f"we got a line '{line}' [lineno {lineno}]"
+                f"unexpected value for 'meshcode', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
         try:
             _latitude = latitude(line)
         except ValueError:
             raise _error.ParseError(
-                f"unexpected value for 'latitude', " f"we got a line '{line}' [lineno {lineno}]"
+                f"unexpected value for 'latitude', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
         try:
             _longitude = longitude(line)
         except ValueError:
             raise _error.ParseError(
-                f"unexpected value for 'longitude', " f"we got a line '{line}' [lineno {lineno}]"
+                f"unexpected value for 'longitude', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
         try:
             _altitude = altitude(line)
         except ValueError:
             raise _error.ParseError(
-                f"unexpected value for 'altitude', " f"we got a line '{line}' [lineno {lineno}]"
+                f"unexpected value for 'altitude', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
         parameters[_mesh_code] = _trans.Parameter(latitude=_latitude, longitude=_longitude, altitude=_altitude)

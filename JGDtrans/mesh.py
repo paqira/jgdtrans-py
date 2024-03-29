@@ -103,7 +103,7 @@ class MeshCoord:
     def __lt__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
             raise TypeError(
-                f"'<' not supported between instances of " f"'{type(self).__name__}' and '{type(self).__name__}'"
+                f"'<' not supported between instances of '{type(self).__name__}' and '{type(self).__name__}'"
             ) from None
 
         if self.first == other.first:
@@ -117,7 +117,7 @@ class MeshCoord:
     def __le__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
             raise TypeError(
-                f"'<=' not supported between instances of " f"'{type(self).__name__}' and '{type(self).__name__}'"
+                f"'<=' not supported between instances of '{type(self).__name__}' and '{type(self).__name__}'"
             ) from None
 
         if self.first == other.first:
@@ -131,7 +131,7 @@ class MeshCoord:
     def __gt__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
             raise TypeError(
-                f"'>' not supported between instances of " f"'{type(self).__name__}' and '{type(self).__name__}'"
+                f"'>' not supported between instances of '{type(self).__name__}' and '{type(self).__name__}'"
             ) from None
 
         if self.first == other.first:
@@ -145,7 +145,7 @@ class MeshCoord:
     def __ge__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
             raise TypeError(
-                f"'>=' not supported between instances of " f"'{type(self).__name__}' and '{type(self).__name__}'"
+                f"'>=' not supported between instances of '{type(self).__name__}' and '{type(self).__name__}'"
             ) from None
 
         if self.first == other.first:
@@ -303,7 +303,7 @@ class MeshCoord:
             raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
         elif unit == 5 and self.third not in (0, 5):
             raise ValueError(
-                f"expected unit is 1 when third is neither 0 nor 5, " f"we got {unit} (third is {self.third})"
+                f"expected unit is 1 when third is neither 0 nor 5, we got {unit} (third is {self.third})"
             ) from None
 
         # that is 10 - self.unit
@@ -346,7 +346,7 @@ class MeshCoord:
             raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
         elif unit == 5 and self.third not in (0, 5):
             raise ValueError(
-                f"expected unit is 1 when third is neither 0 nor 5, " f"we got {unit} (third is {self.third})"
+                f"expected unit is 1 when third is neither 0 nor 5, we got {unit} (third is {self.third})"
             ) from None
 
         # that is 10 - self.unit
@@ -402,15 +402,15 @@ class MeshNode:
             if self.longitude.second == 0:
                 if 0 < self.longitude.third:
                     raise ValueError(
-                        "expected latitude is less than or equal MeshCoord(80, 0, 0), " f"we got {self.longitude}"
+                        "expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
                     ) from None
             elif 0 < self.longitude.second:
                 raise ValueError(
-                    "expected latitude is less than or equal MeshCoord(80, 0, 0), " f"we got {self.longitude}"
+                    "expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
                 ) from None
         elif 80 < self.longitude.first:
             raise ValueError(
-                "expected latitude is less than or equal MeshCoord(80, 0, 0), " f"we got {self.longitude}"
+                "expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
             ) from None
 
     @classmethod
@@ -642,34 +642,34 @@ class MeshCell:
         elif self.unit == 5:
             if self.sw.latitude.third not in (0, 5) or self.sw.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, " f"we got a mesh node (sw) as {self.sw}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (sw) as {self.sw}"
                 ) from None
             elif self.se.latitude.third not in (0, 5) or self.se.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, " f"we got a mesh node (se) as {self.se}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (se) as {self.se}"
                 ) from None
             elif self.nw.latitude.third not in (0, 5) or self.nw.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, " f"we got a mesh node (nw) as {self.nw}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (nw) as {self.nw}"
                 ) from None
             elif self.ne.latitude.third not in (0, 5) or self.ne.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, " f"we got a mesh node (ne) as {self.ne}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (ne) as {self.ne}"
                 ) from None
 
         lat_next = self.sw.latitude.next_up(self.unit)
         lng_next = self.sw.longitude.next_up(self.unit)
         if not MeshNode(lat_next, self.sw.longitude) == self.nw:
             raise ValueError(
-                f"inconsistent on sw vs nw with unit {self.unit}, " f"we got sw {self.sw} and nw {self.nw}"
+                f"inconsistent on sw vs nw with unit {self.unit}, we got sw {self.sw} and nw {self.nw}"
             ) from None
         elif not MeshNode(self.sw.latitude, lng_next) == self.se:
             raise ValueError(
-                f"inconsistent on sw vs se with unit {self.unit}, " f"we got sw {self.sw} and se {self.se}"
+                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.sw} and se {self.se}"
             ) from None
         elif not MeshNode(lat_next, lng_next) == self.ne:
             raise ValueError(
-                f"inconsistent on sw vs se with unit {self.unit}, " f"we got sw {self.sw} and ne {self.ne}"
+                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.sw} and ne {self.ne}"
             ) from None
 
     @classmethod
