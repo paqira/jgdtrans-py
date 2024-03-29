@@ -216,7 +216,7 @@ to be less than the GIAJ parameter error, $10^{-5}$ \[m\];
 ```pycon
 >>> point = Point(36.10377479, 140.087855041, 2.34)
 >>> tf.backward_safe(*tf.forward(*point))
-Point(latitude=36.10377479, longitude=140.087855041, altitude=2.339999999578243)
+Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
 ```
 
 In the example above, the `SemiDyna2023.par` case,

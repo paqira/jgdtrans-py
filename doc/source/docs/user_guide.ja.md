@@ -200,7 +200,7 @@ $10^{-5}$ \[m\] 以下となります（と思います）。
 ```pycon
 >>> point = Point(36.10377479, 140.087855041, 2.34)
 >>> tf.backward_safe(*tf.forward(*point))
-Point(latitude=36.10377479, longitude=140.087855041, altitude=2.339999999578243)
+Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
 ```
 
 上記の例（ `SemiDyna2023.par`）では、経緯度の誤差がありません。
