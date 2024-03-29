@@ -10,64 +10,10 @@ from typing import Literal
 from typing_extensions import Self
 
 __all__ = [
-    "normalize_latitude",
-    "normalized_longitude",
     "to_dms",
     "from_dms",
     "DMS",
 ]
-
-
-def normalize_latitude(t: float) -> float:
-    """Returns the normalized latitude into -90.0 <= and <= 90.0.
-
-    Args:
-        t: the latitude
-
-    Returns:
-        the latitude which satisfies -90.0 <= and <= 90.0
-
-    Examples:
-        >>> normalize_latitude(35.0)
-        35.0
-        >>> normalize_latitude(100.0)
-        80.0
-        >>> normalize_latitude(190.0)
-        -10.0
-        >>> normalize_latitude(-100.0)
-        -80.0
-        >>> normalize_latitude(-190.0)
-        10.0
-    """
-    t = t % 360.0
-    if t < -270.0 or 270.0 < t:
-        return t - math.copysign(360.0, t)
-    elif t < -90.0 or 90.0 < t:
-        return math.copysign(180.0, t) - t
-    return t
-
-
-def normalized_longitude(t: float) -> float:
-    """Returns the normalized longitude -180.0 <= and <= 180.0.
-
-    Args:
-        t: the longitude
-
-    Returns:
-        the longitude which satisfies -180.0 <= and <= 180.0
-
-    Examples:
-        >>> normalized_longitude(145.0)
-        145.0
-        >>> normalized_longitude(190.0)
-        -170.0
-        >>> normalized_longitude(-190.0)
-        170.0
-    """
-    t = t % 360.0
-    if t < -180.0 or 180.0 < t:
-        return t - math.copysign(360.0, t)
-    return t
 
 
 def to_dms(t: float) -> str:

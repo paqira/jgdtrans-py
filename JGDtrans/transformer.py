@@ -11,11 +11,11 @@ from typing import Final, Literal, NamedTuple
 
 from typing_extensions import Self
 
+from . import dms as _dms
 from . import error as _error
 from . import mesh as _mesh
 from . import point as _point
 from . import types as _types
-from . import utils as _utils
 
 __all__ = [
     "Transformer",
@@ -946,8 +946,8 @@ class Transformer:
             if abs(latitude - (yn + corr.latitude)) <= criteria and abs(longitude - (xn + corr.longitude)) <= criteria:
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
-            yn = _utils.normalize_latitude(yn)
-            xn = _utils.normalized_longitude(xn)
+            yn = _point.normalize_latitude(yn)
+            xn = _point.normalized_longitude(xn)
 
         raise _error.NotConvergeError(
             f"exhaust {iteration} iterations but error is still high, "
