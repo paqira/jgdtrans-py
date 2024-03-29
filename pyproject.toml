@@ -32,7 +32,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 dependencies = [
-    'typing-extensions>=4.9',
+    "typing-extensions>=4.9",
 ]
 dynamic = ["version"]
 
@@ -53,7 +53,7 @@ line-length = 120
 exclude = [
     "test",
     "doc",
-    "__main__.py"
+    "__main__.py",
 ]
 
 lint.select = [
