@@ -827,7 +827,7 @@ class MeshCell:
             if node.latitude.third not in (0, 5):
                 raise ValueError(
                     "expected unit is 1 when third is neither 0 nor 5, "
-                    f"we got {unit} and third of latitude is {node.latitude.third} for "
+                    f"we got {unit} and third of latitude is {node.latitude.third} for latitude"
                 ) from None
             if node.longitude.third not in (0, 5):
                 raise ValueError(
@@ -900,13 +900,11 @@ class MeshCell:
         # The cell stretches 1.5 times in the latitude direction
         # compared to the longitude direction,
         # then here uses 120 = 1.5 * 80.
+        lat = latitude - self.sw.latitude.to_latitude()
+        lng = longitude - self.sw.longitude.to_longitude()
         if self.unit == 1:
-            lat = 120 * (latitude - self.sw.latitude.to_latitude())
-            lng = 80 * (longitude - self.sw.longitude.to_longitude())
-        else:
-            lat = 24 * (latitude - self.sw.latitude.to_latitude())
-            lng = 16 * (longitude - self.sw.longitude.to_longitude())
-        return lat, lng
+            return 120 * lat, 80 * lng
+        return 24 * lat, 16 * lng
 
 
 if __name__ == "__main__":
