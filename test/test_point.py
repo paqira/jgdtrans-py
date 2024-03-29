@@ -1,7 +1,32 @@
 import unittest
 
 from JGDtrans import Point, mesh
+from JGDtrans import point as _point
 from JGDtrans.mesh import MeshCoord, MeshNode
+
+
+class Normalize(unittest.TestCase):
+    def test_latitude(self):
+        cases = [
+            (35.0, 35.0),
+            (-35.0, -35.0),
+            (80.0, 100.0),
+            (-10.0, 190.0),
+            (-80.0, -100.0),
+            (10.0, -190.0),
+        ]
+        for e, a in cases:
+            self.assertEqual(e, _point.normalize_latitude(a))
+
+    def test_longitude(self):
+        cases = [
+            (145.0, 145.0),
+            (-145.0, -145.0),
+            (-170.0, 190.0),
+            (170.0, -190.0),
+        ]
+        for e, a in cases:
+            self.assertEqual(e, _point.normalized_longitude(a))
 
 
 class Point_(unittest.TestCase):

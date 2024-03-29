@@ -2,19 +2,74 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 from typing import Literal, overload
 
 from typing_extensions import Self
 
+from . import dms as _dms
 from . import mesh as _mesh
 from . import transformer as _trans
-from . import utils as _utils
 
 __all__ = [
+    "normalize_latitude",
+    "normalized_longitude",
     "Point",
 ]
+
+
+def normalize_latitude(t: float) -> float:
+    """Returns the normalized latitude into -90.0 <= and <= 90.0.
+
+    Args:
+        t: the latitude
+
+    Returns:
+        the latitude which satisfies -90.0 <= and <= 90.0
+
+    Examples:
+        >>> normalize_latitude(35.0)
+        35.0
+        >>> normalize_latitude(100.0)
+        80.0
+        >>> normalize_latitude(190.0)
+        -10.0
+        >>> normalize_latitude(-100.0)
+        -80.0
+        >>> normalize_latitude(-190.0)
+        10.0
+    """
+    t = t % 360.0
+    if t < -270.0 or 270.0 < t:
+        return t - math.copysign(360.0, t)
+    elif t < -90.0 or 90.0 < t:
+        return math.copysign(180.0, t) - t
+    return t
+
+
+def normalized_longitude(t: float) -> float:
+    """Returns the normalized longitude -180.0 <= and <= 180.0.
+
+    Args:
+        t: the longitude
+
+    Returns:
+        the longitude which satisfies -180.0 <= and <= 180.0
+
+    Examples:
+        >>> normalized_longitude(145.0)
+        145.0
+        >>> normalized_longitude(190.0)
+        -170.0
+        >>> normalized_longitude(-190.0)
+        170.0
+    """
+    t = t % 360.0
+    if t < -180.0 or 180.0 < t:
+        return t - math.copysign(360.0, t)
+    return t
 
 
 @dataclass(frozen=True, unsafe_hash=True)
@@ -58,8 +113,8 @@ class Point(Sequence[float]):
     """The altitude [m] of the point, defaulting :obj:`0.0`"""
 
     def __post_init__(self):
-        object.__setattr__(self, "latitude", _utils.normalize_latitude(self.latitude))
-        object.__setattr__(self, "longitude", _utils.normalized_longitude(self.longitude))
+        object.__setattr__(self, "latitude", normalize_latitude(self.latitude))
+        object.__setattr__(self, "longitude", normalized_longitude(self.longitude))
 
     def __len__(self) -> Literal[3]:
         return 3
@@ -165,7 +220,7 @@ class Point(Sequence[float]):
         return cls.from_node(node)
 
     @classmethod
-    def from_dms(cls, latitude: _utils.DMS | str, longitude: _utils.DMS | str, altitude: float = 0.0) -> Self:
+    def from_dms(cls, latitude: _dms.DMS | str, longitude: _dms.DMS | str, altitude: float = 0.0) -> Self:
         """Makes a :class:`Point` from DMS notation latitude and longitdue (and altitude).
 
         Args:
@@ -184,10 +239,10 @@ class Point(Sequence[float]):
             Point(latitude=36.10377479166667, longitude=140.08785504166664, altitude=0.0)
         """
         if isinstance(latitude, str):
-            latitude = _utils.DMS.from_str(latitude)
+            latitude = _dms.DMS.from_str(latitude)
 
         if isinstance(longitude, str):
-            longitude = _utils.DMS.from_str(longitude)
+            longitude = _dms.DMS.from_str(longitude)
 
         return cls(
             latitude=latitude.to_dd(),
@@ -207,8 +262,8 @@ class Point(Sequence[float]):
             ("360613.58925", "1400516.27815", 0.0)
         """
         return (
-            _utils.DMS.from_dd(self.latitude).to_str(),
-            _utils.DMS.from_dd(self.longitude).to_str(),
+            _dms.DMS.from_dd(self.latitude).to_str(),
+            _dms.DMS.from_dd(self.longitude).to_str(),
             self.altitude,
         )
 
