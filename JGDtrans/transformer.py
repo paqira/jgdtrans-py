@@ -333,7 +333,7 @@ class Transformer:
                 key = int(k)
             except ValueError:
                 raise _error.ParseError(
-                    f"expected a parsable value for the key of the parameter field, we got {repr(k)}"
+                    f"expected integer for the key of the parameter field, we got {repr(k)}"
                 ) from None
 
             parameter[key] = Parameter(
