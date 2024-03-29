@@ -23,10 +23,8 @@ class Point(Sequence[float]):
 
     This is :obj:`Sequence[float]` of lengh 3.
 
-    The constructor "rounds" `latitude` and/or `longitude` if it is out-of-range,
-    it rounds `latitude` into -90.0 <= and <= 90.0
-    and `longitude` into -180.0 <= and <= 180.0.
-    "Rounding" may be counterintuitive a little (the Earth is round).
+    The constructor normalizes `latitude` and `longitude` to
+    -90.0 <= and <= 90.0 and -180.0 <= and <= 180.0 respectively.
 
     We note that `latitude` and `longitude` is DD notation,
     use :meth:`Point.to_dms` and :meth:`Point.from_dms` for converting to/from DMS notation.
@@ -60,8 +58,8 @@ class Point(Sequence[float]):
     """The altitude [m] of the point, defaulting :obj:`0.0`"""
 
     def __post_init__(self):
-        object.__setattr__(self, "latitude", _utils.round_latitude(self.latitude))
-        object.__setattr__(self, "longitude", _utils.round_longitude(self.longitude))
+        object.__setattr__(self, "latitude", _utils.normalize_latitude(self.latitude))
+        object.__setattr__(self, "longitude", _utils.normalized_longitude(self.longitude))
 
     def __len__(self) -> Literal[3]:
         return 3

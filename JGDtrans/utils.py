@@ -10,18 +10,16 @@ from typing import Literal
 from typing_extensions import Self
 
 __all__ = [
-    "round_latitude",
-    "round_longitude",
+    "normalize_latitude",
+    "normalized_longitude",
     "to_dms",
     "from_dms",
     "DMS",
 ]
 
 
-def round_latitude(t: float) -> float:
-    """Returns the rounded latitude into -90.0 <= and <= 90.0.
-
-    We note that "rounding" may be interesting (the Earth is round).
+def normalize_latitude(t: float) -> float:
+    """Returns the normalized latitude into -90.0 <= and <= 90.0.
 
     Args:
         t: the latitude
@@ -30,15 +28,15 @@ def round_latitude(t: float) -> float:
         the latitude which satisfies -90.0 <= and <= 90.0
 
     Examples:
-        >>> round_latitude(35.0)
+        >>> normalize_latitude(35.0)
         35.0
-        >>> round_latitude(100.0)
+        >>> normalize_latitude(100.0)
         80.0
-        >>> round_latitude(190.0)
+        >>> normalize_latitude(190.0)
         -10.0
-        >>> round_latitude(-100.0)
+        >>> normalize_latitude(-100.0)
         -80.0
-        >>> round_latitude(-190.0)
+        >>> normalize_latitude(-190.0)
         10.0
     """
     t = t % 360.0
@@ -49,10 +47,8 @@ def round_latitude(t: float) -> float:
     return t
 
 
-def round_longitude(t: float) -> float:
-    """Returns the rounded longitude -180.0 <= and <= 180.0.
-
-    We note that "rounding" may be interesting (the Earth is round).
+def normalized_longitude(t: float) -> float:
+    """Returns the normalized longitude -180.0 <= and <= 180.0.
 
     Args:
         t: the longitude
@@ -61,11 +57,11 @@ def round_longitude(t: float) -> float:
         the longitude which satisfies -180.0 <= and <= 180.0
 
     Examples:
-        >>> round_longitude(145.0)
+        >>> normalized_longitude(145.0)
         145.0
-        >>> round_longitude(190.0)
+        >>> normalized_longitude(190.0)
         -170.0
-        >>> round_longitude(-190.0)
+        >>> normalized_longitude(-190.0)
         170.0
     """
     t = t % 360.0

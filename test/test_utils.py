@@ -118,7 +118,7 @@ class ToProper(unittest.TestCase):
             (10.0, -190.0),
         ]
         for e, a in cases:
-            self.assertEqual(e, utils.round_latitude(a))
+            self.assertEqual(e, utils.normalize_latitude(a))
 
     def test_longitude(self):
         cases = [
@@ -128,7 +128,7 @@ class ToProper(unittest.TestCase):
             (170.0, -190.0),
         ]
         for e, a in cases:
-            self.assertEqual(e, utils.round_longitude(a))
+            self.assertEqual(e, utils.normalized_longitude(a))
 
 
 class ToFromDMS(unittest.TestCase):
