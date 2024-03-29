@@ -11,7 +11,6 @@ from typing import Final, Literal, NamedTuple
 
 from typing_extensions import Self
 
-from . import dms as _dms
 from . import error as _error
 from . import mesh as _mesh
 from . import point as _point
