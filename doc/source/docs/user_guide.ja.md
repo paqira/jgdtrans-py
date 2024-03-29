@@ -149,8 +149,8 @@ Transformer(unit=5, parameter=<object (21134 length) at 0x987654321>, descriptio
 
 ```pycon
 >>> tf.forward(36.10377479, 140.087855041, 2.34)
-Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578102994)
->>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578102994)
+Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
+>>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
 Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
 ```
 
@@ -163,7 +163,7 @@ Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995
 >>> point.longitude
 140.08785924333452
 >>> point.altitude
-2.4363138578102994
+2.4363138578103
 ```
 
 {py:class}`~JGDtrans.Point` オブジェクトはアンパックをサポートしています（{py:class}`~JGDtrans.Point`
@@ -173,7 +173,7 @@ Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995
 >>> origin = Point(36.10377479, 140.087855041, 2.34)
 >>> result = tf.forward(*origin)
 >>> tf.backward(*result)
-Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
+Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
 ```
 
 引数（{py:obj}`backward`）によって順逆変換を切り替える {py:meth}`.Transformer.transform`
@@ -200,7 +200,7 @@ $10^{-5}$ \[m\] 以下となります（と思います）。
 ```pycon
 >>> point = Point(36.10377479, 140.087855041, 2.34)
 >>> tf.backward_safe(*tf.forward(*point))
-Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970045)
+Point(latitude=36.10377479, longitude=140.087855041, altitude=2.339999999578243)
 ```
 
 上記の例（ `SemiDyna2023.par`）では、経緯度の誤差がありません。

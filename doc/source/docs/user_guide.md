@@ -155,8 +155,8 @@ These return more precise results than the _TKY2JGD for Windows Ver.1.3.79_ and 
 
 ```pycon
 >>> tf.forward(36.10377479, 140.087855041, 2.34)
-Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578102994)
->>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578102994)
+Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
+>>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
 Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
 ```
 
@@ -170,7 +170,7 @@ It can access by the attribute to the resulting values, latitude, longitude and 
 >>> point.longitude
 140.08785924333452
 >>> point.altitude
-2.4363138578102994
+2.4363138578103
 ```
 
 It is unpackable because {py:class}`~JGDtrans.Point` is
@@ -180,7 +180,7 @@ It is unpackable because {py:class}`~JGDtrans.Point` is
 >>> origin = Point(36.10377479, 140.087855041, 2.34)
 >>> result = tf.forward(*origin)
 >>> tf.backward(*result)
-Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
+Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
 ```
 
 There is {py:meth}`.Transformer.transform`
@@ -216,7 +216,7 @@ to be less than the GIAJ parameter error, $10^{-5}$ \[m\];
 ```pycon
 >>> point = Point(36.10377479, 140.087855041, 2.34)
 >>> tf.backward_safe(*tf.forward(*point))
-Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970045)
+Point(latitude=36.10377479, longitude=140.087855041, altitude=2.339999999578243)
 ```
 
 In the example above, the `SemiDyna2023.par` case,
