@@ -16,7 +16,7 @@ from .parser import load, loads
 from .point import Point
 from .transformer import Transformer, from_dict
 
-__version__: Final = "0.1.2"
+__version__: Final = "0.1.3"
 
 __home__: Final = ".jgdtrans"
 __config__: Final = "config.toml"
