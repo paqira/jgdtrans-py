@@ -331,15 +331,17 @@ class Transformer:
         parameter = {}
         for k, v in obj["parameter"].items():
             try:
-                parameter[int(k)] = Parameter(
-                    latitude=v["latitude"],
-                    longitude=v["longitude"],
-                    altitude=v["altitude"],
-                )
+                key = int(k)
             except ValueError:
                 raise _error.ParseError(
                     f"expected a parsable value for the key of the parameter field, we got {repr(k)}"
                 ) from None
+
+            parameter[key] = Parameter(
+                latitude=v["latitude"],
+                longitude=v["longitude"],
+                altitude=v["altitude"],
+            )
 
         return cls(
             unit=obj["unit"],
@@ -817,8 +819,8 @@ class Transformer:
             >>> tf.backward_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.7729133219831587e-06, longitude=-4.202334509042613e-06, altitude=-0.0963138582320569)
         """
-        a: Final = 1 / 300  # 12. / 3600.
-        lat, lng = latitude - a, longitude + a
+        delta: Final = 1 / 300  # 12. / 3600.
+        lat, lng = latitude - delta, longitude + delta
 
         if lat < 0:
             raise ValueError(f"latitude is too small, we got {latitude}") from None
