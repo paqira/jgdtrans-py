@@ -12,6 +12,7 @@ in general.
 
 from __future__ import annotations
 
+import ctypes
 import math
 from dataclasses import dataclass
 from enum import IntEnum
@@ -191,9 +192,14 @@ class MeshCoord:
         See Also:
             - :meth:`MeshCoord.to_latitude`
         """
-        # the minimum workaround avoiding rounding error
-        # it's a single bit diff!
-        _value = math.nextafter(3 * v / 2, math.inf)
+        # Minimum add-hook trick to ensure the identity,
+        # 1. MeshCoord.from_latitude(coord.to_latitude(), 1)
+        # 2. MeshCoord.from_longitude(coord.to_longitude(), 1)
+
+        _value = 3 * v / 2
+        # float to int trick
+        if ctypes.c_uint64.from_buffer(ctypes.c_double(v)).value % 2 == 1:
+            _value = math.nextafter(_value, math.inf)
 
         if unit not in (1, 5):
             raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
