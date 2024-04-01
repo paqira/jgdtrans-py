@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "JGDtrans"
+name = "jgdtrans"
 authors = [
     { name = "Kentaro Tatsumi", email = "paqira.2019@gmail.com" },
 ]
@@ -37,10 +37,10 @@ dependencies = [
 dynamic = ["version"]
 
 [tool.setuptools]
-packages = ["JGDtrans"]
+packages = ["jgdtrans"]
 
 [tool.setuptools.dynamic]
-version = { attr = "JGDtrans.__version__" }
+version = { attr = "jgdtrans.__version__" }
 
 [project.urls]
 "Repository" = "https://github.com/paqira/JGDtrans-py"

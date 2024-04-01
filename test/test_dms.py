@@ -1,6 +1,6 @@
 import unittest
 
-from JGDtrans import dms
+from jgdtrans import dms
 
 
 class DMS(unittest.TestCase):

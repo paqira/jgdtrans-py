@@ -1,8 +1,8 @@
 import unittest
 
-from JGDtrans import Point, mesh
-from JGDtrans import point as _point
-from JGDtrans.mesh import MeshCoord, MeshNode
+from jgdtrans import Point, mesh
+from jgdtrans import point as _point
+from jgdtrans.mesh import MeshCoord, MeshNode
 
 
 class Normalize(unittest.TestCase):

@@ -1,13 +1,13 @@
 # ユーザーガイド
 
-ここでは {py:mod}`JGDtrans` の使い方を紹介します。各 API の詳細は [API Reference](../autodoc/JGDtrans.rst) をみてください。
+ここでは {py:mod}`jgdtrans` の使い方を紹介します。各 API の詳細は [API Reference](../autodoc/jgdtrans.rst) をみてください。
 
 ## インストール
 
 PyPI よりインストールできます。
 
 ```shell
-pip install JGDtrans
+pip install jgdtrans
 ```
 
 依存は [`typing-extensions`][typing-extensions] のみです。また `Python>=3.9` であることが必要です。
@@ -17,7 +17,7 @@ pip install JGDtrans
 ドキュメントは [`Sphinx`][Sphinx] によってビルドできます。
 
 ```shell
-sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./JGDtrans/ 
+sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
 sphinx-build -b html ./doc/source ./doc/build/html
 ```
 
@@ -25,7 +25,7 @@ sphinx-build -b html ./doc/source ./doc/build/html
 
 ## par ファイルの読み込み
 
-{py:mod}`JGDtrans` は、以下の[国土地理院][GIAJ]が2023年時点で公開している全ての
+{py:mod}`jgdtrans` は、以下の[国土地理院][GIAJ]が2023年時点で公開している全ての
 _Gridded Correction Parameter_ ファイル（拡張子にちなんで
 par ファイルと呼びます）の読み込みに対応しています。
 
@@ -46,7 +46,7 @@ par ファイルと呼びます）の読み込みに対応しています。
 
 ここでは、 par ファイルの読み込み方法と紹介します。
 
-{py:mod}`JGDtrans` は par ファイルを提供しません。
+{py:mod}`jgdtrans` は par ファイルを提供しません。
 par ファイルを利用する場合は、国土地理院よりダウンロードしてください [^1]。
 
 [^1]: Download links;
@@ -61,9 +61,9 @@ API は {py:class}`.Transformer` を返します。
 `format` 引数を用いて、par ファイルのフォーマットを指定してください。
 
 ```pycon
->>> import JGDtrans
+>>> import jgdtrans
 >>> with open('SemiDyna2023.par') as fp:
-...     tf = JGDtrans.load(fp, format="SemiDynaEXE")
+...     tf = jgdtrans.load(fp, format="SemiDynaEXE")
 >>> tf
 Transformer(unit=5, parameter=<object (21134 length) at 0x123456789>, description='for [...]')
 ```
@@ -95,7 +95,7 @@ TKY2JGD の高度、 PatchJGD(H) の経緯度は {py:obj}`0.0` になります�
 
 ```pycon
 >>> with open('TKY2JGD.par') as fp:
-...     tf = JGDtrans.load(fp, format="TKY2JGD")
+...     tf = jgdtrans.load(fp, format="TKY2JGD")
 >>> tf.parameter[46303582]
 Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 ```
@@ -135,7 +135,7 @@ Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 ...     # and go on
 ...     },
 ... }
->>> tf = JGDtrans.from_dict(data)
+>>> tf = jgdtrans.from_dict(data)
 >>> tf
 Transformer(unit=5, parameter=<object (21134 length) at 0x987654321>, description='my [...]')
 ```
@@ -156,7 +156,7 @@ Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363
 Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
 ```
 
-戻り値は {py:class}`~JGDtrans.Point` オブジェクトです。経緯度、高度には各属性でアクセスできます。
+戻り値は {py:class}`~jgdtrans.Point` オブジェクトです。経緯度、高度には各属性でアクセスできます。
 
 ```pycon
 >>> point = tf.forward(36.10377479, 140.087855041, 2.34)
@@ -168,7 +168,7 @@ Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995
 2.4363138578103
 ```
 
-{py:class}`~JGDtrans.Point` オブジェクトはアンパックをサポートしています（{py:class}`~JGDtrans.Point`
+{py:class}`~jgdtrans.Point` オブジェクトはアンパックをサポートしています（{py:class}`~jgdtrans.Point`
 は長さ 3 の {py:obj}`Sequence[flaot]` です）。
 
 ```pycon
@@ -180,7 +180,7 @@ Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995
 
 引数（{py:obj}`backward`）によって順逆変換を切り替える {py:meth}`.Transformer.transform`
 も提供しています。動作は前述の {py:meth}`.Transformer.forward` や {py:meth}`.Transformer.backward`
-と同じです。つまり、任意の {py:class}`~JGDtrans.Point` オブジェクト {py:obj}`point` に対して、以下の恒等式が成り立ちます。
+と同じです。つまり、任意の {py:class}`~jgdtrans.Point` オブジェクト {py:obj}`point` に対して、以下の恒等式が成り立ちます。
 
 ```pycon
 >>> tf.transform(*point, backward=False) == tf.forward(*point)
@@ -209,7 +209,7 @@ Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085
 
 もし、その様な解を見つけられなかった場合、
 {py:meth}`.Transformer.backward_safe` は
-{py:class}`~JGDtrans.NotConvergeError` を送出します。私が `TKY2JGD.par` 、
+{py:class}`~jgdtrans.NotConvergeError` を送出します。私が `TKY2JGD.par` 、
 `touhokutaiheiyouoki2011.par` 、 `pos2jgd_202307_ITRF2014.par`
 を用いて数値的に検証した限りでは、必ずその様な解が見つかっていますので、多くの場合で問題なく動作すると思います。
 
@@ -224,9 +224,9 @@ Point(latitude=36.106966279935016, longitude=140.08457686562787, altitude=2.34)
 
 {py:class}`.Transformer` は、DMS 形式（60 進度）による I/O もサポートしています。
 
-{py:class}`~JGDtrans.Point` には DMS 形式をあつかうためのメソッドがあります。
+{py:class}`~jgdtrans.Point` には DMS 形式をあつかうためのメソッドがあります。
 {py:meth}`.Point.from_dms` は DMS 形式によるコンストラクタで、
-{py:meth}`.Point.to_dms` は {py:class}`~JGDtrans.Point` オブジェクトを DMS 形式に変換します。
+{py:meth}`.Point.to_dms` は {py:class}`~jgdtrans.Point` オブジェクトを DMS 形式に変換します。
 
 ```pycon
 >>> Point.from_dms("360613.58925", "1400516.27815", 2.34)
@@ -236,7 +236,7 @@ Point(36.10377479166667, 140.08785504166664, 2.34)
 ```
 
 {py:meth}`.Point.to_dms` の戻り値は
-{py:obj}`tuple[str, str float]` であり {py:class}`~JGDtrans.Point` ではないことに注意してください。
+{py:obj}`tuple[str, str float]` であり {py:class}`~jgdtrans.Point` ではないことに注意してください。
 
 これらを組み合わせることで、DMS 形式による {py:class}`.Transformer` の I/O が可能です。
 
@@ -248,7 +248,7 @@ Point(36.10377479166667, 140.08785504166664, 2.34)
 
 ## メッシュに関連する実装の導入
 
-{py:mod}`JGDtrans` を利用するにあたり、この章を読む必要はありません。
+{py:mod}`jgdtrans` を利用するにあたり、この章を読む必要はありません。
 
 この章では、メッシュに関連する実装の理解を助けるために、各用語の定義とその実装との関連を説明します。
 各実装は {py:mod}`.mesh` モジュールに公開されています。
@@ -272,4 +272,4 @@ node だけでは unit を決定できないので、 node から cell （すぐ
 変換の補正を計算するには、その unit における単位胞が必要です。単位胞 のことを _mesh cell_（もしくは _cell_ ）と呼び、
 {py:class}`.MeshCell` として実装しています。
 
-{py:class}`~JGDtrans.Point` にも関連するメソッドが存在します。
+{py:class}`~jgdtrans.Point` にも関連するメソッドが存在します。
