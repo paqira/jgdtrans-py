@@ -867,22 +867,22 @@ class MeshCell:
 
         The south-west of the cell is (0, 0), origin
 
-        >>> cell.position(*cell.sw.tp_pos())
+        >>> cell.position(*cell.sw.to_pos())
         (0, 0)
 
         The south-east is (0, 1)
 
-        >>> cell.position(*cell.se.tp_pos())
+        >>> cell.position(*cell.se.to_pos())
         (0.0, 0.9999999999990905)
 
         The north-west is (1, 0)
 
-        >>> cell.position(*cell.nw.tp_pos())
+        >>> cell.position(*cell.nw.to_pos())
         (0.9999999999999432, 0.0)
 
         The north-east is (1, 1)
 
-        >>> cell.position(*cell.ne.tp_pos())
+        >>> cell.position(*cell.ne.to_pos())
         (0.9999999999999432, 0.9999999999990905)
 
         Args:
