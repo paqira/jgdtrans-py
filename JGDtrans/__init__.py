@@ -23,7 +23,6 @@ __config__: Final = "config.toml"
 __cli__: Final = "JGDtrans"
 
 __all__ = [
-    #
     "load",
     "loads",
     #
