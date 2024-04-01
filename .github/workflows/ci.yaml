@@ -29,7 +29,7 @@ jobs:
       - name: Check
         run: |
           black --check JGDtrans
-          ruff JGDtrans
+          ruff check JGDtrans
       - name: Test
         run: |
           python3 -m unittest discover -s test
