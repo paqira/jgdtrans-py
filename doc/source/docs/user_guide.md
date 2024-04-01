@@ -11,38 +11,40 @@ You can install {py:mod}`JGDtrans` from PyPI:
 pip install JGDtrans
 ```
 
-This package depends on `typing-extensions` only, and requires `python>=3.9`.
+This package depends on [`typing-extensions`][typing-extensions] only, and requires `python>=3.9`.
 
-[^1]: typing-extensions: PyPI <https://pypi.org/project/typing-extensions/>.
+[typing-extensions]: https://pypi.org/project/typing-extensions/
 
-To build documentation, install {py:mod}`JGDtrans` with `doc` option:
-
-```shell
-pip install JGDtrans[doc]
-```
-
-Run `Sphinx` to builds the documentation:
+Run [`Sphinx`][Sphinx] to builds the documentation:
 
 ```shell
-sphinx-apidoc -f -e --no-toc -d 1 -o ./docs/source/autodoc ./JGDtrans/ 
-sphinx-build -b html ./docs/source ./docs/build/html
+sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./JGDtrans/ 
+sphinx-build -b html ./doc/source ./doc/build/html
 ```
 
-[^2]: Sphinx: PyPI <https://pypi.org/project/Sphinx/>.
+[Sphinx]: https://pypi.org/project/Sphinx/
 
 ## Deserialize par File
 
 {py:mod}`JGDtrans` supports deserialization of all kind of _Gridded Correction Parameter_ file
 (we call it as _par file_ after its file extension)
-which distributed by the GIAJ as of late 2023, such as
-TKY2JGD, PatchJGD, PatchJGD(H), HyokoRev, SemiDynaEXE, geonetF3 (POS2JGD) and ITRF2014 (POS2JGD).
+which distributed by the [GIAJ] as of late 2023, such as
+[TKY2JGD], [PatchJGD], [PatchJGD(H)], [HyokoRev], [SemiDynaEXE] and [POS2JGD] (geonetF3 and ITRF2014).
 In this section, we show how to load par file,
 and serialize and deserialize {py:class}`.Transformer` obj.
 
-We note that none of par files are included in this package,
-download them from GIAJ [^2].
+[GIAJ]: https://www.gsi.go.jp/ENGLISH/
+[TKY2JGD]: https://www.gsi.go.jp/sokuchikijun/tky2jgd.html
+[PatchJGD]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd/index.html
+[PatchJGD(H)]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd_h/index.html
+[HyokoRev]: https://vldb.gsi.go.jp/sokuchi/surveycalc/hyokorev/hyokorev.html
+[SemiDynaEXE]: https://vldb.gsi.go.jp/sokuchi/surveycalc/semidyna/web/index.html
+[POS2JGD]: https://positions.gsi.go.jp/cdcs
 
-[^3]: Download links;
+We note that none of par files are included in this package,
+download them from GIAJ [^1].
+
+[^1]: Download links;
       TKY2JGD: <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html>;
       PatchJGD, PatchJGD(H) and HyokoRev: <https://www.gsi.go.jp/sokuchikijun/sokuchikijun41012.html>;
       SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
@@ -199,10 +201,10 @@ True
 
 We note that the backward transformation,
 {py:meth}`.Transformer.backward`,
-is _not_ exact as the original _TKY2JGD for Windows Ver.1.3.79_ and the web APIs are [^3].
+is _not_ exact as the original _TKY2JGD for Windows Ver.1.3.79_ and the web APIs are [^2].
 Its result drifts slightly from the exact solution (see the two previous example).
 
-[^4]: As far as we researched.
+[^2]: As far as we researched.
 
 {py:meth}`.Transformer.backward_safe`
 does backward transformation
