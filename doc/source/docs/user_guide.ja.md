@@ -10,44 +10,46 @@ PyPI よりインストールできます。
 pip install JGDtrans
 ```
 
-依存は `typing-extensions` のみです [^1]。また `Python>=3.9` であることが必要です。
+依存は [`typing-extensions`][typing-extensions] のみです。また `Python>=3.9` であることが必要です。
 
-[^1]: typing-extensions: PyPI: <https://pypi.org/project/typing-extensions/>.
+[typing-extensions]: https://pypi.org/project/typing-extensions/
 
-ドキュメントをビルドする時は、 `doc` オプションを有効にしてインストールしてください。
-
-```shell
-pip install JGDtrans[doc]
-```
-
-ドキュメントは `Sphinx` によってビルドできます。
+ドキュメントは [`Sphinx`][Sphinx] によってビルドできます。
 
 ```shell
-sphinx-apidoc -f -e --no-toc -d 1 -o ./docs/source/autodoc ./JGDtrans/ 
-sphinx-build -b html ./docs/source ./docs/build/html
+sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./JGDtrans/ 
+sphinx-build -b html ./doc/source ./doc/build/html
 ```
 
-[^2]: Sphinx: PyPI <https://pypi.org/project/Sphinx/>.
+[Sphinx]: https://pypi.org/project/Sphinx/
 
 ## par ファイルの読み込み
 
-{py:mod}`JGDtrans` は、以下の国土地理院が2023年時点で公開している全ての
+{py:mod}`JGDtrans` は、以下の[国土地理院][GIAJ]が2023年時点で公開している全ての
 _Gridded Correction Parameter_ ファイル（拡張子にちなんで
 par ファイルと呼びます）の読み込みに対応しています。
 
-- TKY2JGD
-- PatchJGD
-- PatchJGD(H)
-- HyokoRev
-- SemiDynaEXE
-- geonetF3 (POS2JGD) and ITRF2014 (POS2JGD)
+- [TKY2JGD]
+- [PatchJGD]
+- [PatchJGD(H)]
+- [HyokoRev]
+- [SemiDynaEXE]
+- [POS2JGD] (geonetF3 and ITRF2014)
+
+[GIAJ]: https://www.gsi.go.jp
+[TKY2JGD]: https://www.gsi.go.jp/sokuchikijun/tky2jgd.html
+[PatchJGD]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd/index.html
+[PatchJGD(H)]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd_h/index.html
+[HyokoRev]: https://vldb.gsi.go.jp/sokuchi/surveycalc/hyokorev/hyokorev.html
+[SemiDynaEXE]: https://vldb.gsi.go.jp/sokuchi/surveycalc/semidyna/web/index.html
+[POS2JGD]: https://positions.gsi.go.jp/cdcs
 
 ここでは、 par ファイルの読み込み方法と紹介します。
 
 {py:mod}`JGDtrans` は par ファイルを提供しません。
-par ファイルを利用する場合は、国土地理院よりダウンロードしてください [^2]。
+par ファイルを利用する場合は、国土地理院よりダウンロードしてください [^1]。
 
-[^3]: Download links;
+[^1]: Download links;
       TKY2JGD: <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html>;
       PatchJGD, PatchJGD(H) and HyokoRev: <https://www.gsi.go.jp/sokuchikijun/sokuchikijun41012.html>;
       SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
@@ -188,9 +190,9 @@ True
 ```
 
 {py:meth}`.Transformer.backward` は _TKY2JGD for Windows Ver.1.3.79_ や国土地理院の web API
-がそうである様に、正確ではありません [^3]。逆変換の結果は、厳密解からわずかですがズレています（２つ前のコードを見てください）。
+がそうである様に、正確ではありません [^2]。逆変換の結果は、厳密解からわずかですがズレています（２つ前のコードを見てください）。
 
-[^4]: 私が調べたかぎりでは。
+[^2]: 私が調べたかぎりでは。
 
 {py:meth}`.Transformer.backward_safe`
 を用いることで、結果の精度（厳密解からのずれ）を保証した逆変換が行えます。経緯度の誤差は、国土地理院が公開しているパラメータの誤差

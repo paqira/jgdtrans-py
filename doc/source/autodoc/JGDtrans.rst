@@ -7,13 +7,13 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   JGDtrans.dms
    JGDtrans.error
    JGDtrans.mesh
    JGDtrans.parser
    JGDtrans.point
    JGDtrans.transformer
    JGDtrans.types
-   JGDtrans.utils
 
 Module contents
 ---------------
