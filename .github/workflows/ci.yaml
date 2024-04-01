@@ -28,8 +28,8 @@ jobs:
           pip install .
       - name: Check
         run: |
-          black --check JGDtrans
-          ruff check JGDtrans
+          black --check jgdtrans
+          ruff check jgdtrans
       - name: Test
         run: |
           python3 -m unittest discover -s test

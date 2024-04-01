@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence
 
-import JGDtrans
+import jgdtrans
 
 DATA = {
     "TKY2JGD": {
@@ -108,7 +108,7 @@ DATA = {
 
 class BilinearInterpolation(unittest.TestCase):
     def test(self):
-        actual = JGDtrans.transformer.bilinear_interpolation(0, 0.5, 0.5, 1, 0.5, 0.5)
+        actual = jgdtrans.transformer.bilinear_interpolation(0, 0.5, 0.5, 1, 0.5, 0.5)
         expect = 0.5
         self.assertEqual(expect, actual)
 
@@ -132,13 +132,13 @@ class FromDict(unittest.TestCase):
             },
         }
 
-        actual = JGDtrans.from_dict(data)
-        expect = JGDtrans.Transformer(
+        actual = jgdtrans.from_dict(data)
+        expect = jgdtrans.Transformer(
             unit=1,
             description="my param",
             parameter={
-                12345678: JGDtrans.transformer.Parameter(0.1, 0.2, 0.3),
-                12345679: JGDtrans.transformer.Parameter(0.4, 0.5, 0.6),
+                12345678: jgdtrans.transformer.Parameter(0.1, 0.2, 0.3),
+                12345679: jgdtrans.transformer.Parameter(0.4, 0.5, 0.6),
             },
         )
 
@@ -164,7 +164,7 @@ class Transformer(unittest.TestCase):
 
     def test_vs_web_tky2jgd(self):
         """v.s. original (web)"""
-        trans = JGDtrans.from_dict(DATA["TKY2JGD"])
+        trans = jgdtrans.from_dict(DATA["TKY2JGD"])
 
         # 国土地理院
         origin = (36.103774791666666, 140.08785504166664, 0)
@@ -181,7 +181,7 @@ class Transformer(unittest.TestCase):
         origin = (38.2985120586605, 141.5559006163195, 0)
 
         # merged param PatchJGD and PatchJGD(H)
-        trans = JGDtrans.from_dict(DATA["PatchJGD(HV)"])
+        trans = jgdtrans.from_dict(DATA["PatchJGD(HV)"])
 
         actual = tuple(trans.forward(*origin))
         expected = (38.298495306, 141.555963019, -1.263)
@@ -196,7 +196,7 @@ class Transformer(unittest.TestCase):
         # 国土地理院
         origin = (36.103774791666666, 140.08785504166664, 0)
 
-        trans = JGDtrans.from_dict(DATA["SemiDynaEXE"])
+        trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
 
         actual = tuple(trans.forward(*origin))
         expected = (36.103773019, 140.087859244, 0.096)
@@ -213,7 +213,7 @@ class Transformer(unittest.TestCase):
         # 国土地理院
         origin = (36.103774791666666, 140.08785504166664, 0.0)
 
-        trans = JGDtrans.from_dict(DATA["SemiDynaEXE"])
+        trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
 
         actual = tuple(trans.forward(*origin))
         expected = (36.10377301875335, 140.08785924400115, 0.09631385775572238)
@@ -226,7 +226,7 @@ class Transformer(unittest.TestCase):
     def test_transform(self):
         """equivalent test"""
         # TKY2JGD
-        trans = JGDtrans.from_dict(DATA["TKY2JGD"])
+        trans = jgdtrans.from_dict(DATA["TKY2JGD"])
 
         # equivalent test 1
         # 国土地理院 with altitude

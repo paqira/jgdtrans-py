@@ -1,14 +1,14 @@
 # User Guide
 
-In this section, we briefly explain usages of {py:mod}`JGDtrans`.
-See [API Reference](../autodoc/JGDtrans.rst) for detail.
+In this section, we briefly explain usages of {py:mod}`jgdtrans`.
+See [API Reference](../autodoc/jgdtrans.rst) for detail.
 
 ## Install
 
-You can install {py:mod}`JGDtrans` from PyPI:
+You can install {py:mod}`jgdtrans` from PyPI:
 
 ```shell
-pip install JGDtrans
+pip install jgdtrans
 ```
 
 This package depends on [`typing-extensions`][typing-extensions] only, and requires `python>=3.9`.
@@ -18,7 +18,7 @@ This package depends on [`typing-extensions`][typing-extensions] only, and requi
 Run [`Sphinx`][Sphinx] to builds the documentation:
 
 ```shell
-sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./JGDtrans/ 
+sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
 sphinx-build -b html ./doc/source ./doc/build/html
 ```
 
@@ -26,7 +26,7 @@ sphinx-build -b html ./doc/source ./doc/build/html
 
 ## Deserialize par File
 
-{py:mod}`JGDtrans` supports deserialization of all kind of _Gridded Correction Parameter_ file
+{py:mod}`jgdtrans` supports deserialization of all kind of _Gridded Correction Parameter_ file
 (we call it as _par file_ after its file extension)
 which distributed by the [GIAJ] as of late 2023, such as
 [TKY2JGD], [PatchJGD], [PatchJGD(H)], [HyokoRev], [SemiDynaEXE] and [POS2JGD] (geonetF3 and ITRF2014).
@@ -50,15 +50,15 @@ download them from GIAJ [^1].
       SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
       geonetF3 and ITRF2014 (POS2JGD): <https://positions.gsi.go.jp/cdcs/>.
 
-{py:mod}`JGDtrans` defines read/load API of par file
-{py:func}`~JGDtrans.load` and {py:func}`~JGDtrans.loads`
+{py:mod}`jgdtrans` defines read/load API of par file
+{py:func}`~jgdtrans.load` and {py:func}`~jgdtrans.loads`
 which return a {py:class}`.Transformer` obj.
 It uses `format` argument to specify the format of the par file;
 
 ```pycon
->>> import JGDtrans
+>>> import jgdtrans
 >>> with open('SemiDyna2023.par') as fp:
-...     tf = JGDtrans.load(fp, format="SemiDynaEXE")
+...     tf = jgdtrans.load(fp, format="SemiDynaEXE")
 >>> tf
 Transformer(unit=5, parameter=<object (21134 length) at 0x123456789>, description='for [...]')
 ```
@@ -96,7 +96,7 @@ and for latitude and longitude of PatchJGD(H) and HyokoRev;
 
 ```pycon
 >>> with open('TKY2JGD.par') as fp:
-...     tf = JGDtrans.load(fp, format="TKY2JGD")
+...     tf = jgdtrans.load(fp, format="TKY2JGD")
 >>> tf.parameter[46303582]
 Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 ```
@@ -140,7 +140,7 @@ from the {py:obj}`dict` obj shown above;
 ...     # and go on
 ...     },
 ... }
->>> JGDtrans.from_dict(data)
+>>> jgdtrans.from_dict(data)
 Transformer(unit=5, parameter=<object (21134 length) at 0x987654321>, description='my [...]')
 ```
 
@@ -162,7 +162,7 @@ Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363
 Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
 ```
 
-The return value is {py:class}`~JGDtrans.Point` obj.
+The return value is {py:class}`~jgdtrans.Point` obj.
 It can access by the attribute to the resulting values, latitude, longitude and altitude;
 
 ```pycon
@@ -175,7 +175,7 @@ It can access by the attribute to the resulting values, latitude, longitude and 
 2.4363138578103
 ```
 
-It is unpackable because {py:class}`~JGDtrans.Point` is
+It is unpackable because {py:class}`~jgdtrans.Point` is
 {py:obj}`Sequence[flaot]` with length 3;
 
 ```pycon
@@ -189,7 +189,7 @@ There is {py:meth}`.Transformer.transform`
 which switches forward/backward transformation
 depending on the {py:obj}`backward` argument.
 That is, the following identities hold,
-for all {py:obj}`point` which is {py:class}`~JGDtrans.Point` obj,
+for all {py:obj}`point` which is {py:class}`~jgdtrans.Point` obj,
 such that;
 
 ```pycon
@@ -227,7 +227,7 @@ no error remain on latitude and longitude.
 If it does not find any solution whose drift from the exact solution
 is less than $2.7\times10^{-9}$ \[deg\],
 {py:meth}`.Transformer.backward_safe` throws
-{py:class}`~JGDtrans.NotConvergeError`.
+{py:class}`~jgdtrans.NotConvergeError`.
 We believe that it works fine for most of practical cases;
 as far as numerical experiments on
 `TKY2JGD.par`, `touhokutaiheiyouoki2011.par` and
@@ -247,7 +247,7 @@ Point(latitude=36.106966279935016, longitude=140.08457686562787, altitude=2.34)
 It supports DMS notation (sexadecimal degree) for {py:class}`.Transformer` I/O
 in addition to DD notation (decimal degree) .
 
-{py:class}`~JGDtrans.Point` has methods handling DMS notation,
+{py:class}`~jgdtrans.Point` has methods handling DMS notation,
 {py:meth}`.Point.from_dms` is a constructor from DMS notation
 and {py:meth}`.Point.to_dms` returns {py:obj}`self` in DMS notation;
 
@@ -259,7 +259,7 @@ Point(36.10377479166667, 140.08785504166664, 2.34)
 ```
 
 We note that {py:meth}`.Point.to_dms` returns
-{py:obj}`tuple[str, str float]`, not {py:class}`~JGDtrans.Point`.
+{py:obj}`tuple[str, str float]`, not {py:class}`~jgdtrans.Point`.
 
 By combining these, it can use DMS notation for I/O of {py:class}`.Transformer`,
 for example,
@@ -274,7 +274,7 @@ for example,
 
 In this section, we briefly provide definitions of terms and corresponding to implementations
 to help you understand the mesh-related implementations.
-Please skip this section if you just want to use {py:mod}`JGDtrans`. 
+Please skip this section if you just want to use {py:mod}`jgdtrans`. 
 
 The following terms, except for meshcode, are specific to our implementation
 and do not correspond to any other implementation, including official ones.
@@ -312,5 +312,5 @@ Calculating transformation correction requires a unit cell in the unit
 called _mesh cell_ or _cell_ shortly.
 We implement it as {py:class}`.MeshCell`.
 
-{py:class}`~JGDtrans.Point` has several corresponding methods which helps
+{py:class}`~jgdtrans.Point` has several corresponding methods which helps
 to handle mesh.

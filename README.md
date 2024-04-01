@@ -1,4 +1,4 @@
-# JGDtrans
+# jgdtrans
 
 Unofficial coordinate transformer by _Gridded Correction Parameter_
 which Geospatial Information Authority of Japan (GIAJ, formerly GSIJ) distributing
@@ -35,13 +35,13 @@ Features:
 
 ## Usage
 
-You can install `JGDtrans` from PyPI:
+You can install `jgdtrans` from PyPI:
 
 ```sh
-pip install JGDtrans
+pip install jgdtrans
 ```
 
-`JGDtrans` depends on `typing-extensions` only, and requires `python>=3.9`.
+`jgdtrans` depends on `typing-extensions` only, and requires `python>=3.9`.
 
 This package does not contain parameter files, download it from GIAJ.
 
@@ -50,10 +50,10 @@ This package does not contain parameter files, download it from GIAJ.
 Sample code:
 
 ```python
-import JGDtrans
+import jgdtrans
 
 with open('SemiDyna2023.par') as fp:
-    tf = JGDtrans.load(fp, format="SemiDynaEXE")
+    tf = jgdtrans.load(fp, format="SemiDynaEXE")
 
 # Geospatial Information Authority of Japan
 origin = (36.10377479, 140.087855041, 2.34)

@@ -17,10 +17,10 @@
     :glob:
     :caption: API Reference:
     
-    autodoc/JGDtrans
+    autodoc/jgdtrans
 ```
 
-# JGDtrans
+# jgdtrans
 
 Coordinate Transformer by _Gridded Correction Parameter_
 which Geospatial Information Authority of Japan (GIAJ, formerly GSIJ) distributing [^1].
@@ -41,10 +41,10 @@ Features:
 Example:
 
 ```python
-import JGDtrans
+import jgdtrans
 
 with open('SemiDyna2023.par') as fp:
-    tf = JGDtrans.load(fp, format="SemiDynaEXE")
+    tf = jgdtrans.load(fp, format="SemiDynaEXE")
 
 # Geospatial Information Authority of Japan
 origin = (36.10377479, 140.087855041, 2.34)

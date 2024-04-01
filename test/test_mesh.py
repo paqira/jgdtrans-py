@@ -1,7 +1,7 @@
 import unittest
 
-from JGDtrans import Point, mesh
-from JGDtrans.mesh import MeshCell, MeshCoord, MeshNode
+from jgdtrans import Point, mesh
+from jgdtrans.mesh import MeshCell, MeshCoord, MeshNode
 
 
 class MeshCodeTest(unittest.TestCase):
