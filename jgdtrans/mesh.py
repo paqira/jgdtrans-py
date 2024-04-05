@@ -313,7 +313,7 @@ class MeshCoord:
             ) from None
 
         # that is 10 - self.unit
-        bound = 9 if unit in (-1, 1) else 5
+        bound = 9 if unit == 1 else 5
 
         # increment
         if self.third == bound:
@@ -663,17 +663,17 @@ class MeshCell:
                     f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (ne) as {self.ne}"
                 ) from None
 
-        lat_next = self.sw.latitude.next_up(self.unit)
-        lng_next = self.sw.longitude.next_up(self.unit)
-        if not MeshNode(lat_next, self.sw.longitude) == self.nw:
+        next_lat = self.sw.latitude.next_up(self.unit)
+        next_lng = self.sw.longitude.next_up(self.unit)
+        if not MeshNode(next_lat, self.sw.longitude) == self.nw:
             raise ValueError(
                 f"inconsistent on sw vs nw with unit {self.unit}, we got sw {self.sw} and nw {self.nw}"
             ) from None
-        elif not MeshNode(self.sw.latitude, lng_next) == self.se:
+        elif not MeshNode(self.sw.latitude, next_lng) == self.se:
             raise ValueError(
                 f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.sw} and se {self.se}"
             ) from None
-        elif not MeshNode(lat_next, lng_next) == self.ne:
+        elif not MeshNode(next_lat, next_lng) == self.ne:
             raise ValueError(
                 f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.sw} and ne {self.ne}"
             ) from None
