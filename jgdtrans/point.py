@@ -14,8 +14,6 @@ from . import mesh as _mesh
 from . import transformer as _trans
 
 __all__ = [
-    "normalize_latitude",
-    "normalized_longitude",
     "Point",
 ]
 
@@ -78,9 +76,6 @@ class Point(Sequence[float]):
 
     This is :obj:`Sequence[float]` of lengh 3.
 
-    The constructor normalizes `latitude` and `longitude` to
-    -90.0 <= and <= 90.0 and -180.0 <= and <= 180.0 respectively.
-
     We note that `latitude` and `longitude` is DD notation,
     use :meth:`Point.to_dms` and :meth:`Point.from_dms` for converting to/from DMS notation.
 
@@ -111,10 +106,6 @@ class Point(Sequence[float]):
     """The longitude [deg] of the point which satisfies -180.0 <= and <= 180.0"""
     altitude: float = 0.0
     """The altitude [m] of the point, defaulting :obj:`0.0`"""
-
-    def __post_init__(self):
-        object.__setattr__(self, "latitude", normalize_latitude(self.latitude))
-        object.__setattr__(self, "longitude", normalized_longitude(self.longitude))
 
     def __len__(self) -> Literal[3]:
         return 3
@@ -172,6 +163,21 @@ class Point(Sequence[float]):
             latitude=self.latitude - corr.latitude,
             longitude=self.longitude - corr.longitude,
             altitude=self.altitude - corr.altitude,
+        )
+
+    def normalize(self) -> Point:
+        """Returns a new normalized :class:`Point` obj.
+
+        The resulting :class:`Point` obj has normalized latitude and longitude
+        which value -90.0 <= and <= 90.0, and -180.0 <= and <= 180.0 respectively.
+
+        Returns:
+            The normalized point, not null.
+        """
+        return Point(
+            latitude=normalize_latitude(self.latitude),
+            longitude=normalized_longitude(self.longitude),
+            altitude=self.altitude,
         )
 
     @classmethod
