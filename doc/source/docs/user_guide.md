@@ -283,7 +283,7 @@ The {py:mod}`.mesh` module defines such API.
 
 The transformation parameter is defined on the square lattice,
 called as _mesh_, which defined on near Japan.
-We call lattice coordinate as _mech coordinate_
+We call lattice coordinate as _mesh coordinate_
 and lattice node as _mesh node_.
 They are implemented as {py:class}`.MeshCoord`
 and {py:class}`.MeshNode` respectively.

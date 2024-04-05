@@ -41,7 +41,7 @@ class MeshUnit(IntEnum):
 
 @dataclass(frozen=True)
 class MeshCoord:
-    """Represents mech coordinate, namely, discrete latitude and/or longitude.
+    """Represents mesh coordinate, namely, discrete latitude and/or longitude.
 
     This supports total ordering,
     and non-negative latitude and/or longitude only.
@@ -585,7 +585,7 @@ class MeshNode:
 class MeshCell:
     """Represents the unit mesh cell (mesh cell or cell shortly).
 
-    This is a quadruplet of the mech nodes (and unit),
+    This is a quadruplet of the mesh nodes (and unit),
     and has no other :class:`MeshNode` inside `self` in the `unit`.
 
     The cell must be a *unit cell* in the `unit`,
@@ -631,13 +631,13 @@ class MeshCell:
     """
 
     sw: MeshNode
-    """The south-west node of the unit cell"""
+    """The south-west node of the cell"""
     se: MeshNode
-    """The south-east node of the unit cell"""
+    """The south-east node of the cell"""
     nw: MeshNode
-    """The north-west node of the unit cell"""
+    """The north-west node of the cell"""
     ne: MeshNode
-    """The north-east node of the unit cell"""
+    """The north-east node of the cell"""
     unit: Literal[1, 5]
     """The mesh unit, :obj:`1` or :obj:`5`"""
 
