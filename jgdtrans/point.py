@@ -39,6 +39,9 @@ def normalize_latitude(t: float) -> float:
         >>> normalize_latitude(-190.0)
         10.0
     """
+    if math.isnan(t) or -90.0 <= t <= 90.0:
+        return t
+
     t = t % 360.0
     if t < -270.0 or 270.0 < t:
         return t - math.copysign(360.0, t)
@@ -64,6 +67,9 @@ def normalized_longitude(t: float) -> float:
         >>> normalized_longitude(-190.0)
         170.0
     """
+    if math.isnan(t) or -180.0 <= t <= 180.0:
+        return t
+
     t = t % 360.0
     if t < -180.0 or 180.0 < t:
         return t - math.copysign(360.0, t)

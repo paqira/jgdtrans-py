@@ -5,32 +5,8 @@ from jgdtrans import point as _point
 from jgdtrans.mesh import MeshCoord, MeshNode
 
 
-class Normalize(unittest.TestCase):
-    def test_latitude(self):
-        cases = [
-            (35.0, 35.0),
-            (-35.0, -35.0),
-            (80.0, 100.0),
-            (-10.0, 190.0),
-            (-80.0, -100.0),
-            (10.0, -190.0),
-        ]
-        for e, a in cases:
-            self.assertEqual(e, _point.normalize_latitude(a))
-
-    def test_longitude(self):
-        cases = [
-            (145.0, 145.0),
-            (-145.0, -145.0),
-            (-170.0, 190.0),
-            (170.0, -190.0),
-        ]
-        for e, a in cases:
-            self.assertEqual(e, _point.normalized_longitude(a))
-
-
 class Point_(unittest.TestCase):
-    def test_init(self):
+    def test_normalize(self):
         for e, v in (
             (0, 0),
             (-0, -0),
@@ -53,7 +29,7 @@ class Point_(unittest.TestCase):
             (20, -180 - 20),
             (-70, -90 - 20),
         ):
-            actual = Point(v, 0)
+            actual = Point(v, 0).normalize()
             expected = Point(e, 0)
             self.assertEqual(expected, actual)
 
@@ -79,7 +55,7 @@ class Point_(unittest.TestCase):
             (160, -180 - 20),
             (-110, -90 - 20),
         ):
-            actual = Point(0, v)
+            actual = Point(0, v).normalize()
             expected = Point(0, e)
             self.assertEqual(expected, actual)
 
