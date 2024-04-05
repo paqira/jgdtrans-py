@@ -878,13 +878,13 @@ class Transformer:
         # even if it increases the iteration.
 
         # the GIAJ parameter error is 1e-5 [sec] ~ 2.7e-9 [deg]
-        criteria = 2.5e-9
+        criteria: Final = 2.5e-9
 
         # Effectively sufficient, we verified with
         # - TKY2JGD.par.
         # - touhokutaiheiyouoki2011.par,
         # - and pos2jgd_202307_ITRF2014.par
-        iteration = 3
+        iteration: Final = 3
 
         # for [sec] to [deg]
         scale: Final = 3600

@@ -123,7 +123,7 @@ class Point(Sequence[float]):
     def __reversed__(self) -> Iterator[float]:
         yield from (self.altitude, self.longitude, self.latitude)
 
-    def add(self, corr: _trans.Correction) -> Self:
+    def add(self, corr: _trans.Correction) -> Point:
         """Returns a :class:`Point` which is `self` plus `corr` for each component.
 
         This is not inplace.
@@ -144,7 +144,7 @@ class Point(Sequence[float]):
             altitude=self.altitude + corr.altitude,
         )
 
-    def sub(self, corr: _trans.Correction) -> Self:
+    def sub(self, corr: _trans.Correction) -> Point:
         """Returns a :class:`Point` which is `self` minus `corr` for each component.
 
         This is not inplace.
