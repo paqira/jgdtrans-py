@@ -408,15 +408,15 @@ class MeshNode:
             if self.longitude.second == 0:
                 if 0 < self.longitude.third:
                     raise ValueError(
-                        "expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
+                        f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
                     ) from None
             elif 0 < self.longitude.second:
                 raise ValueError(
-                    "expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
+                    f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
                 ) from None
         elif 80 < self.longitude.first:
             raise ValueError(
-                "expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
+                f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
             ) from None
 
     @classmethod
