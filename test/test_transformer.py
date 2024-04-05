@@ -156,11 +156,11 @@ class Transformer(unittest.TestCase):
 
     def assert_equal_point_exact(self, e: Sequence[float], a: Sequence[float]):
         # [1e-5 m] order
-        self.assertAlmostEqual(e[0], a[0], delta=0.000000000001)
+        self.assertAlmostEqual(e[0], a[0], delta=0.0000000000001)
         # [1e-5 m] order
-        self.assertAlmostEqual(e[1], a[1], delta=0.000000000001)
+        self.assertAlmostEqual(e[1], a[1], delta=0.0000000000001)
         # [mm] order
-        self.assertAlmostEqual(e[2], a[2], delta=0.000000000001)
+        self.assertAlmostEqual(e[2], a[2], delta=0.0000000000001)
 
     def test_vs_web_tky2jgd(self):
         """v.s. original (web)"""
@@ -172,8 +172,10 @@ class Transformer(unittest.TestCase):
         expected = (36.106966281, 140.084576867, 0.0)
         self.assert_equal_point(expected, actual)
 
-        actual = tuple(trans.backward(*actual))
-        self.assert_equal_point(origin, actual)
+        origin = (36.10696628160147, 140.08457686629436, 0.0)
+        actual = tuple(trans.backward(*origin))
+        expected = (36.103774792, 140.087855042, 0.0)
+        self.assert_equal_point(expected, actual)
 
     def test_vs_web_patch_jgd_hv(self):
         """v.s. original (web)"""
@@ -187,8 +189,10 @@ class Transformer(unittest.TestCase):
         expected = (38.298495306, 141.555963019, -1.263)
         self.assert_equal_point(expected, actual)
 
-        actual = tuple(trans.backward(*actual))
-        self.assert_equal_point(origin, actual)
+        origin = (38.29849530463122, 141.55596301776936, 0.0)
+        actual = tuple(trans.backward(*origin))
+        expected = (38.298512058, 141.555900614, 1.264)
+        self.assert_equal_point(expected, actual)
 
     def test_vs_web_semi_dyna_exe(self):
         """v.s. original (web)"""
@@ -202,8 +206,10 @@ class Transformer(unittest.TestCase):
         expected = (36.103773019, 140.087859244, 0.096)
         self.assert_equal_point(expected, actual)
 
-        actual = tuple(trans.backward(*actual))
-        self.assert_equal_point(origin, actual)
+        origin = (36.10377301875336, 140.08785924400115, 0.)
+        actual = tuple(trans.backward(*origin))
+        expected = (36.103774792, 140.087855042, -0.096)
+        self.assert_equal_point(expected, actual)
 
     def test_vs_exact_semi_dyna_exe(self):
         """v.s. exact"""
