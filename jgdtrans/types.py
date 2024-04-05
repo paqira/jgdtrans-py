@@ -31,7 +31,7 @@ class ParameterDict(TypedDict):
     longitude: Required[float]
     """The longitude parameter on the point [sec]"""
     altitude: Required[float]
-    """The altitude parameter on the point [sec]"""
+    """The altitude parameter on the point [m]"""
 
 
 class ParameterLikeMapping(TypedDict):
@@ -42,7 +42,7 @@ class ParameterLikeMapping(TypedDict):
     longitude: Required[float]
     """The longitude parameter on the point [sec]"""
     altitude: Required[float]
-    """The altitude parameter on the point [sec]"""
+    """The altitude parameter on the point [m]"""
 
 
 class TransformerDict(TypedDict):
@@ -51,7 +51,7 @@ class TransformerDict(TypedDict):
     unit: Required[Literal[1, 5]]
     """The unit of the mesh, 1 or 5"""
     parameter: Required[Mapping[int, ParameterDict]]
-    """the parameters"""
+    """The parameters"""
     description: Required[str | None]
     """The description of the parameter"""
 

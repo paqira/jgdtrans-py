@@ -72,7 +72,7 @@ def normalized_longitude(t: float) -> float:
 
 @dataclass(frozen=True, unsafe_hash=True)
 class Point(Sequence[float]):
-    """A triplet latitude, longitude and altitude.
+    """A triplet of latitude, longitude and altitude.
 
     This is :obj:`Sequence[float]` of lengh 3.
 

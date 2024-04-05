@@ -209,7 +209,7 @@ class Transformer:
         From `SemiDynaEXE2023.par`
 
         >>> tf = Transformer(
-        ...     unit=1,
+        ...     unit=5,
         ...     parameter={
         ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
         ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
@@ -616,7 +616,7 @@ class Transformer:
         The result's drifting from the exact solution
         is less than error of the GIAJ latitude and longitude parameter,
         2.7e-9 [deg], for each latitude and longitude.
-        The altitude's drifting is less than 1e-5 [m] wihch is error of the GIAJ altitude parameter.
+        The altitude's drifting is less than 1e-5 [m] which is error of the GIAJ altitude parameter.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.0 <= and <= 66.666...
@@ -696,7 +696,7 @@ class Transformer:
     def forward_corr(self, latitude: float, longitude: float) -> Correction:
         """Return the correction on forward-transformation.
 
-        This is used by :meth:`Transformer.forward_corr`.
+        This is used by :meth:`Transformer.forward`.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.0 <= and <= 66.666...
@@ -788,7 +788,7 @@ class Transformer:
     def backward_corr(self, latitude: float, longitude: float) -> Correction:
         """Return the correction on backward-transformation.
 
-        This is used by :meth:`Transformer.backward_corr`.
+        This is used by :meth:`Transformer.backward`.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.00333... <= and <= 66.666...
