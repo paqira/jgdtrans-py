@@ -944,9 +944,6 @@ class Transformer:
             if abs(latitude - (yn + corr.latitude)) <= criteria and abs(longitude - (xn + corr.longitude)) <= criteria:
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
-            yn = _point.normalize_latitude(yn)
-            xn = _point.normalized_longitude(xn)
-
         raise _error.NotConvergeError(
             f"exhaust {iteration} iterations but error is still high, "
             f"we finally got {yn} and {xn} from {latitude} and {longitude}"
