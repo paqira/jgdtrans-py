@@ -820,13 +820,13 @@ class Transformer:
         delta: Final = 1 / 300  # 12. / 3600.
         lat, lng = latitude - delta, longitude + delta
 
-        if lat < 0:
+        if 0 <= latitude and lat < 0:
             raise ValueError(f"latitude is too small, we got {latitude}") from None
 
         lat_corr, lng_corr, _ = self.forward_corr(lat, lng)
         lat, lng = latitude - lat_corr, longitude - lng_corr
 
-        if lat < 0:
+        if 0 <= latitude and lat < 0:
             raise ValueError(f"latitude is too small, we got {latitude}") from None
 
         corr = self.forward_corr(lat, lng)
