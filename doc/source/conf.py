@@ -13,11 +13,11 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../JGDtrans"))
+sys.path.insert(0, os.path.abspath("../../jgdtrans"))
 
 # -- Project information -----------------------------------------------------
 
-project = "JGDtrans"
+project = "jgdtrans"
 copyright = "2023--2024, Kentaro Tatsumi"
 author = "Kentaro Tatsumi"
 

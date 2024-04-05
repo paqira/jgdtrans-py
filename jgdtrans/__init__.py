@@ -20,7 +20,7 @@ __version__: Final = "0.1.4"
 
 __home__: Final = ".jgdtrans"
 __config__: Final = "config.toml"
-__cli__: Final = "JGDtrans"
+__cli__: Final = "jgdtrans"
 
 __all__ = [
     "load",
