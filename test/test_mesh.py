@@ -4,7 +4,7 @@ from jgdtrans import Point, mesh
 from jgdtrans.mesh import MeshCell, MeshCoord, MeshNode
 
 
-class MeshCodeTest(unittest.TestCase):
+class MeshCoordTest(unittest.TestCase):
     def test_init(self):
         with self.assertRaises(ValueError):
             MeshCoord(-1, 0, 0)
@@ -110,11 +110,11 @@ class MeshCodeTest(unittest.TestCase):
         value = 140.08785504166664
 
         expected = 140.0875
-        actual = MeshCoord._from_value(value, 1).to_longitude()
+        actual = MeshCoord._from_degree(value, 1).to_longitude()
         self.assertEqual(expected, actual)
 
         expected = 140.0625
-        actual = MeshCoord._from_value(value, 5).to_longitude()
+        actual = MeshCoord._from_degree(value, 5).to_longitude()
         self.assertEqual(expected, actual)
 
     def test_next_up(self):
