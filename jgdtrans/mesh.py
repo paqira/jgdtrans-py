@@ -16,7 +16,7 @@ import ctypes
 import math
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import Literal
+from typing import Final, Literal
 
 from typing_extensions import Self
 
@@ -158,7 +158,7 @@ class MeshCoord:
             return self.first > other.first
 
     @classmethod
-    def _from_value(cls, value: float, unit: Literal[1, 5]) -> Self:
+    def _from_degree(cls, value: float, unit: Literal[1, 5]) -> Self:
         integer = math.floor(value)
         first = integer % 100
 
@@ -206,7 +206,7 @@ class MeshCoord:
         elif not (0 <= _value < 100):
             raise ValueError(f"expected 0.0 <= value and value < 66.666..., we got {v}") from None
 
-        return cls._from_value(_value, unit=unit)
+        return cls._from_degree(_value, unit=unit)
 
     @classmethod
     def from_longitude(cls, v: float, unit: Literal[1, 5]) -> Self:
@@ -236,9 +236,9 @@ class MeshCoord:
         elif not (100 <= v <= 180):
             raise ValueError(f"expected 100.0 <= value and value <= 180.0, we got {v}") from None
 
-        return cls._from_value(v, unit=unit)
+        return cls._from_degree(v, unit=unit)
 
-    def _to_value(self) -> float:
+    def _to_degree(self) -> float:
         return self.first + self.second / 8 + self.third / 80
 
     def to_latitude(self) -> float:
@@ -259,7 +259,7 @@ class MeshCoord:
         See Also:
             - :meth:`MeshCoord.from_latitude`
         """
-        return 2 * self._to_value() / 3
+        return 2 * self._to_degree() / 3
 
     def to_longitude(self) -> float:
         """Returns the longitude that `self` converts into.
@@ -279,7 +279,7 @@ class MeshCoord:
         See Also:
             - :meth:`MeshCoord.from_longitude`
         """
-        return 100 + self._to_value()
+        return 100 + self._to_degree()
 
     def next_up(self, unit: Literal[1, 5]) -> MeshCoord:
         """Returns the smallest :class:`MeshCoord` obj greater than `self`.
@@ -313,7 +313,7 @@ class MeshCoord:
             ) from None
 
         # that is 10 - self.unit
-        bound = 9 if unit == 1 else 5
+        bound: Final = 9 if unit == 1 else 5
 
         # increment
         if self.third == bound:
@@ -356,7 +356,7 @@ class MeshCoord:
             ) from None
 
         # that is 10 - self.unit
-        bound = 9 if unit == 1 else 5
+        bound: Final = 9 if unit == 1 else 5
 
         if self.third == 0:
             if self.second == 0:
