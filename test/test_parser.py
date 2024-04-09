@@ -265,7 +265,7 @@ class PatchJGD_HV(unittest.TestCase):
     def test_description(self):
         text = "\n" * 16
 
-        actual = jgdtrans.parser.PatchJGD_H(text, "hi!")
+        actual = jgdtrans.parser.PatchJGD_HV(text, "hi!")
         expected = jgdtrans.Transformer(unit=1, description="hi!", parameter={})
         self.assertEqual(expected, actual)
 
