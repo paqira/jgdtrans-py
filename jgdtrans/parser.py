@@ -229,7 +229,7 @@ def parse_par(
     altitude: Callable[[str], float],
     unit: Literal[1, 5],
     description: str | None = None,
-) -> dict[str, str | None | int | _trans.Parameter]:
+) -> dict[str, str | None | int | dict[int, _trans.Parameter] | _types.FormatType]:
     """Returns the arguments of :class:`.Transformer` constructor by parsing `s`.
 
     Args:
