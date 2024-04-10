@@ -43,7 +43,7 @@ packages = ["jgdtrans"]
 version = { attr = "jgdtrans.__version__" }
 
 [project.urls]
-"Repository" = "https://github.com/paqira/JGDtrans-py"
+Repository = "https://github.com/paqira/jgdtrans-py"
 
 [tool.black]
 line-length = 120
