@@ -179,12 +179,11 @@ class Transformer(unittest.TestCase):
 
     def test_vs_web_patch_jgd_hv(self):
         """v.s. original (web)"""
-        # 金華山黄金山神社
-        origin = (38.2985120586605, 141.5559006163195, 0)
-
         # merged param PatchJGD and PatchJGD(H)
         trans = jgdtrans.from_dict(DATA["PatchJGD(HV)"])
 
+        # 金華山黄金山神社
+        origin = (38.2985120586605, 141.5559006163195, 0)
         actual = tuple(trans.forward(*origin))
         expected = (38.298495306, 141.555963019, -1.263)
         self.assert_equal_point(expected, actual)
@@ -197,11 +196,10 @@ class Transformer(unittest.TestCase):
     def test_vs_web_semi_dyna_exe(self):
         """v.s. original (web)"""
 
-        # 国土地理院
-        origin = (36.103774791666666, 140.08785504166664, 0)
-
         trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
 
+        # 国土地理院
+        origin = (36.103774791666666, 140.08785504166664, 0)
         actual = tuple(trans.forward(*origin))
         expected = (36.103773019, 140.087859244, 0.096)
         self.assert_equal_point(expected, actual)
@@ -216,11 +214,10 @@ class Transformer(unittest.TestCase):
 
         # the exact value are calculated by `Decimal`
 
-        # 国土地理院
-        origin = (36.103774791666666, 140.08785504166664, 0.0)
-
         trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
 
+        # 国土地理院
+        origin = (36.103774791666666, 140.08785504166664, 0.0)
         actual = tuple(trans.forward(*origin))
         expected = (36.10377301875335, 140.08785924400115, 0.09631385775572238)
         self.assert_equal_point_exact(expected, actual)
