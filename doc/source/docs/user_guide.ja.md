@@ -75,8 +75,8 @@ Transformer(unit=5, parameter=<object (21134 length) at 0x123456789>, descriptio
 ```pycon
 >>> tf.description
 'for SemiDynaEXE    Ver.1.0.0\n[...]\nMeshCode dB(sec)  dL(sec) dH(m)'
->>> tf.unit
-5
+>>> tf.format
+'SemiDynaEXE'
 >>> tf.parameter
 {
     36230600: Parameter(
@@ -107,7 +107,7 @@ Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 >>> tf.to_dict()
 {
     'description': 'for SemiDynaEXE    Ver.1.0.0\n[...]\nMeshCode dB(sec)  dL(sec) dH(m)',
-    'unit': 5,
+    'format': 'SemiDynaEXE',
     'parameter': {
         36230600: {
             'latitude': -0.05475,
@@ -125,7 +125,7 @@ Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 ```pycon
 >>> data = {
 ...     'description': 'my SemiDynaEXE',
-...     'unit': 5,
+...     'format': 'SemiDynaEXE',
 ...     'parameter': {
 ...         36230600: {
 ...             'latitude': -0.05475,

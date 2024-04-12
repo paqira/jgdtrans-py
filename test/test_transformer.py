@@ -5,7 +5,7 @@ import jgdtrans
 
 DATA = {
     "TKY2JGD": {
-        "unit": 1,
+        "format": "TKY2JGD",
         "parameter": {
             # forward
             54401027: {
@@ -42,7 +42,7 @@ DATA = {
         },
     },
     "PatchJGD(HV)": {
-        "unit": 1,
+        "format": "PatchJGD_HV",
         "parameter": {
             # forward
             57413454: {
@@ -79,7 +79,7 @@ DATA = {
         },
     },
     "SemiDynaEXE": {
-        "unit": 5,
+        "format": "SemiDynaEXE",
         "parameter": {
             54401005: {
                 "latitude": -0.00622,
@@ -116,7 +116,7 @@ class BilinearInterpolation(unittest.TestCase):
 class FromDict(unittest.TestCase):
     def test(self):
         data = {
-            "unit": 1,
+            "format": "TKY2JGD",
             "description": "my param",
             "parameter": {
                 12345678: {
@@ -134,7 +134,7 @@ class FromDict(unittest.TestCase):
 
         actual = jgdtrans.from_dict(data)
         expect = jgdtrans.Transformer(
-            unit=1,
+            format="TKY2JGD",
             description="my param",
             parameter={
                 12345678: jgdtrans.transformer.Parameter(0.1, 0.2, 0.3),
@@ -195,7 +195,6 @@ class Transformer(unittest.TestCase):
 
     def test_vs_web_semi_dyna_exe(self):
         """v.s. original (web)"""
-
         trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
 
         # 国土地理院
@@ -204,14 +203,13 @@ class Transformer(unittest.TestCase):
         expected = (36.103773019, 140.087859244, 0.096)
         self.assert_equal_point(expected, actual)
 
-        origin = (36.10377301875336, 140.08785924400115, 0.)
+        origin = (36.10377301875336, 140.08785924400115, 0.0)
         actual = tuple(trans.backward(*origin))
         expected = (36.103774792, 140.087855042, -0.096)
         self.assert_equal_point(expected, actual)
 
     def test_vs_exact_semi_dyna_exe(self):
         """v.s. exact"""
-
         # the exact value are calculated by `Decimal`
 
         trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
@@ -227,7 +225,7 @@ class Transformer(unittest.TestCase):
         self.assert_equal_point_exact(expected, actual)
 
     def test_transform(self):
-        """equivalent test"""
+        """Equivalent test"""
         # TKY2JGD
         trans = jgdtrans.from_dict(DATA["TKY2JGD"])
 

@@ -18,9 +18,31 @@ __all__ = [
 ]
 
 FormatType: TypeAlias = Literal[
-    "TKY2JGD", "PatchJGD", "PatchJGD_H", "PatchJGD_HV", "HyokoRev", "SemiDynaEXE", "geonetF3", "ITRF2014"
+    "TKY2JGD",
+    "PatchJGD",
+    "PatchJGD_H",
+    "PatchJGD_HV",
+    "HyokoRev",
+    "SemiDynaEXE",
+    "geonetF3",
+    "ITRF2014",
 ]
-"""Type of par file's format"""
+"""Type of par file's format
+
+Notes:
+    The format :obj:`'PatchJGD_HV'` is for composition of PatchJGD and PatchJGD(H) par files
+    for the same event, e.g. `touhokutaiheiyouoki2011.par` and `touhokutaiheiyouoki2011_h.par`.
+    We note that transformation works fine with such data,
+    and GIAJ does not distribute such file.
+    
+    It should fill by zero for the parameters of remaining transformation
+    in areas where it supports only part of the transformation as a result of composition
+    in order to support whole area of each parameter,
+    e.g. altitude of Chubu (中部地方) on the composition of
+    `touhokutaiheiyouoki2011.par` and `touhokutaiheiyouoki2011_h.par`.
+    
+    The composite data should be in the same format as SemiDynaEXE.
+"""
 
 
 class ParameterDict(TypedDict):
@@ -48,7 +70,7 @@ class ParameterLikeMapping(TypedDict):
 class TransformerDict(TypedDict):
     """Type of :meth:`.Transformer.to_dict` output."""
 
-    unit: Required[Literal[1, 5]]
+    format: Required[FormatType]
     """The unit of the mesh, 1 or 5"""
     parameter: Required[Mapping[int, ParameterDict]]
     """The parameters"""
@@ -59,7 +81,7 @@ class TransformerDict(TypedDict):
 class TransformerLikeMapping(TypedDict):
     """Type of :meth:`.Transformer.from_dict` input."""
 
-    unit: Required[Literal[1, 5]]
+    format: Required[FormatType]
     """The unit of the mesh, 1 or 5"""
     parameter: Required[Mapping[int | str, ParameterLikeMapping]]
     """The parameters, the key must be integer-like"""
