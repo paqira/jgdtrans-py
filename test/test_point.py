@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import unittest
 
 from jgdtrans import Point, mesh
-from jgdtrans import point as _point
 from jgdtrans.mesh import MeshCoord, MeshNode
 
 
