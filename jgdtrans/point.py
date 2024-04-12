@@ -158,6 +158,10 @@ class Point(Sequence[float]):
 
         Returns:
             The normalized point, not null.
+
+        Examples:
+            >>> Point(100.0, 200.0, 5.0).normalize()
+            Point(latitude=80.0, longitude=-160.0, altitude=5.0)
         """
         return Point(
             latitude=normalize_latitude(self.latitude),
