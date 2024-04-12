@@ -389,15 +389,12 @@ class Transformer:
         """
         parameter = {}
         for k, v in obj["parameter"].items():
-            if isinstance(k, str):
-                try:
-                    key = int(k)
-                except ValueError:
-                    raise _error.ParseError(
-                        f"expected integer for the key of the parameter field, we got {repr(k)}"
-                    ) from None
-            else:
-                key = k
+            try:
+                key = int(k)
+            except ValueError:
+                raise _error.ParseError(
+                    f"expected integer for the key of the parameter field, we got {repr(k)}"
+                ) from None
 
             parameter[key] = Parameter(
                 latitude=v["latitude"],
