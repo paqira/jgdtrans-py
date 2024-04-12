@@ -250,6 +250,9 @@ class MeshNodeTest(unittest.TestCase):
                 with self.assertRaises(ValueError) as cm:
                     MeshNode.from_meshcode(*args)
 
+        with self.assertRaises(ValueError) as cm:
+            MeshNode.from_meshcode(10000_00_00)
+
     def test_from_point(self):
         point = Point(36.103774791666666, 140.08785504166664, 10.0)
 
