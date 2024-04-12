@@ -254,7 +254,7 @@ class Point(Sequence[float]):
         Examples:
             >>> point = Point.from_dms('360613.58925', '1400516.27815')
             >>> point.to_dms()
-            ("360613.58925", "1400516.27815", 0.0)
+            ('360613.58925', '1400516.27815', 0.0)
         """
         return (
             _dms.DMS.from_dd(self.latitude).to_str(),
