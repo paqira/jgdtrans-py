@@ -323,19 +323,19 @@ class Point(Sequence[float]):
             >>> point = Point(36.10377479, 140.087855041)
             >>> point.mesh_cell(unit=1)
             MeshCell(
-                sw=MeshNode(MeshCode(54, 1, 2), MeshCode(40, 0, 7)),
-                se=MeshNode(MeshCode(54, 1, 2), MeshCode(40, 0, 8)),
-                nw=MeshNode(MeshCode(54, 1, 3), MeshCode(40, 0, 7)),
-                ne=MeshNode(MeshCode(54, 1, 3), MeshCode(40, 0, 8)),
-                unit=1
+                south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
+                south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
+                north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
+                north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
+                unit=1,
             )
             >>> point.mesh_cell(unit=5)
             MeshCell(
-                sw=MeshNode(mesh.MeshCode(54, 1, 0), MeshCode(40, 0, 5)),
-                se=MeshNode(mesh.MeshCode(54, 1, 0), MeshCode(40, 1, 0)),
-                nw=MeshNode(mesh.MeshCode(54, 1, 5), MeshCode(40, 0, 5)),
-                ne=MeshNode(mesh.MeshCode(54, 1, 5), MeshCode(40, 1, 0)),
-                unit=5
+                south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
+                south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
+                north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
+                north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
+                unit=5,
             )
 
         See Also:

@@ -733,22 +733,22 @@ class Transformer:
     ):
         # finding parameter
         try:
-            sw = self.parameter[cell.sw.to_meshcode()]
+            sw = self.parameter[cell.south_west.to_meshcode()]
         except KeyError as e:
             raise _error.ParameterNotFoundError(e.args[0], "sw") from None
 
         try:
-            se = self.parameter[cell.se.to_meshcode()]
+            se = self.parameter[cell.south_east.to_meshcode()]
         except KeyError as e:
             raise _error.ParameterNotFoundError(e.args[0], "se") from None
 
         try:
-            nw = self.parameter[cell.nw.to_meshcode()]
+            nw = self.parameter[cell.north_west.to_meshcode()]
         except KeyError as e:
             raise _error.ParameterNotFoundError(e.args[0], "nw") from None
 
         try:
-            ne = self.parameter[cell.ne.to_meshcode()]
+            ne = self.parameter[cell.north_east.to_meshcode()]
         except KeyError as e:
             raise _error.ParameterNotFoundError(e.args[0], "ne") from None
 
