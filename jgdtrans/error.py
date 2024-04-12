@@ -16,11 +16,15 @@ class ParameterNotFoundError(Error, LookupError):
         return "{} ({})".format(*self.args)
 
 
-class ParseError(Error, ValueError):
-    """Failed to parse."""
+class ParseParFileError(Error, ValueError):
+    """Failed to parse par file."""
 
 
-class NotConvergeError(Error, ValueError):
+class DeserializeError(Error, ValueError):
+    """Failed to deserialize :class:`.Transformer`."""
+
+
+class CorrectionNotFoundError(Error, ValueError):
     """Error is greater than criteria."""
 
 
