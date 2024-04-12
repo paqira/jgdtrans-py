@@ -63,7 +63,7 @@ API は {py:class}`.Transformer` を返します。
 ```pycon
 >>> import jgdtrans
 >>> with open('SemiDyna2023.par') as fp:
-...     tf = jgdtrans.load(fp, format="SemiDynaEXE")
+...     tf = jgdtrans.load(fp, format='SemiDynaEXE')
 >>> tf
 Transformer(unit=5, parameter=<object (21134 length) at 0x123456789>, description='for [...]')
 ```
@@ -95,7 +95,7 @@ TKY2JGD の高度、 PatchJGD(H) の経緯度は {py:obj}`0.0` になります�
 
 ```pycon
 >>> with open('TKY2JGD.par') as fp:
-...     tf = jgdtrans.load(fp, format="TKY2JGD")
+...     tf = jgdtrans.load(fp, format='TKY2JGD')
 >>> tf.parameter[46303582]
 Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 ```

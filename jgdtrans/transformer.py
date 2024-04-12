@@ -283,7 +283,7 @@ class Transformer:
     parameter: Mapping[int, Parameter]
     """The transformation parameter.
 
-    The entry represents single line of par file's parameter section,
+    The entry represents single line of the par file's parameter section,
     the key is meshcode, and the value is a :class:`.Parameter`,
     a triplet of latitude [sec], longitude [sec] and altitude [m].
     """
@@ -625,7 +625,7 @@ class Transformer:
         longitude: float,
         altitude: float = 0.0,
     ) -> _point.Point:
-        """Returns the backward-transformed position.
+        """Returns the backward-transformed position by the original TKY2JGD method.
 
         This is *not* exact as the original *TKY2JGD for Windows Ver.1.3.79*
         and the web APIs are (as far as we researched).
@@ -672,7 +672,7 @@ class Transformer:
         )
 
     def backward_safe(self, latitude: float, longitude: float, altitude: float = 0.0):
-        """Returns the validated backward-transformed position.
+        """Returns the backward-transformed position.
 
         The result's drifting from the exact solution
         is less than error of the GIAJ latitude and longitude parameter,
@@ -898,7 +898,7 @@ class Transformer:
         latitude: float,
         longitude: float,
     ) -> Correction:
-        """Return the verified correction on backward-transformation.
+        """Return the correction on backward-transformation.
 
         This is used by :meth:`Transformer.backward_safe`.
 
