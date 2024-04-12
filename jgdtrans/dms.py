@@ -86,15 +86,15 @@ class DMS:
     """
 
     sign: Literal[1, -1]
-    """The sign of latitude or longitude"""
+    """The sign of latitude or longitude."""
     degree: int
-    """The degree of latitude or longitude"""
+    """The degree of latitude or longitude."""
     minute: int
-    """The minute of latitude or longitude"""
+    """The minute of latitude or longitude."""
     second: int
-    """The integer part of second of latitude or longitude"""
+    """The integer part of second of latitude or longitude."""
     fract: float
-    """The fraction part of second of latitude or longitude"""
+    """The fraction part of second of latitude or longitude."""
 
     def __post_init__(self):
         if self.sign not in (1, -1):

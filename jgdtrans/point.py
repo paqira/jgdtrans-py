@@ -107,11 +107,11 @@ class Point(Sequence[float]):
     """
 
     latitude: float
-    """The latitude [deg] of the point which satisfies -90.0 <= and <= 90.0"""
+    """The latitude [deg] of the point which satisfies -90.0 <= and <= 90.0."""
     longitude: float
-    """The longitude [deg] of the point which satisfies -180.0 <= and <= 180.0"""
+    """The longitude [deg] of the point which satisfies -180.0 <= and <= 180.0."""
     altitude: float = 0.0
-    """The altitude [m] of the point, defaulting :obj:`0.0`"""
+    """The altitude [m] of the point, defaulting :obj:`0.0`."""
 
     def __len__(self) -> Literal[3]:
         return 3
