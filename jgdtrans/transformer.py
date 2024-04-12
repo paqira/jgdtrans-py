@@ -720,7 +720,7 @@ class Transformer:
             >>> result.altitude - origin.altitude
             2.9913849175500218e-12
         """
-        corr = self.backward_corr_safe(latitude, longitude)
+        corr = self.backward_safe_corr(latitude, longitude)
         return _point.Point(
             latitude=latitude + corr.latitude,
             longitude=longitude + corr.longitude,
@@ -893,7 +893,7 @@ class Transformer:
         corr = self.forward_corr(lat, lng)
         return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
-    def backward_corr_safe(
+    def backward_safe_corr(
         self,
         latitude: float,
         longitude: float,
@@ -927,7 +927,7 @@ class Transformer:
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
             ...     }
             ... )
-            >>> tf.backward_corr_safe(36.103773017086695, 140.08785924333452)
+            >>> tf.backward_safe_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.772913310099049e-06, longitude=-4.202334510033827e-06, altitude=-0.0963138578132916)
         """
         #
