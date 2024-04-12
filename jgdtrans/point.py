@@ -150,27 +150,6 @@ class Point(Sequence[float]):
             altitude=self.altitude + corr.altitude,
         )
 
-    def sub(self, corr: _trans.Correction) -> Point:
-        """Returns a :class:`Point` which is `self` minus `corr` for each component.
-
-        This is not inplace.
-
-        Returns:
-            a :class:`Point` obj
-
-        Examples:
-            >>> point = Point(0.0, 0.0, 0.0)
-            >>> point.sub(Correction(1.0, 2.0, 3.0))
-            Point(latitude=-1.0, longitude=-2.0, altitude=-3.0)
-            >>> point
-            Point(latitude=0.0, longitude=0.0, altitude=0.0)
-        """
-        return Point(
-            latitude=self.latitude - corr.latitude,
-            longitude=self.longitude - corr.longitude,
-            altitude=self.altitude - corr.altitude,
-        )
-
     def normalize(self) -> Point:
         """Returns a new normalized :class:`Point` obj.
 
@@ -247,7 +226,7 @@ class Point(Sequence[float]):
             ValueError: if `latitude` and/or `longitude` is invalied
 
         Examples:
-            >>> Point.from_dms("360613.58925", "1400516.27815")
+            >>> Point.from_dms('360613.58925', '1400516.27815')
             Point(latitude=36.10377479166667, longitude=140.08785504166664, altitude=0.0)
         """
         if isinstance(latitude, str):
@@ -269,7 +248,7 @@ class Point(Sequence[float]):
             a tuple of latitude, longtitude and altitude
 
         Examples:
-            >>> point = Point.from_dms("360613.58925", "1400516.27815")
+            >>> point = Point.from_dms('360613.58925', '1400516.27815')
             >>> point.to_dms()
             ("360613.58925", "1400516.27815", 0.0)
         """

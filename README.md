@@ -53,7 +53,7 @@ Sample code:
 import jgdtrans
 
 with open('SemiDyna2023.par') as fp:
-    tf = jgdtrans.load(fp, format="SemiDynaEXE")
+    tf = jgdtrans.load(fp, format='SemiDynaEXE')
 
 # Geospatial Information Authority of Japan
 origin = (36.10377479, 140.087855041, 2.34)

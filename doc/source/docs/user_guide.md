@@ -74,8 +74,8 @@ respectively.
 ```pycon
 >>> tf.description
 'for SemiDynaEXE    Ver.1.0.0\n[...]\nMeshCode dB(sec)  dL(sec) dH(m)'
->>> tf.unit
-5
+>>> tf.format
+'SemiDynaEXE'
 >>> tf.parameter
 {
     36230600: Parameter(
@@ -112,7 +112,7 @@ converts the {py:class}`.Transformer` (namely, contents of par file) to {py:obj}
 >>> tf.to_dict()
 {
     'description': 'for SemiDynaEXE    Ver.1.0.0\n[...]\nMeshCode dB(sec)  dL(sec) dH(m)',
-    'unit': 5,
+    'format': 'SemiDynaEXE',
     'parameter': {
         36230600: {
             'latitude': -0.05475,
@@ -130,7 +130,7 @@ from the {py:obj}`dict` obj shown above;
 ```pycon
 >>> data = {
 ...     'description': 'my SemiDynaEXE',
-...     'unit': 5,
+...     'format': 'SemiDynaEXE',
 ...     'parameter': {
 ...         36230600: {
 ...             'latitude': -0.05475,
