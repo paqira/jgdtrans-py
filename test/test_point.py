@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import unittest
 
 from jgdtrans import Point, mesh
@@ -59,6 +60,11 @@ class Point_(unittest.TestCase):
             actual = Point(0, v).normalize()
             expected = Point(0, e)
             self.assertEqual(expected, actual)
+
+        point = Point(math.nan, math.nan, math.nan).normalize()
+        self.assertTrue(math.isnan(point.latitude))
+        self.assertTrue(math.isnan(point.longitude))
+        self.assertTrue(math.isnan(point.altitude))
 
     def test_from_mesh_node(self):
         node = MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7))
