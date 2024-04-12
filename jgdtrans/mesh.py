@@ -633,13 +633,13 @@ class MeshCell:
         (0.4529748000001632, 0.028403280000475206)
     """
 
-    sw: MeshNode
+    south_west: MeshNode
     """The south-west node of the cell."""
-    se: MeshNode
+    south_east: MeshNode
     """The south-east node of the cell."""
-    nw: MeshNode
+    north_west: MeshNode
     """The north-west node of the cell."""
-    ne: MeshNode
+    north_east: MeshNode
     """The north-east node of the cell."""
     unit: Literal[1, 5]
     """The mesh unit, :obj:`1` or :obj:`5`."""
@@ -649,36 +649,36 @@ class MeshCell:
             raise ValueError(f"expected unit is 1 or 5, we got {self.unit}") from None
 
         elif self.unit == 5:
-            if self.sw.latitude.third not in (0, 5) or self.sw.longitude.third not in (0, 5):
+            if self.south_west.latitude.third not in (0, 5) or self.south_west.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (sw) as {self.sw}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (sw) as {self.south_west}"
                 ) from None
-            elif self.se.latitude.third not in (0, 5) or self.se.longitude.third not in (0, 5):
+            elif self.south_east.latitude.third not in (0, 5) or self.south_east.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (se) as {self.se}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (se) as {self.south_east}"
                 ) from None
-            elif self.nw.latitude.third not in (0, 5) or self.nw.longitude.third not in (0, 5):
+            elif self.north_west.latitude.third not in (0, 5) or self.north_west.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (nw) as {self.nw}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (nw) as {self.north_west}"
                 ) from None
-            elif self.ne.latitude.third not in (0, 5) or self.ne.longitude.third not in (0, 5):
+            elif self.north_east.latitude.third not in (0, 5) or self.north_east.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (ne) as {self.ne}"
+                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (ne) as {self.north_east}"
                 ) from None
 
-        next_lat = self.sw.latitude.next_up(self.unit)
-        next_lng = self.sw.longitude.next_up(self.unit)
-        if not MeshNode(next_lat, self.sw.longitude) == self.nw:
+        next_lat = self.south_west.latitude.next_up(self.unit)
+        next_lng = self.south_west.longitude.next_up(self.unit)
+        if not MeshNode(next_lat, self.south_west.longitude) == self.north_west:
             raise ValueError(
-                f"inconsistent on sw vs nw with unit {self.unit}, we got sw {self.sw} and nw {self.nw}"
+                f"inconsistent on sw vs nw with unit {self.unit}, we got sw {self.south_west} and nw {self.north_west}"
             ) from None
-        elif not MeshNode(self.sw.latitude, next_lng) == self.se:
+        elif not MeshNode(self.south_west.latitude, next_lng) == self.south_east:
             raise ValueError(
-                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.sw} and se {self.se}"
+                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.south_west} and se {self.south_east}"
             ) from None
-        elif not MeshNode(next_lat, next_lng) == self.ne:
+        elif not MeshNode(next_lat, next_lng) == self.north_east:
             raise ValueError(
-                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.sw} and ne {self.ne}"
+                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.south_west} and ne {self.north_east}"
             ) from None
 
     @classmethod
@@ -699,20 +699,20 @@ class MeshCell:
             >>> meshcode = 54401027
             >>> MeshCell.from_meshcode(code, unit=1)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
-                se=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
-                nw=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
-                ne=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=1
+                south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
+                south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
+                north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
+                north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
+                unit=1,
             )
             >>> meshcode = 54401005
             >>> MeshCell.from_meshcode(code, unit=5)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
-                se=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
-                nw=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
-                ne=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-                unit=5
+                south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
+                south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
+                north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
+                north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
+                unit=5,
             )
         """
         south_west = MeshNode.from_meshcode(code=code)
@@ -740,19 +740,19 @@ class MeshCell:
             >>> point = Point(36.10377479, 140.087855041, 10.0)
             >>> MeshCell.from_point(p, unit=1)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
-                se=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
-                nw=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
-                ne=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
+                south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
+                south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
+                north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
+                north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
                 unit=1,
             )
             >>> MeshCell.from_pos(p, unit=5)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
-                se=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
-                nw=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
-                ne=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-                unit=5
+                south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
+                south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
+                north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
+                north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
+                unit=5,
             )
         """
         return cls.from_pos(p.latitude, p.longitude, unit=unit)
@@ -778,19 +778,19 @@ class MeshCell:
             >>> lat, lng = 36.10377479, 140.087855041
             >>> MeshCell.from_pos(lat, lng, unit=1)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
-                se=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
-                nw=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
-                ne=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=1
+                south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
+                south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
+                north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
+                north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
+                unit=1,
             )
             >>> MeshCell.from_pos(lat, lng, unit=5)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
-                se=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
-                nw=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
-                ne=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-                unit=5
+                south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
+                south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
+                north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
+                north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
+                unit=5,
             )
         """
         south_west = MeshNode.from_pos(latitude, longitude, unit=unit)
@@ -816,20 +816,20 @@ class MeshCell:
             >>> node = MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7))
             >>> MeshCell.from_node(node, unit=1)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
-                se=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
-                nw=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
-                ne=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=1
+                south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
+                south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
+                north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
+                north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
+                unit=1,
             )
             >>> node = MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5))
             >>> MeshCell.from_node(node, unit=5)
             MeshCell(
-                sw=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
-                se=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
-                nw=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
-                ne=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-                unit=5
+                south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
+                south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
+                north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
+                north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
+                unit=5,
             )
         """
         if unit == 5:
@@ -847,10 +847,10 @@ class MeshCell:
         next_lat = node.latitude.next_up(unit)
         next_lng = node.longitude.next_up(unit)
         return cls(
-            sw=node,
-            se=MeshNode(node.latitude, next_lng),
-            nw=MeshNode(next_lat, node.longitude),
-            ne=MeshNode(next_lat, next_lng),
+            south_west=node,
+            south_east=MeshNode(node.latitude, next_lng),
+            north_west=MeshNode(next_lat, node.longitude),
+            north_east=MeshNode(next_lat, next_lng),
             unit=unit,
         )
 
@@ -870,22 +870,22 @@ class MeshCell:
 
         The south-west of the cell is (0, 0), origin
 
-        >>> cell.position(*cell.sw.to_pos())
+        >>> cell.position(*cell.south_west.to_pos())
         (0, 0)
 
         The south-east is (0, 1)
 
-        >>> cell.position(*cell.se.to_pos())
+        >>> cell.position(*cell.south_east.to_pos())
         (0.0, 0.9999999999990905)
 
         The north-west is (1, 0)
 
-        >>> cell.position(*cell.nw.to_pos())
+        >>> cell.position(*cell.north_west.to_pos())
         (0.9999999999999432, 0.0)
 
         The north-east is (1, 1)
 
-        >>> cell.position(*cell.ne.to_pos())
+        >>> cell.position(*cell.north_east.to_pos())
         (0.9999999999999432, 0.9999999999990905)
 
         Args:
@@ -909,8 +909,8 @@ class MeshCell:
         # The cell stretches 1.5 times in the latitude direction
         # compared to the longitude direction,
         # then here uses 120 = 1.5 * 80.
-        lat = latitude - self.sw.latitude.to_latitude()
-        lng = longitude - self.sw.longitude.to_longitude()
+        lat = latitude - self.south_west.latitude.to_latitude()
+        lng = longitude - self.south_west.longitude.to_longitude()
         if self.unit == 1:
             return 120 * lat, 80 * lng
         return 24 * lat, 16 * lng
