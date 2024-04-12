@@ -441,6 +441,9 @@ class MeshNode:
         See Also:
             - :meth:`MeshNode.to_meshcode`
         """
+        if 9999_99_99 < code:
+            raise ValueError(f"too large meshcode, we got {code}")
+
         lat_first, rest = divmod(code, 100 * 10_000)
         lng_first, rest = divmod(rest, 10_000)
 
