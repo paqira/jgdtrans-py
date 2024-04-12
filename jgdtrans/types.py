@@ -34,13 +34,13 @@ Notes:
     for the same event, e.g. `touhokutaiheiyouoki2011.par` and `touhokutaiheiyouoki2011_h.par`.
     We note that transformation works fine with such data,
     and GIAJ does not distribute such file.
-    
+
     It should fill by zero for the parameters of remaining transformation
     in areas where it supports only part of the transformation as a result of composition
     in order to support whole area of each parameter,
     e.g. altitude of Chubu (中部地方) on the composition of
     `touhokutaiheiyouoki2011.par` and `touhokutaiheiyouoki2011_h.par`.
-    
+
     The composite data should be in the same format as SemiDynaEXE.
 """
 
