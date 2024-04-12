@@ -52,28 +52,28 @@ def parse(
         try:
             _mesh_code = mesh_code(line)
         except ValueError:
-            raise _error.ParseError(
+            raise _error.ParseParFileError(
                 f"unexpected value for 'meshcode', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
         try:
             _latitude = latitude(line)
         except ValueError:
-            raise _error.ParseError(
+            raise _error.ParseParFileError(
                 f"unexpected value for 'latitude', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
         try:
             _longitude = longitude(line)
         except ValueError:
-            raise _error.ParseError(
+            raise _error.ParseParFileError(
                 f"unexpected value for 'longitude', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
         try:
             _altitude = altitude(line)
         except ValueError:
-            raise _error.ParseError(
+            raise _error.ParseParFileError(
                 f"unexpected value for 'altitude', we got a line '{line}' [lineno {lineno}]"
             ) from None
 

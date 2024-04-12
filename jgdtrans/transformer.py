@@ -342,7 +342,7 @@ class Transformer:
             the :class:`Transformer` obj
 
         Raises:
-            ParseError: if fail to parse the meshcode
+            DeserializeError: if fail to parse the meshcode
 
         Examples:
             >>> data = {
@@ -392,7 +392,7 @@ class Transformer:
             try:
                 key = int(k)
             except ValueError:
-                raise _error.ParseError(
+                raise _error.DeserializeError(
                     f"expected integer for the key of the parameter field, we got {repr(k)}"
                 ) from None
 
@@ -690,7 +690,7 @@ class Transformer:
         Raises:
             ParameterNotFoundError: if `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            NotConvergeError: if verification failed
+            CorrectionNotFoundError: if verification failed
             ValueError: if `latitude` or `longitude` is unsupported value
 
         Examples:
@@ -1005,7 +1005,7 @@ class Transformer:
             if abs(latitude - (yn + corr.latitude)) <= criteria and abs(longitude - (xn + corr.longitude)) <= criteria:
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
-        raise _error.NotConvergeError(
+        raise _error.CorrectionNotFoundError(
             f"exhaust {iteration} iterations but error is still high, "
             f"we finally got {yn} and {xn} from {latitude} and {longitude}"
         ) from None

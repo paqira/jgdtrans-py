@@ -11,7 +11,7 @@ from . import (
     transformer,  # noqa: F401
     types,  # noqa: F401
 )
-from .error import NotConvergeError, ParameterNotFoundError, ParseError
+from .error import CorrectionNotFoundError, DeserializeError, ParameterNotFoundError, ParseParFileError
 from .parser import load, loads
 from .point import Point
 from .transformer import Transformer, from_dict
@@ -29,7 +29,8 @@ __all__ = [
     #
     "Point",
     #
-    "ParseError",
     "ParameterNotFoundError",
-    "NotConvergeError",
+    "CorrectionNotFoundError",
+    "DeserializeError",
+    "ParseParFileError",
 ]
