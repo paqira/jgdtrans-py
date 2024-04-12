@@ -166,11 +166,11 @@ class Correction(NamedTuple):
     """The transformation correction."""
 
     latitude: float
-    """The latitude correction [deg]"""
+    """The latitude correction [deg]."""
     longitude: float
-    """The longitude correction [deg]"""
+    """The longitude correction [deg]."""
     altitude: float
-    """The altitude correction [m]"""
+    """The altitude correction [m]."""
 
     @cached_property
     def horizontal(self) -> float:
@@ -189,11 +189,11 @@ class Parameter(NamedTuple):
     """
 
     latitude: float
-    """The latitude parameter [sec]"""
+    """The latitude parameter [sec]."""
     longitude: float
-    """The latitude parameter [sec]"""
+    """The latitude parameter [sec]."""
     altitude: float
-    """The altitude parameter [m]"""
+    """The altitude parameter [m]."""
 
     @cached_property
     def horizontal(self) -> float:
@@ -208,17 +208,17 @@ class Statistics(NamedTuple):
     """
 
     count: int | None
-    """The count"""
+    """The count."""
     mean: float | None
-    """The mean ([sec] or [m])"""
+    """The mean ([sec] or [m])."""
     std: float | None
-    """The standard variance ([sec] or [m])"""
+    """The standard variance ([sec] or [m])."""
     abs: float | None
-    r""":math:`(1/n) \sum_{i=1}^n \left| \text{parameter}_i \right|` ([sec] or [m])"""
+    r""":math:`(1/n) \sum_{i=1}^n \left| \text{parameter}_i \right|` ([sec] or [m])."""
     min: float | None
-    """The minimum ([sec] or [m])"""
+    """The minimum ([sec] or [m])."""
     max: float | None
-    """The maximum ([sec] or [m])"""
+    """The maximum ([sec] or [m])."""
 
 
 class StatisticalSummary(NamedTuple):
@@ -228,11 +228,11 @@ class StatisticalSummary(NamedTuple):
     """
 
     latitude: Statistics
-    """The statistics of latitude"""
+    """The statistics of latitude."""
     longitude: Statistics
-    """The statistics of longitude"""
+    """The statistics of longitude."""
     altitude: Statistics
-    """The statistics of altitude"""
+    """The statistics of altitude."""
 
 
 @dataclass(frozen=True)

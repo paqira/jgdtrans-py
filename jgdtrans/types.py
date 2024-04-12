@@ -27,7 +27,7 @@ FormatType: TypeAlias = Literal[
     "geonetF3",
     "ITRF2014",
 ]
-"""Type of par file's format
+"""Type of par file's format.
 
 Notes:
     The format :obj:`'PatchJGD_HV'` is for composition of PatchJGD and PatchJGD(H) par files
@@ -49,44 +49,44 @@ class ParameterDict(TypedDict):
     """Type for :meth:`.Transformer.to_dict` output."""
 
     latitude: Required[float]
-    """The latitude parameter on the point [sec]"""
+    """The latitude parameter on the point [sec]."""
     longitude: Required[float]
-    """The longitude parameter on the point [sec]"""
+    """The longitude parameter on the point [sec]."""
     altitude: Required[float]
-    """The altitude parameter on the point [m]"""
+    """The altitude parameter on the point [m]."""
 
 
 class ParameterLikeMapping(TypedDict):
     """Type for :meth:`.Transformer.from_dict` input."""
 
     latitude: Required[float]
-    """The latitude parameter on the point [sec]"""
+    """The latitude parameter on the point [sec]."""
     longitude: Required[float]
-    """The longitude parameter on the point [sec]"""
+    """The longitude parameter on the point [sec]."""
     altitude: Required[float]
-    """The altitude parameter on the point [m]"""
+    """The altitude parameter on the point [m]."""
 
 
 class TransformerDict(TypedDict):
     """Type of :meth:`.Transformer.to_dict` output."""
 
     format: Required[FormatType]
-    """The unit of the mesh, 1 or 5"""
+    """The unit of the mesh, :obj:`1` or :obj:`5`."""
     parameter: Required[Mapping[int, ParameterDict]]
-    """The parameters"""
+    """The parameters."""
     description: Required[str | None]
-    """The description of the parameter"""
+    """The description of the parameter."""
 
 
 class TransformerLikeMapping(TypedDict):
     """Type of :meth:`.Transformer.from_dict` input."""
 
     format: Required[FormatType]
-    """The unit of the mesh, 1 or 5"""
+    """The unit of the mesh, :obj:`1` or :obj:`5`."""
     parameter: Required[Mapping[int | str, ParameterLikeMapping]]
-    """The parameters, the key must be integer-like"""
+    """The parameters, the key must be integer-like."""
     description: NotRequired[str | None]
-    """The description of the parameter, optional"""
+    """The description of the parameter, optional."""
 
 
 if __name__ == "__main__":

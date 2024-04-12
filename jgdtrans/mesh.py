@@ -396,11 +396,11 @@ class MeshNode:
     """
 
     latitude: MeshCoord
-    """The mesh coord of latitude"""
+    """The mesh coord of latitude."""
     longitude: MeshCoord
-    """The mesh coord of longitude
+    """The mesh coord of longitude.
 
-    This satisfies :code:`MeshCoord(0, 0, 0)` <= and <= :code:`MeshCoord(80, 0, 0)`
+    This satisfies :code:`MeshCoord(0, 0, 0)` <= and <= :code:`MeshCoord(80, 0, 0)`.
     """
 
     def __post_init__(self):
@@ -631,15 +631,15 @@ class MeshCell:
     """
 
     sw: MeshNode
-    """The south-west node of the cell"""
+    """The south-west node of the cell."""
     se: MeshNode
-    """The south-east node of the cell"""
+    """The south-east node of the cell."""
     nw: MeshNode
-    """The north-west node of the cell"""
+    """The north-west node of the cell."""
     ne: MeshNode
-    """The north-east node of the cell"""
+    """The north-east node of the cell."""
     unit: Literal[1, 5]
-    """The mesh unit, :obj:`1` or :obj:`5`"""
+    """The mesh unit, :obj:`1` or :obj:`5`."""
 
     def __post_init__(self):
         if self.unit not in (1, 5):
