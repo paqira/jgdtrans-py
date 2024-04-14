@@ -90,9 +90,13 @@ We use _TKY2JGD for Windows Ver.1.3.79_ [^3] as a reference.
       geonetF3 and ITRF2014 (POS2JGD): <https://positions.gsi.go.jp/cdcs/>.
 [^3]: TKY2JGD for Windows Ver.1.3.79 (reference implementation):
       <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html> 
-      released under [国土地理院コンテンツ利用規約](https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html)
-      which compatible to CC BY 4.0.
-[^4]: Rust implementation: <https://github.com/paqira/jgdtrans-rs>.
+      released under [国土地理院コンテンツ利用規約] which compatible to CC BY 4.0.
+[^4]: Other implementation:
+      Rust <https://github.com/paqira/jgdtrans-rs>,
+      Java <https://github.com/paqira/jgdtrans-java>,
+      JavaScript/TypeScript <https://github.com/paqira/jgdtrans-js>.
+
+[国土地理院コンテンツ利用規約]: https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html
 
 ## Indices and tables
 

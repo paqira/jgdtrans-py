@@ -250,10 +250,10 @@ class MeshCoord:
             the latitude [deg]
 
         Examples:
-            >>> value = 36.103774791666666
-            >>> MeshCoord.from_latitude(value, 1).to_latitude()
+            >>> latitude = 36.103774791666666
+            >>> MeshCoord.from_latitude(latitude, 1).to_latitude()
             36.1
-            >>> MeshCoord.from_latitude(value, 5).to_latitude()
+            >>> MeshCoord.from_latitude(latitude, 5).to_latitude()
             36.083333333333336
 
         See Also:
@@ -270,10 +270,10 @@ class MeshCoord:
             the longitude [deg]
 
         Examples:
-            >>> value = 140.08785504166664
-            >>> MeshCoord.from_longitude(value, 1).to_longitude()
+            >>> longitude = 140.08785504166664
+            >>> MeshCoord.from_longitude(longitude, 1).to_longitude()
             140.0875
-            >>> MeshCoord.from_longitude(value, 5).to_longitude()
+            >>> MeshCoord.from_longitude(longitude, 5).to_longitude()
             140.0625
 
         See Also:
@@ -608,11 +608,11 @@ class MeshCell:
         >>> cell = MeshCell.from_pos(36.10377479, 140.087855041, unit=1)
         >>> cell
         MeshCell(
-            sw=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
-            se=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
-            nw=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
-            ne=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-            unit=1
+            south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
+            south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
+            north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
+            north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
+            unit=1,
         )
 
         Construct from node
@@ -651,34 +651,41 @@ class MeshCell:
         elif self.unit == 5:
             if self.south_west.latitude.third not in (0, 5) or self.south_west.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (sw) as {self.south_west}"
+                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"we got a mesh node (south-west) as {self.south_west}"
                 ) from None
             elif self.south_east.latitude.third not in (0, 5) or self.south_east.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (se) as {self.south_east}"
+                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"we got a mesh node (south-east) as {self.south_east}"
                 ) from None
             elif self.north_west.latitude.third not in (0, 5) or self.north_west.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (nw) as {self.north_west}"
+                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"we got a mesh node (north-west) as {self.north_west}"
                 ) from None
             elif self.north_east.latitude.third not in (0, 5) or self.north_east.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, we got a mesh node (ne) as {self.north_east}"
+                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"we got a mesh node (north-east) as {self.north_east}"
                 ) from None
 
         next_lat = self.south_west.latitude.next_up(self.unit)
         next_lng = self.south_west.longitude.next_up(self.unit)
         if not MeshNode(next_lat, self.south_west.longitude) == self.north_west:
             raise ValueError(
-                f"inconsistent on sw vs nw with unit {self.unit}, we got sw {self.south_west} and nw {self.north_west}"
+                f"inconsistent on south-west vs north-west with unit {self.unit}, "
+                f"we got south-west {self.south_west} and nw {self.north_west}"
             ) from None
         elif not MeshNode(self.south_west.latitude, next_lng) == self.south_east:
             raise ValueError(
-                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.south_west} and se {self.south_east}"
+                f"inconsistent on south-west vs south-east with unit {self.unit}, "
+                f"we got south-west {self.south_west} and se {self.south_east}"
             ) from None
         elif not MeshNode(next_lat, next_lng) == self.north_east:
             raise ValueError(
-                f"inconsistent on sw vs se with unit {self.unit}, we got sw {self.south_west} and ne {self.north_east}"
+                f"inconsistent on south-west vs south-east with unit {self.unit}, "
+                f"we got south-west {self.south_west} and ne {self.north_east}"
             ) from None
 
     @classmethod
