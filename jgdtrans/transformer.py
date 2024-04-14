@@ -181,8 +181,7 @@ class Correction(NamedTuple):
 class Parameter(NamedTuple):
     """The parameter triplet.
 
-    We emphasize that the unit is [sec], not [deg],
-    for latitude and longitude.
+    We emphasize that the unit of latitude and longitude is [sec], not [deg].
 
     It should fill by :obj:`0.0` instead of :obj:`nan`
     if the parameter does not exist, as parsers does.
@@ -265,7 +264,7 @@ class Transformer:
 
         Backward transformation
 
-        >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578102994)
+        >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
         Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
 
         Verified backward transformation

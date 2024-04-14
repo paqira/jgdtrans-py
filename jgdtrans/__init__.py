@@ -1,3 +1,5 @@
+"""Coordinate Transformer by Gridded Correction Parameter (par file)."""
+
 from __future__ import annotations
 
 from typing import Final
