@@ -87,11 +87,14 @@ class MeshCoordTest(unittest.TestCase):
         expected = MeshCoord(54, 1, 0)
         self.assertEqual(expected, actual)
 
-        args = [(0, 2), (-1, 1), (66.666667, 1)]
+        args = [(-1, 1), (66.666667, 1)]
         for arg in args:
             with self.subTest():
                 with self.assertRaises(ValueError, msg="error"):
                     MeshCoord.from_latitude(*arg)
+
+        with self.assertRaises(TypeError, msg="error"):
+            MeshCoord.from_latitude(0, 2)
 
     def test_from_longitude(self):
         actual = MeshCoord.from_longitude(140.08785504166664, 1)
@@ -102,11 +105,14 @@ class MeshCoordTest(unittest.TestCase):
         expected = MeshCoord(40, 0, 5)
         self.assertEqual(expected, actual)
 
-        args = [(0, 2), (-1, 1), (181, 1)]
+        args = [(-1, 1), (181, 1)]
         for arg in args:
             with self.subTest():
                 with self.assertRaises(ValueError, msg="error"):
                     MeshCoord.from_longitude(*arg)
+
+        with self.assertRaises(TypeError, msg="error"):
+            MeshCoord.from_longitude(0, 2)
 
     def test_to_latitude(self):
         expected = 36.1
@@ -159,7 +165,7 @@ class MeshCoordTest(unittest.TestCase):
         with self.assertRaises(ValueError, msg="error"):
             MeshCoord(0, 7, 2).next_up(5)
 
-        with self.assertRaises(ValueError, msg="error"):
+        with self.assertRaises(TypeError, msg="error"):
             MeshCoord(0, 0, 0).next_up(2)
 
         with self.assertRaises(OverflowError, msg="error"):
@@ -198,7 +204,7 @@ class MeshCoordTest(unittest.TestCase):
         with self.assertRaises(ValueError, msg="error"):
             MeshCoord(0, 7, 2).next_down(5)
 
-        with self.assertRaises(ValueError, msg="error"):
+        with self.assertRaises(TypeError, msg="error"):
             MeshCoord(0, 0, 0).next_down(2)
 
     def test_identity_on_coord_to_lat_lng(self):
@@ -278,7 +284,7 @@ class MeshNodeTest(unittest.TestCase):
         actual = MeshNode.from_point(point, 5)
         self.assertEqual(expected, actual)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             MeshNode.from_point(point, 2)
 
     def test_from_pos(self):
@@ -292,7 +298,7 @@ class MeshNodeTest(unittest.TestCase):
         actual = MeshNode.from_pos(lat, lng, 5)
         self.assertEqual(expected, actual)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             MeshNode.from_pos(lat, lng, 2)
 
     def test_to_code(self):
@@ -433,7 +439,7 @@ class MeshCellTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             MeshCell.from_meshcode(54401027, mesh_unit=5)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             MeshCell.from_meshcode(54401027, mesh_unit=2)
 
     def test_from_point(self):
@@ -459,7 +465,7 @@ class MeshCellTest(unittest.TestCase):
         )
         self.assertEqual(expected, actual)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             MeshCell.from_point(point, mesh_unit=2)
 
     def test_from_pos(self):
@@ -485,7 +491,7 @@ class MeshCellTest(unittest.TestCase):
         )
         self.assertEqual(expected, actual)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             MeshCell.from_pos(lat, lng, mesh_unit=2)
 
     def test_from_node(self):
@@ -515,7 +521,7 @@ class MeshCellTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             MeshCell.from_node(node, mesh_unit=5)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             MeshCell.from_node(node, mesh_unit=2)
 
     def test_position_in_cell(self):

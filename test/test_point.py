@@ -100,7 +100,7 @@ class Point_(unittest.TestCase):
         )
         self.assertEqual(expected, actual, msg="unit 5")
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             point.mesh_cell(mesh_unit=2)
 
 
