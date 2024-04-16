@@ -266,6 +266,27 @@ class MeshCoord:
 
         return cls._from_degree(v, unit=unit)
 
+    def is_unit(self, unit: Literal[1, 5]) -> bool:
+        """Returns :obj:`True` if `self` is compatible to the `unit`.
+
+        Always returns :obj:`True` if `unit` is :obj:`1`.
+
+        Args:
+            unit: the mesh unit, :obj:`1` or :obj:`5`
+
+        Returns:
+            :obj:`True` if `self` is compatible to the `unit`.
+
+        Examples:
+            >>> MeshCoord(1, 2, 3).is_unit(1)
+            True
+            >>> MeshCoord(1, 2, 3).is_unit(5)
+            False
+        """
+        if unit not in (1, 5):
+            raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
+        return self.third % unit == 0
+
     def _to_degree(self) -> float:
         return self.first + self.second / 8 + self.third / 80
 
@@ -335,7 +356,7 @@ class MeshCoord:
         """
         if unit not in (1, 5):
             raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
-        elif unit == 5 and self.third not in (0, 5):
+        elif not self.is_unit(unit):
             raise ValueError(
                 f"expected unit is 1 when third is neither 0 nor 5, we got {unit} (third is {self.third})"
             ) from None
@@ -378,7 +399,7 @@ class MeshCoord:
         """
         if unit not in (1, 5):
             raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
-        elif unit == 5 and self.third not in (0, 5):
+        elif not self.is_unit(unit):
             raise ValueError(
                 f"expected unit is 1 when third is neither 0 nor 5, we got {unit} (third is {self.third})"
             ) from None
@@ -446,6 +467,25 @@ class MeshNode:
             raise ValueError(
                 f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
             ) from None
+
+    def is_unit(self, unit: Literal[1, 5]) -> bool:
+        """Returns :obj:`True` if `self` is compatible to the `unit`.
+
+        Always returns :obj:`True` if `unit` is :obj:`1`.
+
+        Args:
+            unit: the mesh unit, :obj:`1` or :obj:`5`
+
+        Returns:
+            :obj:`True` if `self` is compatible to the `unit`.
+
+        Examples:
+            >>> MeshNode.from_meshcode(54401027).is_unit(1)
+            True
+            >>> MeshNode.from_meshcode(54401027).is_unit(5)
+            False
+        """
+        return self.latitude.is_unit(unit) and self.longitude.is_unit(unit)
 
     @classmethod
     def from_meshcode(cls, code: int) -> MeshNode:
