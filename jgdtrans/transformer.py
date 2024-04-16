@@ -518,7 +518,7 @@ class Transformer:
             latitude: the latitude [deg] of the point which satisfies 0.00333... <= and <= 66.666...
             longitude: the longitude [deg] of the point which satisfies 100.0 <= and <= 180.0
             altitude: the altitude [m] of the point
-            backward: this performs backward transformation if :obj:`True` given
+            backward: if :obj:`True`, this performs backward transformation
 
         Returns:
             the transformed point
