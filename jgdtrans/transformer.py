@@ -282,21 +282,21 @@ class Transformer:
             ),
         )
 
-    def unit(self) -> Literal[1, 5]:
-        """Returns the unit of the format.
+    def mesh_unit(self) -> Literal[1, 5]:
+        """Returns the mesh unit of the format.
 
         Returns:
             1 or 5
 
         Examples:
             >>> tf = Transformer(format='TKY2JGD', parameter={})
-            >>> tf.unit()
+            >>> tf.mesh_unit()
             1
             >>> tf = Transformer(format='SemiDynaEXE', parameter={})
-            >>> tf.unit()
+            >>> tf.mesh_unit()
             5
         """
-        return _mesh.unit(self.format)
+        return _mesh.mesh_unit(self.format)
 
     @classmethod
     def from_dict(cls, obj: _types.TransformerLikeMapping) -> Self:
@@ -759,7 +759,7 @@ class Transformer:
             Correction(latitude=-1.7729133100878255e-06, longitude=4.202334510058886e-06, altitude=0.09631385781030007)
         """
         # resolving cell
-        cell = _mesh.MeshCell.from_pos(latitude, longitude, unit=self.unit())
+        cell = _mesh.MeshCell.from_pos(latitude, longitude, mesh_unit=self.mesh_unit())
 
         # finding parameter
         sw, se, nw, ne = self._parameter_quadruple(cell)
@@ -927,7 +927,7 @@ class Transformer:
         xn = longitude
 
         for _ in range(iteration):
-            cell = _mesh.MeshCell.from_pos(yn, xn, unit=self.unit())
+            cell = _mesh.MeshCell.from_pos(yn, xn, mesh_unit=self.mesh_unit())
             sw, se, nw, ne = self._parameter_quadruple(cell)
 
             y, x = cell.position(yn, xn)

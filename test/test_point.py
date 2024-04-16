@@ -80,28 +80,28 @@ class Point_(unittest.TestCase):
     def test_mesh_cell(self):
         point = Point(36.103774791666666, 140.08785504166664, 10.0)
 
-        actual = point.mesh_cell(unit=1)
+        actual = point.mesh_cell(mesh_unit=1)
         expected = mesh.MeshCell(
             south_west=mesh.MeshNode(mesh.MeshCoord(54, 1, 2), mesh.MeshCoord(40, 0, 7)),
             south_east=mesh.MeshNode(mesh.MeshCoord(54, 1, 2), mesh.MeshCoord(40, 0, 8)),
             north_west=mesh.MeshNode(mesh.MeshCoord(54, 1, 3), mesh.MeshCoord(40, 0, 7)),
             north_east=mesh.MeshNode(mesh.MeshCoord(54, 1, 3), mesh.MeshCoord(40, 0, 8)),
-            unit=1,
+            mesh_unit=1,
         )
         self.assertEqual(expected, actual, msg="unit 1")
 
-        actual = point.mesh_cell(unit=5)
+        actual = point.mesh_cell(mesh_unit=5)
         expected = mesh.MeshCell(
             south_west=mesh.MeshNode(mesh.MeshCoord(54, 1, 0), mesh.MeshCoord(40, 0, 5)),
             south_east=mesh.MeshNode(mesh.MeshCoord(54, 1, 0), mesh.MeshCoord(40, 1, 0)),
             north_west=mesh.MeshNode(mesh.MeshCoord(54, 1, 5), mesh.MeshCoord(40, 0, 5)),
             north_east=mesh.MeshNode(mesh.MeshCoord(54, 1, 5), mesh.MeshCoord(40, 1, 0)),
-            unit=5,
+            mesh_unit=5,
         )
         self.assertEqual(expected, actual, msg="unit 5")
 
         with self.assertRaises(ValueError):
-            point.mesh_cell(unit=2)
+            point.mesh_cell(mesh_unit=2)
 
 
 if __name__ == "__main__":
