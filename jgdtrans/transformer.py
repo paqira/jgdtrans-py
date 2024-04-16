@@ -22,7 +22,6 @@ __all__ = [
     "Correction",
     "StatisticalSummary",
     "Statistics",
-    "unit",
     #
     "from_dict",
 ]
@@ -134,32 +133,6 @@ def from_dict(obj: _types.TransformerLikeMapping) -> Transformer:
         - :meth:`Transformer.from_dict`
     """
     return Transformer.from_dict(obj)
-
-
-def unit(format: _types.FormatType) -> Literal[1, 5]:
-    """Returns the unit of the format.
-
-    Returns:
-        1 or 5
-
-    Examples:
-        >>> unit('TKY2JGD')
-        1
-        >>> unit('SemiDynaEXE')
-        5
-    """
-    if format in (
-        "TKY2JGD",
-        "PatchJGD",
-        "PatchJGD_H",
-        "PatchJGD_HV",
-        "HyokoRev",
-    ):
-        return 1
-    elif format in ("SemiDynaEXE", "geonetF3", "ITRF2014"):
-        return 5
-
-    raise ValueError(f"invalid format, we got {format}")
 
 
 class Correction(NamedTuple):
@@ -323,7 +296,7 @@ class Transformer:
             >>> tf.unit()
             5
         """
-        return unit(self.format)
+        return _mesh.unit(self.format)
 
     @classmethod
     def from_dict(cls, obj: _types.TransformerLikeMapping) -> Self:
