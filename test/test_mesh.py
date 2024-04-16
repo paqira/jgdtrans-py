@@ -69,6 +69,15 @@ class MeshCoordTest(unittest.TestCase):
             self.assertTrue(other >= node)
             other = other.next_up(1)
 
+    def test_is_unit(self):
+        for third in range(10):
+            self.assertTrue(MeshCoord(1, 2, third).is_unit(1))
+
+        self.assertTrue(MeshCoord(1, 2, 0).is_unit(5))
+        self.assertTrue(MeshCoord(1, 2, 5).is_unit(5))
+        for third in (1, 2, 3, 4, 6, 7, 8, 9):
+            self.assertFalse(MeshCoord(1, 2, third).is_unit(5))
+
     def test_from_latitude(self):
         actual = MeshCoord.from_latitude(36.103774791666666, 1)
         expected = MeshCoord(54, 1, 2)
@@ -235,6 +244,11 @@ class MeshNodeTest(unittest.TestCase):
         # case: MeshCoord(99, 7, 9)
         with self.assertRaises(ValueError):
             MeshNode(MeshCoord(0, 0, 0), coord)
+
+    def test_is_unit(self):
+        node = MeshNode.from_meshcode(54401027)
+        self.assertTrue(node.is_unit(1))
+        self.assertFalse(node.is_unit(5))
 
     def test_from_code(self):
         actual = MeshNode.from_meshcode(54401027)
