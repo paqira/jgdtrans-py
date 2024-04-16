@@ -21,13 +21,41 @@ from typing import Final, Literal
 from typing_extensions import Self
 
 from . import point as _point
+from . import types as _types
 
 __all__ = [
+    "unit",
     # "MeshUnit",
     "MeshCoord",
     "MeshNode",
     "MeshCell",
 ]
+
+
+def unit(format: _types.FormatType) -> Literal[1, 5]:
+    """Returns the unit of the format.
+
+    Returns:
+        1 or 5
+
+    Examples:
+        >>> unit('TKY2JGD')
+        1
+        >>> unit('SemiDynaEXE')
+        5
+    """
+    if format in (
+        "TKY2JGD",
+        "PatchJGD",
+        "PatchJGD_H",
+        "PatchJGD_HV",
+        "HyokoRev",
+    ):
+        return 1
+    elif format in ("SemiDynaEXE", "geonetF3", "ITRF2014"):
+        return 5
+
+    raise ValueError(f"invalid format, we got {format}")
 
 
 class MeshUnit(IntEnum):
