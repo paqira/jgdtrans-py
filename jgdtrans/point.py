@@ -262,11 +262,11 @@ class Point(Sequence[float]):
             self.altitude,
         )
 
-    def to_meshcode(self, unit: Literal[1, 5]) -> int:
+    def to_meshcode(self, mesh_unit: Literal[1, 5]) -> int:
         """Returns the meshcode of the nearest south-east mesh node of `self`.
 
         Args:
-            unit: The mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: The mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the meshcode
@@ -282,15 +282,15 @@ class Point(Sequence[float]):
             >>> point.to_meshcode(5)
             54401005
         """
-        return self.mesh_node(unit).to_meshcode()
+        return self.mesh_node(mesh_unit).to_meshcode()
 
-    def mesh_node(self, unit: Literal[1, 5]) -> _mesh.MeshNode:
+    def mesh_node(self, mesh_unit: Literal[1, 5]) -> _mesh.MeshNode:
         """Returns the nearest south-east mesh node of `self`.
 
         We note that the result does not depend on the :attr:`Point.altitude`.
 
         Args:
-            unit: The mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: The mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             a :class:`.MeshNode`
@@ -308,13 +308,13 @@ class Point(Sequence[float]):
         See Also:
             - :meth:`.MeshNode.from_point`
         """
-        return _mesh.MeshNode.from_point(self, unit=unit)
+        return _mesh.MeshNode.from_point(self, mesh_unit=mesh_unit)
 
-    def mesh_cell(self, unit: Literal[1, 5]) -> _mesh.MeshCell:
+    def mesh_cell(self, mesh_unit: Literal[1, 5]) -> _mesh.MeshCell:
         """Returns the unit mesh cell containing `self`.
 
         Args:
-            unit: The mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: The mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the unit mesh cell containing `self`
@@ -325,7 +325,7 @@ class Point(Sequence[float]):
 
         Examples:
             >>> point = Point(36.10377479, 140.087855041)
-            >>> point.mesh_cell(unit=1)
+            >>> point.mesh_cell(mesh_unit=1)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
@@ -333,7 +333,7 @@ class Point(Sequence[float]):
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
                 unit=1,
             )
-            >>> point.mesh_cell(unit=5)
+            >>> point.mesh_cell(mesh_unit=5)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
                 south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
@@ -345,7 +345,7 @@ class Point(Sequence[float]):
         See Also:
             - :meth:`.MeshNode.from_point`
         """
-        return _mesh.MeshCell.from_point(self, unit=unit)
+        return _mesh.MeshCell.from_point(self, mesh_unit=mesh_unit)
 
 
 if __name__ == "__main__":

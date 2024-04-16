@@ -24,7 +24,7 @@ from . import point as _point
 from . import types as _types
 
 __all__ = [
-    "unit",
+    "mesh_unit",
     # "MeshUnit",
     "MeshCoord",
     "MeshNode",
@@ -32,16 +32,16 @@ __all__ = [
 ]
 
 
-def unit(format: _types.FormatType) -> Literal[1, 5]:
-    """Returns the unit of the format.
+def mesh_unit(format: _types.FormatType) -> Literal[1, 5]:
+    """Returns the mesh unit of the format.
 
     Returns:
         1 or 5
 
     Examples:
-        >>> unit('TKY2JGD')
+        >>> mesh_unit('TKY2JGD')
         1
-        >>> unit('SemiDynaEXE')
+        >>> mesh_unit('SemiDynaEXE')
         5
     """
     if format in (
@@ -59,7 +59,7 @@ def unit(format: _types.FormatType) -> Literal[1, 5]:
 
 
 class MeshUnit(IntEnum):
-    """The mesh unit (unit shortly), or approximate length of cell's edge."""
+    """The mesh unit, or approximate length of cell's edge."""
 
     ONE = 1
     """1 [km]"""
@@ -92,7 +92,7 @@ class MeshCoord:
         >>> MeshCoord.from_latitude(36.103774791666666, 1)
         MeshCoord(first=54, second=1, third=2)
 
-        Every fifth MeshCoord is taken, if unit is MeshUnit::Five
+        Every fifth MeshCoord is taken, if `mesh_unit` is MeshUnit::Five
 
         >>> MeshCoord.from_latitude(36.103774791666666, 5)
         MeshCoord(first=54, second=1, third=0)
@@ -186,24 +186,24 @@ class MeshCoord:
             return self.first > other.first
 
     @classmethod
-    def _from_degree(cls, value: float, unit: Literal[1, 5]) -> Self:
+    def _from_degree(cls, value: float, mesh_unit: Literal[1, 5]) -> Self:
         integer = math.floor(value)
         first = integer % 100
 
         second = math.floor(8 * value) - 8 * integer
         third = math.floor(80 * value) - 80 * integer - 10 * second
 
-        if unit == 1:
+        if mesh_unit == 1:
             return cls(first, second, third)
         return cls(first, second, 0 if third < 5 else 5)
 
     @classmethod
-    def from_latitude(cls, v: float, unit: Literal[1, 5]) -> Self:
+    def from_latitude(cls, v: float, mesh_unit: Literal[1, 5]) -> Self:
         """Makes the greatest :class:`MeshCoord` obj less than the latitude `v` with `unit`.
 
         Args:
             v: the latitude [deg] which satisfies 0.0 <= and <= 66.666...
-            unit: the mesh unit, ::`1` or :obj:`5`
+            mesh_unit: the mesh unit, ::`1` or :obj:`5`
 
         Returns:
             the :class:`MeshCoord` obj
@@ -229,20 +229,20 @@ class MeshCoord:
         if ctypes.c_uint64.from_buffer(ctypes.c_double(v)).value % 2 == 1:
             _value = math.nextafter(_value, math.inf)
 
-        if unit not in (1, 5):
-            raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
+        if mesh_unit not in (1, 5):
+            raise ValueError(f"expected mesh unit is 1 or 5, we got {mesh_unit}") from None
         elif not (0 <= _value < 100):
             raise ValueError(f"expected 0.0 <= value and value < 66.666..., we got {v}") from None
 
-        return cls._from_degree(_value, unit=unit)
+        return cls._from_degree(_value, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_longitude(cls, v: float, unit: Literal[1, 5]) -> Self:
+    def from_longitude(cls, v: float, mesh_unit: Literal[1, 5]) -> Self:
         """Makes the greatest :class:`MeshCoord` obj less than the longitude `v` with `unit`.
 
         Args:
             v: the longitude [deg] which satisfies 100.0 <= and <= 180.0
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the :class:`MeshCoord` obj
@@ -259,33 +259,33 @@ class MeshCoord:
         See Also:
             - :meth:`MeshCoord.to_longitude`
         """
-        if unit not in (1, 5):
-            raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
+        if mesh_unit not in (1, 5):
+            raise ValueError(f"expected mesh unit is 1 or 5, we got {mesh_unit}") from None
         elif not (100 <= v <= 180):
             raise ValueError(f"expected 100.0 <= value and value <= 180.0, we got {v}") from None
 
-        return cls._from_degree(v, unit=unit)
+        return cls._from_degree(v, mesh_unit=mesh_unit)
 
-    def is_unit(self, unit: Literal[1, 5]) -> bool:
+    def is_mesh_unit(self, mesh_unit: Literal[1, 5]) -> bool:
         """Returns :obj:`True` if `self` is compatible to the `unit`.
 
         Always returns :obj:`True` if `unit` is :obj:`1`.
 
         Args:
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             :obj:`True` if `self` is compatible to the `unit`.
 
         Examples:
-            >>> MeshCoord(1, 2, 3).is_unit(1)
+            >>> MeshCoord(1, 2, 3).is_mesh_unit(1)
             True
-            >>> MeshCoord(1, 2, 3).is_unit(5)
+            >>> MeshCoord(1, 2, 3).is_mesh_unit(5)
             False
         """
-        if unit not in (1, 5):
-            raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
-        return self.third % unit == 0
+        if mesh_unit not in (1, 5):
+            raise ValueError(f"expected mesh unit is 1 or 5, we got {mesh_unit}") from None
+        return self.third % mesh_unit == 0
 
     def _to_degree(self) -> float:
         return self.first + self.second / 8 + self.third / 80
@@ -330,11 +330,11 @@ class MeshCoord:
         """
         return 100 + self._to_degree()
 
-    def next_up(self, unit: Literal[1, 5]) -> MeshCoord:
+    def next_up(self, mesh_unit: Literal[1, 5]) -> MeshCoord:
         """Returns the smallest :class:`MeshCoord` obj greater than `self`.
 
         Args:
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the up-next :class:`MeshCoord`
@@ -354,30 +354,30 @@ class MeshCoord:
             >>> MeshCoord(0, 7, 9).next_up(1)
             MeshCoord(1, 0, 0)
         """
-        if unit not in (1, 5):
-            raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
-        elif not self.is_unit(unit):
+        if mesh_unit not in (1, 5):
+            raise ValueError(f"expected mesh unit is 1 or 5, we got {mesh_unit}") from None
+        elif not self.is_mesh_unit(mesh_unit):
             raise ValueError(
-                f"expected unit is 1 when third is neither 0 nor 5, we got {unit} (third is {self.third})"
+                f"expected mesh unit is 1 when third is neither 0 nor 5, we got {mesh_unit} (third is {self.third})"
             ) from None
 
         # that is 10 - self.unit
-        bound: Final = 9 if unit == 1 else 5
+        bound: Final = 9 if mesh_unit == 1 else 5
 
         # increment
         if self.third == bound:
             if self.second == 7:
                 if self.first == 99:
-                    raise OverflowError(f"unable to add {unit} to {self}") from None
+                    raise OverflowError(f"unable to add {mesh_unit} to {self}") from None
                 return MeshCoord(self.first + 1, 0, 0)
             return MeshCoord(self.first, self.second + 1, 0)
-        return MeshCoord(self.first, self.second, self.third + unit)
+        return MeshCoord(self.first, self.second, self.third + mesh_unit)
 
-    def next_down(self, unit: Literal[1, 5]) -> MeshCoord:
+    def next_down(self, mesh_unit: Literal[1, 5]) -> MeshCoord:
         """Returns the greatest :class:`MeshCoord` obj less than `self`.
 
         Args:
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Raises:
             ValueError: if `unit` is :obj:`5` although `self.third` is either :obj:`0` or :obj:`5`
@@ -397,23 +397,23 @@ class MeshCoord:
             >>> MeshCoord(1, 0, 0).next_down(1)
             MeshCoord(0, 7, 9)
         """
-        if unit not in (1, 5):
-            raise ValueError(f"expected unit is 1 or 5, we got {unit}") from None
-        elif not self.is_unit(unit):
+        if mesh_unit not in (1, 5):
+            raise ValueError(f"expected mesh unit is 1 or 5, we got {mesh_unit}") from None
+        elif not self.is_mesh_unit(mesh_unit):
             raise ValueError(
-                f"expected unit is 1 when third is neither 0 nor 5, we got {unit} (third is {self.third})"
+                f"expected mesh unit is 1 when third is neither 0 nor 5, we got {mesh_unit} (third is {self.third})"
             ) from None
 
         # that is 10 - self.unit
-        bound: Final = 9 if unit == 1 else 5
+        bound: Final = 9 if mesh_unit == 1 else 5
 
         if self.third == 0:
             if self.second == 0:
                 if self.first == 0:
-                    raise OverflowError(f"unable to subtract {unit} from {self}") from None
+                    raise OverflowError(f"unable to subtract {mesh_unit} from {self}") from None
                 return MeshCoord(self.first - 1, 7, bound)
             return MeshCoord(self.first, self.second - 1, bound)
-        return MeshCoord(self.first, self.second, self.third - unit)
+        return MeshCoord(self.first, self.second, self.third - mesh_unit)
 
 
 @dataclass(frozen=True)
@@ -430,12 +430,12 @@ class MeshNode:
     Examples:
         Construct from latitude and longitude
 
-        >>> MeshNode.from_pos(36.10377479, 140.087855041, unit=1)
+        >>> MeshNode.from_pos(36.10377479, 140.087855041, mesh_unit=1)
         MeshNode(latitude=MeshCoord(54, 1, 2), longitude=MeshCoord(40, 0, 7))
 
         The result depends on the selection of the mesh unit
 
-        >>> MeshNode.from_pos(36.10377479, 140.087855041, unit=5)
+        >>> MeshNode.from_pos(36.10377479, 140.087855041, mesh_unit=5)
         MeshNode(latitude=MeshCoord(54, 1, 0), longitude=MeshCoord(40, 0, 5))
 
         Construct from meshcode
@@ -468,24 +468,24 @@ class MeshNode:
                 f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
             ) from None
 
-    def is_unit(self, unit: Literal[1, 5]) -> bool:
+    def is_mesh_unit(self, mesh_unit: Literal[1, 5]) -> bool:
         """Returns :obj:`True` if `self` is compatible to the `unit`.
 
         Always returns :obj:`True` if `unit` is :obj:`1`.
 
         Args:
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             :obj:`True` if `self` is compatible to the `unit`.
 
         Examples:
-            >>> MeshNode.from_meshcode(54401027).is_unit(1)
+            >>> MeshNode.from_meshcode(54401027).is_mesh_unit(1)
             True
-            >>> MeshNode.from_meshcode(54401027).is_unit(5)
+            >>> MeshNode.from_meshcode(54401027).is_mesh_unit(5)
             False
         """
-        return self.latitude.is_unit(unit) and self.longitude.is_unit(unit)
+        return self.latitude.is_mesh_unit(mesh_unit) and self.longitude.is_mesh_unit(mesh_unit)
 
     @classmethod
     def from_meshcode(cls, code: int) -> MeshNode:
@@ -529,14 +529,14 @@ class MeshNode:
             raise ValueError(f"invalid meshcode, we got {code}") from exc
 
     @classmethod
-    def from_point(cls, p: _point.Point, unit: Literal[1, 5]) -> Self:
+    def from_point(cls, p: _point.Point, mesh_unit: Literal[1, 5]) -> Self:
         """Makes the nearest north-west :class:`MeshNode` of :class:`~JGDtrans.Point` p.
 
         We note that the result is independend of the :attr:`.Point.altitude`.
 
         Args:
             p: the point
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the :class:`MeshNode` obj
@@ -556,16 +556,16 @@ class MeshNode:
             - :meth:`MeshNode.to_point`
             - :meth:`.Point.mesh_node`
         """
-        return cls.from_pos(p.latitude, p.longitude, unit=unit)
+        return cls.from_pos(p.latitude, p.longitude, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_pos(cls, latitude: float, longitude: float, unit: Literal[1, 5]) -> Self:
+    def from_pos(cls, latitude: float, longitude: float, mesh_unit: Literal[1, 5]) -> Self:
         """Makes the nearest north-west :class:`MeshNode` of point.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.0 <= and <= 66.6...
             longitude: the longitude [deg] of the point which satisfies 100.0 <= and <= 180.0
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the :class:`MeshNode` obj
@@ -585,8 +585,8 @@ class MeshNode:
             - :meth:`MeshNode.to_pos`
         """
         return cls(
-            MeshCoord.from_latitude(latitude, unit=unit),
-            MeshCoord.from_longitude(longitude, unit=unit),
+            MeshCoord.from_latitude(latitude, mesh_unit=mesh_unit),
+            MeshCoord.from_longitude(longitude, mesh_unit=mesh_unit),
         )
 
     def to_meshcode(self) -> int:
@@ -673,7 +673,7 @@ class MeshCell:
         Construct from latitude and longitude, and altitude ignores
         (the result depends on the selection of the mesh unit)
 
-        >>> cell = MeshCell.from_pos(36.10377479, 140.087855041, unit=1)
+        >>> cell = MeshCell.from_pos(36.10377479, 140.087855041, mesh_unit=1)
         >>> cell
         MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
@@ -686,12 +686,12 @@ class MeshCell:
         Construct from node
 
         >>> node = MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7))
-        >>> cell == MeshCell.from_node(node, unit=1)
+        >>> cell == MeshCell.from_node(node, mesh_unit=1)
         True
 
         Construct from meshcode
 
-        >>> cell == MeshCell.from_meshcode(54401027, unit=1)
+        >>> cell == MeshCell.from_meshcode(54401027, mesh_unit=1)
         True
 
         Find the position within cell, from 0.0 to 1.0
@@ -709,60 +709,60 @@ class MeshCell:
     """The north-west node of the cell."""
     north_east: MeshNode
     """The north-east node of the cell."""
-    unit: Literal[1, 5]
+    mesh_unit: Literal[1, 5]
     """The mesh unit, :obj:`1` or :obj:`5`."""
 
     def __post_init__(self):
-        if self.unit not in (1, 5):
-            raise ValueError(f"expected unit is 1 or 5, we got {self.unit}") from None
+        if self.mesh_unit not in (1, 5):
+            raise ValueError(f"expected mesh unit is 1 or 5, we got {self.mesh_unit}") from None
 
-        elif self.unit == 5:
+        elif self.mesh_unit == 5:
             if self.south_west.latitude.third not in (0, 5) or self.south_west.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"expected mesh unit is 1 when third is neither 0 nor 5, "
                     f"we got a mesh node (south-west) as {self.south_west}"
                 ) from None
             elif self.south_east.latitude.third not in (0, 5) or self.south_east.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"expected mesh unit is 1 when third is neither 0 nor 5, "
                     f"we got a mesh node (south-east) as {self.south_east}"
                 ) from None
             elif self.north_west.latitude.third not in (0, 5) or self.north_west.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"expected mesh unit is 1 when third is neither 0 nor 5, "
                     f"we got a mesh node (north-west) as {self.north_west}"
                 ) from None
             elif self.north_east.latitude.third not in (0, 5) or self.north_east.longitude.third not in (0, 5):
                 raise ValueError(
-                    f"expected unit is 1 when third is neither 0 nor 5, "
+                    f"expected mesh unit is 1 when third is neither 0 nor 5, "
                     f"we got a mesh node (north-east) as {self.north_east}"
                 ) from None
 
-        next_lat = self.south_west.latitude.next_up(self.unit)
-        next_lng = self.south_west.longitude.next_up(self.unit)
+        next_lat = self.south_west.latitude.next_up(self.mesh_unit)
+        next_lng = self.south_west.longitude.next_up(self.mesh_unit)
         if not MeshNode(next_lat, self.south_west.longitude) == self.north_west:
             raise ValueError(
-                f"inconsistent on south-west vs north-west with unit {self.unit}, "
+                f"inconsistent on south-west vs north-west with mesh unit {self.mesh_unit}, "
                 f"we got south-west {self.south_west} and nw {self.north_west}"
             ) from None
         elif not MeshNode(self.south_west.latitude, next_lng) == self.south_east:
             raise ValueError(
-                f"inconsistent on south-west vs south-east with unit {self.unit}, "
+                f"inconsistent on south-west vs south-east with mesh unit {self.mesh_unit}, "
                 f"we got south-west {self.south_west} and se {self.south_east}"
             ) from None
         elif not MeshNode(next_lat, next_lng) == self.north_east:
             raise ValueError(
-                f"inconsistent on south-west vs south-east with unit {self.unit}, "
+                f"inconsistent on south-west vs south-east with mesh unit {self.mesh_unit}, "
                 f"we got south-west {self.south_west} and ne {self.north_east}"
             ) from None
 
     @classmethod
-    def from_meshcode(cls, code: int, unit: Literal[1, 5]) -> Self:
+    def from_meshcode(cls, code: int, mesh_unit: Literal[1, 5]) -> Self:
         """Makes a :class:`MeshCell` with the south-east :class:`MeshNode` which represented by meshcode `code`.
 
         Args:
             code: the meshcode
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the meth cell
@@ -772,7 +772,7 @@ class MeshCell:
 
         Examples:
             >>> meshcode = 54401027
-            >>> MeshCell.from_meshcode(code, unit=1)
+            >>> MeshCell.from_meshcode(code, mesh_unit=1)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
@@ -781,7 +781,7 @@ class MeshCell:
                 unit=1,
             )
             >>> meshcode = 54401005
-            >>> MeshCell.from_meshcode(code, unit=5)
+            >>> MeshCell.from_meshcode(code, mesh_unit=5)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
                 south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
@@ -791,17 +791,17 @@ class MeshCell:
             )
         """
         south_west = MeshNode.from_meshcode(code=code)
-        return cls.from_node(south_west, unit=unit)
+        return cls.from_node(south_west, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_point(cls, p: _point.Point, unit: Literal[1, 5]) -> Self:
+    def from_point(cls, p: _point.Point, mesh_unit: Literal[1, 5]) -> Self:
         """Makes a :class:`MeshCell` which contains the :class:`.Point`.
 
         We note that the result does not depend on :attr:`.Point.altitude`.
 
         Args:
             p: the point
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the mesh cell
@@ -813,7 +813,7 @@ class MeshCell:
 
         Examples:
             >>> point = Point(36.10377479, 140.087855041, 10.0)
-            >>> MeshCell.from_point(p, unit=1)
+            >>> MeshCell.from_point(p, mesh_unit=1)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
@@ -821,7 +821,7 @@ class MeshCell:
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
                 unit=1,
             )
-            >>> MeshCell.from_pos(p, unit=5)
+            >>> MeshCell.from_pos(p, mesh_unit=5)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
                 south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
@@ -830,16 +830,16 @@ class MeshCell:
                 unit=5,
             )
         """
-        return cls.from_pos(p.latitude, p.longitude, unit=unit)
+        return cls.from_pos(p.latitude, p.longitude, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_pos(cls, latitude: float, longitude: float, unit: Literal[1, 5]) -> Self:
+    def from_pos(cls, latitude: float, longitude: float, mesh_unit: Literal[1, 5]) -> Self:
         """Makes a :class:`MeshCell` which contains the point.
 
         Args:
             latitude: the latitude [deg] of the point which satisries 0 <= and <= 66.666...
             longitude: the longitude [deg] of the point which satisries 100 <= and <= 180
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the mesh cell
@@ -851,7 +851,7 @@ class MeshCell:
 
         Examples:
             >>> lat, lng = 36.10377479, 140.087855041
-            >>> MeshCell.from_pos(lat, lng, unit=1)
+            >>> MeshCell.from_pos(lat, lng, mesh_unit=1)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
@@ -859,7 +859,7 @@ class MeshCell:
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
                 unit=1,
             )
-            >>> MeshCell.from_pos(lat, lng, unit=5)
+            >>> MeshCell.from_pos(lat, lng, mesh_unit=5)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
                 south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
@@ -868,16 +868,16 @@ class MeshCell:
                 unit=5,
             )
         """
-        south_west = MeshNode.from_pos(latitude, longitude, unit=unit)
-        return cls.from_node(south_west, unit=unit)
+        south_west = MeshNode.from_pos(latitude, longitude, mesh_unit=mesh_unit)
+        return cls.from_node(south_west, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_node(cls, node: MeshNode, unit: Literal[1, 5]) -> Self:
+    def from_node(cls, node: MeshNode, mesh_unit: Literal[1, 5]) -> Self:
         """Return the unit cell which has `node` as a south-east node.
 
         Args:
             node: the south-west mesh node of the resulting cell
-            unit: the mesh unit, :obj:`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the mesh cell
@@ -889,7 +889,7 @@ class MeshCell:
 
         Examples:
             >>> node = MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7))
-            >>> MeshCell.from_node(node, unit=1)
+            >>> MeshCell.from_node(node, mesh_unit=1)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
@@ -898,7 +898,7 @@ class MeshCell:
                 unit=1,
             )
             >>> node = MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5))
-            >>> MeshCell.from_node(node, unit=5)
+            >>> MeshCell.from_node(node, mesh_unit=5)
             MeshCell(
                 south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
                 south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
@@ -907,26 +907,26 @@ class MeshCell:
                 unit=5,
             )
         """
-        if unit == 5:
+        if mesh_unit == 5:
             if node.latitude.third not in (0, 5):
                 raise ValueError(
                     "expected unit is 1 when third is neither 0 nor 5, "
-                    f"we got {unit} and third of latitude is {node.latitude.third} for latitude"
+                    f"we got {mesh_unit} and third of latitude is {node.latitude.third} for latitude"
                 ) from None
             if node.longitude.third not in (0, 5):
                 raise ValueError(
                     "expected unit is 1 when third is neither 0 nor 5, "
-                    f"we got {unit} and third is {node.longitude.third} for longitude"
+                    f"we got {mesh_unit} and third is {node.longitude.third} for longitude"
                 ) from None
 
-        next_lat = node.latitude.next_up(unit)
-        next_lng = node.longitude.next_up(unit)
+        next_lat = node.latitude.next_up(mesh_unit)
+        next_lng = node.longitude.next_up(mesh_unit)
         return cls(
             south_west=node,
             south_east=MeshNode(node.latitude, next_lng),
             north_west=MeshNode(next_lat, node.longitude),
             north_east=MeshNode(next_lat, next_lng),
-            unit=unit,
+            mesh_unit=mesh_unit,
         )
 
     def position(self, latitude: float, longitude: float) -> tuple[float, float]:
@@ -941,7 +941,7 @@ class MeshCell:
         Sample latitude and longitude
 
         >>> lat, lng = 36.10377479, 140.087855041
-        >>> cell = MeshCell.from_pos(lat, lng, unit=1)
+        >>> cell = MeshCell.from_pos(lat, lng, mesh_unit=1)
 
         The south-west of the cell is (0, 0), origin
 
@@ -974,10 +974,10 @@ class MeshCell:
             The reuslt depends on unit
 
             >>> lat, lng = 36.10377479, 140.087855041
-            >>> cell = MeshCell.from_pos(lat, lng, unit=1)
+            >>> cell = MeshCell.from_pos(lat, lng, mesh_unit=1)
             >>> cell.position(lat, lng)
             (0.4529748000001632, 0.028403280000475206)
-            >>> cell = MeshCell.from_pos(lat, lng, unit=5)
+            >>> cell = MeshCell.from_pos(lat, lng, mesh_unit=5)
             >>> cell.position(lat, lng)
             (0.4905949600000099, 0.405680656000186)
         """
@@ -986,7 +986,7 @@ class MeshCell:
         # then here uses 120 = 1.5 * 80.
         lat = latitude - self.south_west.latitude.to_latitude()
         lng = longitude - self.south_west.longitude.to_longitude()
-        if self.unit == 1:
+        if self.mesh_unit == 1:
             return 120 * lat, 80 * lng
         return 24 * lat, 16 * lng
 

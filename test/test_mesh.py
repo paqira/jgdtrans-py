@@ -71,12 +71,12 @@ class MeshCoordTest(unittest.TestCase):
 
     def test_is_unit(self):
         for third in range(10):
-            self.assertTrue(MeshCoord(1, 2, third).is_unit(1))
+            self.assertTrue(MeshCoord(1, 2, third).is_mesh_unit(1))
 
-        self.assertTrue(MeshCoord(1, 2, 0).is_unit(5))
-        self.assertTrue(MeshCoord(1, 2, 5).is_unit(5))
+        self.assertTrue(MeshCoord(1, 2, 0).is_mesh_unit(5))
+        self.assertTrue(MeshCoord(1, 2, 5).is_mesh_unit(5))
         for third in (1, 2, 3, 4, 6, 7, 8, 9):
-            self.assertFalse(MeshCoord(1, 2, third).is_unit(5))
+            self.assertFalse(MeshCoord(1, 2, third).is_mesh_unit(5))
 
     def test_from_latitude(self):
         actual = MeshCoord.from_latitude(36.103774791666666, 1)
@@ -247,8 +247,8 @@ class MeshNodeTest(unittest.TestCase):
 
     def test_is_unit(self):
         node = MeshNode.from_meshcode(54401027)
-        self.assertTrue(node.is_unit(1))
-        self.assertFalse(node.is_unit(5))
+        self.assertTrue(node.is_mesh_unit(1))
+        self.assertFalse(node.is_mesh_unit(5))
 
     def test_from_code(self):
         actual = MeshNode.from_meshcode(54401027)
@@ -338,7 +338,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
                 north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=5,
+                mesh_unit=5,
             )
         with self.assertRaises(ValueError):
             MeshCell(
@@ -346,7 +346,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
                 north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
                 north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-                unit=1,
+                mesh_unit=1,
             )
 
         # longitude
@@ -356,7 +356,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
                 north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=1,
+                mesh_unit=1,
             )
         with self.assertRaises(ValueError):
             MeshCell(
@@ -364,7 +364,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
                 north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 6)),
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=5,
+                mesh_unit=5,
             )
         with self.assertRaises(ValueError):
             MeshCell(
@@ -372,7 +372,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
                 north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
-                unit=5,
+                mesh_unit=5,
             )
 
         # latitude
@@ -382,7 +382,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
                 north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=5,
+                mesh_unit=5,
             )
         with self.assertRaises(ValueError):
             MeshCell(
@@ -390,7 +390,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 1), MeshCoord(40, 0, 8)),
                 north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=5,
+                mesh_unit=5,
             )
         with self.assertRaises(ValueError):
             MeshCell(
@@ -398,7 +398,7 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
                 north_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
                 north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-                unit=5,
+                mesh_unit=5,
             )
         with self.assertRaises(ValueError):
             MeshCell(
@@ -406,127 +406,127 @@ class MeshCellTest(unittest.TestCase):
                 south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
                 north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
                 north_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
-                unit=5,
+                mesh_unit=5,
             )
 
     def test_from_code(self):
-        actual = MeshCell.from_meshcode(54401027, unit=1)
+        actual = MeshCell.from_meshcode(54401027, mesh_unit=1)
         expected = MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
             south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
             north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
             north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-            unit=1,
+            mesh_unit=1,
         )
         self.assertEqual(expected, actual)
 
-        actual = MeshCell.from_meshcode(54401005, unit=5)
+        actual = MeshCell.from_meshcode(54401005, mesh_unit=5)
         expected = MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
             south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
             north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
             north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-            unit=5,
+            mesh_unit=5,
         )
         self.assertEqual(expected, actual)
 
         with self.assertRaises(ValueError):
-            MeshCell.from_meshcode(54401027, unit=5)
+            MeshCell.from_meshcode(54401027, mesh_unit=5)
 
         with self.assertRaises(ValueError):
-            MeshCell.from_meshcode(54401027, unit=2)
+            MeshCell.from_meshcode(54401027, mesh_unit=2)
 
     def test_from_point(self):
         point = Point(36.10377479, 140.087855041, 10.0)
 
-        actual = MeshCell.from_point(point, unit=1)
+        actual = MeshCell.from_point(point, mesh_unit=1)
         expected = MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
             south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
             north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
             north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-            unit=1,
+            mesh_unit=1,
         )
         self.assertEqual(expected, actual)
 
-        actual = MeshCell.from_point(point, unit=5)
+        actual = MeshCell.from_point(point, mesh_unit=5)
         expected = MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
             south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
             north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
             north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-            unit=5,
+            mesh_unit=5,
         )
         self.assertEqual(expected, actual)
 
         with self.assertRaises(ValueError):
-            MeshCell.from_point(point, unit=2)
+            MeshCell.from_point(point, mesh_unit=2)
 
     def test_from_pos(self):
         lat, lng = 36.10377479, 140.087855041
 
-        actual = MeshCell.from_pos(lat, lng, unit=1)
+        actual = MeshCell.from_pos(lat, lng, mesh_unit=1)
         expected = MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
             south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
             north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
             north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-            unit=1,
+            mesh_unit=1,
         )
         self.assertEqual(expected, actual)
 
-        actual = MeshCell.from_pos(lat, lng, unit=5)
+        actual = MeshCell.from_pos(lat, lng, mesh_unit=5)
         expected = MeshCell(
             south_west=MeshNode(mesh.MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
             south_east=MeshNode(mesh.MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
             north_west=MeshNode(mesh.MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
             north_east=MeshNode(mesh.MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-            unit=5,
+            mesh_unit=5,
         )
         self.assertEqual(expected, actual)
 
         with self.assertRaises(ValueError):
-            MeshCell.from_pos(lat, lng, unit=2)
+            MeshCell.from_pos(lat, lng, mesh_unit=2)
 
     def test_from_node(self):
         node = MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7))
-        actual = MeshCell.from_node(node, unit=1)
+        actual = MeshCell.from_node(node, mesh_unit=1)
         expected = MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7)),
             south_east=MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 8)),
             north_west=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 7)),
             north_east=MeshNode(MeshCoord(54, 1, 3), MeshCoord(40, 0, 8)),
-            unit=1,
+            mesh_unit=1,
         )
         self.assertEqual(expected, actual)
 
         node = MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5))
-        actual = MeshCell.from_node(node, unit=5)
+        actual = MeshCell.from_node(node, mesh_unit=5)
         expected = MeshCell(
             south_west=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 0, 5)),
             south_east=MeshNode(MeshCoord(54, 1, 0), MeshCoord(40, 1, 0)),
             north_west=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 0, 5)),
             north_east=MeshNode(MeshCoord(54, 1, 5), MeshCoord(40, 1, 0)),
-            unit=5,
+            mesh_unit=5,
         )
         self.assertEqual(expected, actual)
 
         node = MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7))
         with self.assertRaises(ValueError):
-            MeshCell.from_node(node, unit=5)
+            MeshCell.from_node(node, mesh_unit=5)
 
         with self.assertRaises(ValueError):
-            MeshCell.from_node(node, unit=2)
+            MeshCell.from_node(node, mesh_unit=2)
 
     def test_position_in_cell(self):
         lat, lng = 36.10377479, 140.087855041
-        cell = MeshCell.from_pos(lat, lng, unit=1)
+        cell = MeshCell.from_pos(lat, lng, mesh_unit=1)
 
         actual = cell.position(lat, lng)
         expected = (0.4529748000001632, 0.028403280000475206)
         self.assertEqual(expected, actual)
 
-        cell = MeshCell.from_pos(lat, lng, unit=5)
+        cell = MeshCell.from_pos(lat, lng, mesh_unit=5)
         actual = cell.position(lat, lng)
         expected = (0.4905949600000099, 0.405680656000186)
         self.assertEqual(expected, actual)
