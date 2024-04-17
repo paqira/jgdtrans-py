@@ -192,11 +192,11 @@ class Point(Sequence[float]):
         return cls(node.latitude.to_latitude(), node.longitude.to_longitude(), 0.0)
 
     @classmethod
-    def from_meshcode(cls, code: int) -> Self:
+    def from_meshcode(cls, meshcode: int) -> Self:
         """Makes a :class:`Point` (the latitude and the longitude) of the node represented by `code`.
 
         Args:
-            code: the meshcode
+            meshcode: the meshcode
 
         Returns:
             a :class:`Point` obj
@@ -211,7 +211,7 @@ class Point(Sequence[float]):
         See Also:
             - :meth:`.MeshNode.from_meshcode`
         """
-        node = _mesh.MeshNode.from_meshcode(code)
+        node = _mesh.MeshNode.from_meshcode(meshcode)
         return cls.from_node(node)
 
     @classmethod
