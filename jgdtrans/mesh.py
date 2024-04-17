@@ -188,8 +188,8 @@ class MeshCoord:
     @classmethod
     def _from_degree(cls, value: float, mesh_unit: Literal[1, 5]) -> Self:
         integer = math.floor(value)
-        first = integer % 100
 
+        first = integer % 100
         second = math.floor(8 * value) - 8 * integer
         third = math.floor(80 * value) - 80 * integer - 10 * second
 
@@ -354,9 +354,7 @@ class MeshCoord:
             >>> MeshCoord(0, 7, 9).next_up(1)
             MeshCoord(1, 0, 0)
         """
-        if mesh_unit not in (1, 5):
-            raise TypeError(f"expected mesh unit is 1 or 5, we got {mesh_unit}") from None
-        elif not self.is_mesh_unit(mesh_unit):
+        if not self.is_mesh_unit(mesh_unit):
             raise ValueError(
                 f"expected mesh unit is 1 when third is neither 0 nor 5, we got {mesh_unit} (third is {self.third})"
             ) from None
@@ -397,9 +395,7 @@ class MeshCoord:
             >>> MeshCoord(1, 0, 0).next_down(1)
             MeshCoord(0, 7, 9)
         """
-        if mesh_unit not in (1, 5):
-            raise TypeError(f"expected mesh unit is 1 or 5, we got {mesh_unit}") from None
-        elif not self.is_mesh_unit(mesh_unit):
+        if not self.is_mesh_unit(mesh_unit):
             raise ValueError(
                 f"expected mesh unit is 1 when third is neither 0 nor 5, we got {mesh_unit} (third is {self.third})"
             ) from None
@@ -713,9 +709,6 @@ class MeshCell:
     """The mesh unit, :obj:`1` or :obj:`5`."""
 
     def __post_init__(self):
-        if self.mesh_unit not in (1, 5):
-            raise TypeError(f"expected mesh unit is 1 or 5, we got {self.mesh_unit}") from None
-
         if not self.south_west.is_mesh_unit(self.mesh_unit):
             raise ValueError(
                 f"expected mesh unit is 1 when third is neither 0 nor 5, "
@@ -909,12 +902,12 @@ class MeshCell:
         if not node.latitude.is_mesh_unit(mesh_unit):
             raise ValueError(
                 "expected mesh unit is 1 when third is neither 0 nor 5, "
-                f"we got {mesh_unit} and third of latitude is {node.latitude.third} for latitude"
+                f"we got {mesh_unit} and third of latitude is {node.latitude.third}"
             ) from None
         if not node.longitude.is_mesh_unit(mesh_unit):
             raise ValueError(
                 "expected mesh unit is 1 when third is neither 0 nor 5, "
-                f"we got {mesh_unit} and third is {node.longitude.third} for longitude"
+                f"we got {mesh_unit} and third of longitude is {node.longitude.third}"
             ) from None
 
         next_lat = node.latitude.next_up(mesh_unit)
