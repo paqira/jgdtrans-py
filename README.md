@@ -1,4 +1,4 @@
-# jgdtrans
+# jgdtrans for Python
 
 Unofficial coordinate transformer by _Gridded Correction Parameter_
 which Geospatial Information Authority of Japan (GIAJ, formerly GSIJ) distributing
