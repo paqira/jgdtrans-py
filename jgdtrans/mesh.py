@@ -422,8 +422,8 @@ class MeshCoord:
         return MeshCoord(self.first, self.second, self.third - mesh_unit)
 
 
-_MESH_COORD_MIN = MeshCoord(0, 0, 0)
-_MESH_COORD_MAX = MeshCoord(99, 7, 9)
+_MESH_COORD_MIN: Final = MeshCoord(0, 0, 0)
+_MESH_COORD_MAX: Final = MeshCoord(99, 7, 9)
 
 
 @dataclass(frozen=True)
@@ -670,8 +670,8 @@ class MeshNode:
         return point.latitude, point.longitude
 
 
-_MESH_NODE_MIN = MeshNode(MeshCoord(0, 0, 0), MeshCoord(0, 0, 0))
-_MESH_NODE_MAX = MeshNode(MeshCoord(99, 7, 9), MeshCoord(80, 0, 0))
+_MESH_NODE_MIN: Final = MeshNode(MeshCoord(0, 0, 0), MeshCoord(0, 0, 0))
+_MESH_NODE_MAX: Final = MeshNode(MeshCoord(99, 7, 9), MeshCoord(80, 0, 0))
 
 
 @dataclass(frozen=True)
