@@ -16,7 +16,7 @@ import ctypes
 import math
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import Final, Literal
+from typing import ClassVar, Final, Literal
 
 from typing_extensions import Self
 
@@ -121,13 +121,55 @@ class MeshCoord:
     third: int
     """takes values :obj:`0`, ..., :obj:`9`."""
 
+    @classmethod
+    @property
+    def FIRST_MIN(cls) -> Literal[0]:
+        """Smallest :obj:`first` value."""
+        return 0
+
+    @classmethod
+    @property
+    def FIRST_MAX(cls) -> Literal[99]:
+        """Largest :obj:`first` value."""
+        return 99
+
+    @classmethod
+    @property
+    def SECOND_MIN(cls) -> Literal[0]:
+        """Smallest :obj:`second` value."""
+        return 0
+
+    @classmethod
+    @property
+    def SECOND_MAX(cls) -> Literal[7]:
+        """Largest :obj:`second` value."""
+        return 7
+
+    @classmethod
+    @property
+    def THIRD_MIN(cls) -> Literal[0]:
+        """Smallest :obj:`third` value."""
+        return 0
+
+    @classmethod
+    @property
+    def THIRD_MAX(cls) -> Literal[9]:
+        """Largest :obj:`third` value."""
+        return 9
+
     def __post_init__(self):
-        if not (0 <= self.first < 100):
-            raise ValueError(f"expected first is 0, ..., 99, we got {self.first}") from None
-        elif not (0 <= self.second < 8):
-            raise ValueError(f"expected second is 0, ..., 7, we got {self.second}") from None
-        elif not (0 <= self.third < 10):
-            raise ValueError(f"expected second is 0, ..., 9, we got {self.third}") from None
+        if not (self.FIRST_MIN <= self.first <= self.FIRST_MAX):
+            raise ValueError(
+                f"expected first is {self.FIRST_MIN} to {self.FIRST_MAX}, we got {self.first}"
+            ) from None
+        elif not (self.SECOND_MIN <= self.second <= self.SECOND_MAX):
+            raise ValueError(
+                f"expected second is {self.SECOND_MIN} to {self.SECOND_MAX}, we got {self.second}"
+            ) from None
+        elif not (self.THIRD_MIN <= self.third <= self.THIRD_MAX):
+            raise ValueError(
+                f"expected second is {self.THIRD_MIN} to {self.THIRD_MAX}, we got {self.third}"
+            ) from None
 
     def __lt__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
@@ -138,10 +180,8 @@ class MeshCoord:
         if self.first == other.first:
             if self.second == other.second:
                 return self.third < other.third
-            else:
-                return self.second < other.second
-        else:
-            return self.first < other.first
+            return self.second < other.second
+        return self.first < other.first
 
     def __le__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
@@ -152,10 +192,8 @@ class MeshCoord:
         if self.first == other.first:
             if self.second == other.second:
                 return self.third <= other.third
-            else:
-                return self.second < other.second
-        else:
-            return self.first < other.first
+            return self.second < other.second
+        return self.first < other.first
 
     def __gt__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
@@ -166,10 +204,8 @@ class MeshCoord:
         if self.first == other.first:
             if self.second == other.second:
                 return self.third > other.third
-            else:
-                return self.second > other.second
-        else:
-            return self.first > other.first
+            return self.second > other.second
+        return self.first > other.first
 
     def __ge__(self, other: Self) -> bool:
         if not isinstance(other, MeshCoord):
@@ -180,10 +216,8 @@ class MeshCoord:
         if self.first == other.first:
             if self.second == other.second:
                 return self.third >= other.third
-            else:
-                return self.second > other.second
-        else:
-            return self.first > other.first
+            return self.second > other.second
+        return self.first > other.first
 
     @classmethod
     def _from_degree(cls, degree: float, mesh_unit: Literal[1, 5]) -> Self:
@@ -359,16 +393,16 @@ class MeshCoord:
                 f"expected mesh unit is 1 when third is neither 0 nor 5, we got {mesh_unit} (third is {self.third})"
             ) from None
 
-        # that is 10 - self.unit
+        # that is self.THIRD_MAX - self.unit
         bound: Final = 9 if mesh_unit == 1 else 5
 
         # increment
         if self.third == bound:
-            if self.second == 7:
-                if self.first == 99:
+            if self.second == self.SECOND_MAX:
+                if self.first == self.FIRST_MAX:
                     raise OverflowError(f"unable to add {mesh_unit} to {self}") from None
-                return MeshCoord(self.first + 1, 0, 0)
-            return MeshCoord(self.first, self.second + 1, 0)
+                return MeshCoord(self.first + 1, self.SECOND_MIN, self.THIRD_MIN)
+            return MeshCoord(self.first, self.second + 1, self.THIRD_MIN)
         return MeshCoord(self.first, self.second, self.third + mesh_unit)
 
     def next_down(self, mesh_unit: Literal[1, 5]) -> MeshCoord:
@@ -400,14 +434,14 @@ class MeshCoord:
                 f"expected mesh unit is 1 when third is neither 0 nor 5, we got {mesh_unit} (third is {self.third})"
             ) from None
 
-        # that is 10 - self.unit
+        # that is self.THIRD_MAX - self.unit
         bound: Final = 9 if mesh_unit == 1 else 5
 
-        if self.third == 0:
-            if self.second == 0:
-                if self.first == 0:
+        if self.third == self.THIRD_MIN:
+            if self.second == self.SECOND_MIN:
+                if self.first == self.FIRST_MIN:
                     raise OverflowError(f"unable to subtract {mesh_unit} from {self}") from None
-                return MeshCoord(self.first - 1, 7, bound)
+                return MeshCoord(self.first - 1, self.SECOND_MAX, bound)
             return MeshCoord(self.first, self.second - 1, bound)
         return MeshCoord(self.first, self.second, self.third - mesh_unit)
 
@@ -448,18 +482,48 @@ class MeshNode:
     This satisfies :code:`MeshCoord(0, 0, 0)` <= and <= :code:`MeshCoord(80, 0, 0)`.
     """
 
+    _MESH_COORD_MIN: Final[ClassVar] = MeshCoord(0, 0, 0)
+    _LATITUDE_MAX: Final[ClassVar] = MeshCoord(99, 7, 9)
+    _LONGITUDE_MAX: Final[ClassVar] = MeshCoord(80, 0, 0)
+
+    @classmethod
+    @property
+    def LATITUDE_MIN(cls):
+        """Smallest :obj:`latitude` value.
+
+        Equals to :obj:`MeshCoord(first=0, second=0, third=0)`.
+        """
+        return cls._MESH_COORD_MIN
+
+    @classmethod
+    @property
+    def LATITUDE_MAX(cls):
+        """Largest :obj:`latitude` value.
+
+        Equals to :obj:`MeshCoord(first=99, second=7, third=9)`.
+        """
+        return cls._LATITUDE_MAX
+
+    @classmethod
+    @property
+    def LONGITUDE_MIN(cls):
+        """Smallest :obj:`longitude` value.
+
+        Equals to :obj:`MeshCoord(first=0, second=0, third=0)`.
+        """
+        return cls._MESH_COORD_MIN
+
+    @classmethod
+    @property
+    def LONGITUDE_MAX(cls):
+        """Largest :obj:`longitude` value.
+
+        Equals to :obj:`MeshCoord(first=80, second=0, third=0)`.
+        """
+        return cls._LONGITUDE_MAX
+
     def __post_init__(self):
-        if self.longitude.first == 80:
-            if self.longitude.second == 0:
-                if 0 < self.longitude.third:
-                    raise ValueError(
-                        f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
-                    ) from None
-            elif 0 < self.longitude.second:
-                raise ValueError(
-                    f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
-                ) from None
-        elif 80 < self.longitude.first:
+        if self.LONGITUDE_MAX < self.longitude:
             raise ValueError(
                 f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
             ) from None
