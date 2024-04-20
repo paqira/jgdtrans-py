@@ -13,7 +13,13 @@ from . import (
     transformer,  # noqa: F401
     types,  # noqa: F401
 )
-from .error import CorrectionNotFoundError, DeserializeError, ParameterNotFoundError, ParseParFileError
+from .error import (
+    CorrectionNotFoundError,
+    DeserializeError,
+    ParameterNotFoundError,
+    ParseParFileError,
+    PointOutOfBoundsError,
+)
 from .par import load, loads
 from .point import Point
 from .transformer import Transformer, from_dict

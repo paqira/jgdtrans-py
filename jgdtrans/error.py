@@ -16,16 +16,20 @@ class ParameterNotFoundError(Error, LookupError):
         return "{} ({})".format(*self.args)
 
 
+class PointOutOfBoundsError(Error, ValueError):
+    """Error is greater than criteria."""
+
+
+class CorrectionNotFoundError(Error, ValueError):
+    """Error is greater than criteria."""
+
+
 class ParseParFileError(Error, ValueError):
     """Failed to parse par file."""
 
 
 class DeserializeError(Error, ValueError):
     """Failed to deserialize :class:`.Transformer`."""
-
-
-class CorrectionNotFoundError(Error, ValueError):
-    """Error is greater than criteria."""
 
 
 if __name__ == "__main__":

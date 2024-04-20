@@ -567,7 +567,7 @@ class Transformer:
         Raises:
             ParameterNotFoundError: if `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            ValueError: if `latitude` or `longitude` is unsupported value
+            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -619,7 +619,7 @@ class Transformer:
         Raises:
             ParameterNotFoundError: if `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            ValueError: if `latitude` or `longitude` is unsupported value
+            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -663,7 +663,7 @@ class Transformer:
             ParameterNotFoundError: if `latitude` and `longitude` points to an area
                                     where the parameter does not support
             CorrectionNotFoundError: if verification failed
-            ValueError: if `latitude` or `longitude` is unsupported value
+            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -741,7 +741,7 @@ class Transformer:
         Raises:
             ParameterNotFoundError: if `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            ValueError: if `latitude` or `longitude` is unsupported value
+            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -759,7 +759,10 @@ class Transformer:
             Correction(latitude=-1.7729133100878255e-06, longitude=4.202334510058886e-06, altitude=0.09631385781030007)
         """
         # resolving cell
-        cell = _mesh.MeshCell.from_pos(latitude, longitude, mesh_unit=self.mesh_unit())
+        try:
+            cell = _mesh.MeshCell.from_pos(latitude, longitude, mesh_unit=self.mesh_unit())
+        except ValueError as e:
+            raise _error.PointOutOfBoundsError from e
 
         # finding parameter
         sw, se, nw, ne = self._parameter_quadruple(cell)
@@ -833,7 +836,7 @@ class Transformer:
         Raises:
             ParameterNotFoundError: if `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            ValueError: if `latitude` or `longitude` is unsupported value
+            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -854,13 +857,13 @@ class Transformer:
         lat, lng = latitude - delta, longitude + delta
 
         if lat < 0 <= latitude:
-            raise ValueError(f"latitude is too small, we got {latitude}") from None
+            raise _error.PointOutOfBoundsError(f"latitude is too small, we got {latitude}") from None
 
         lat_corr, lng_corr, _ = self.forward_corr(lat, lng)
         lat, lng = latitude - lat_corr, longitude - lng_corr
 
         if lat < 0 <= latitude:
-            raise ValueError(f"latitude is too small, we got {latitude}") from None
+            raise _error.PointOutOfBoundsError(f"latitude is too small, we got {latitude}") from None
 
         corr = self.forward_corr(lat, lng)
         return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
@@ -885,7 +888,7 @@ class Transformer:
             ParameterNotFoundError: if `latitude` and `longitude` points to an area
                                     where the parameter does not support
             CorrectionNotFoundError: if verification failed
-            ValueError: if `latitude` or `longitude` is unsupported value
+            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -927,9 +930,12 @@ class Transformer:
         xn = longitude
 
         for _ in range(iteration):
-            cell = _mesh.MeshCell.from_pos(yn, xn, mesh_unit=self.mesh_unit())
-            sw, se, nw, ne = self._parameter_quadruple(cell)
+            try:
+                cell = _mesh.MeshCell.from_pos(latitude, longitude, mesh_unit=self.mesh_unit())
+            except ValueError as e:
+                raise _error.PointOutOfBoundsError from e
 
+            sw, se, nw, ne = self._parameter_quadruple(cell)
             y, x = cell.position(yn, xn)
 
             corr_y = (
