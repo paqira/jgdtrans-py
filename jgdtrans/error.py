@@ -2,6 +2,14 @@
 
 from __future__ import annotations
 
+__all__ = [
+    "Error",
+    "ParameterNotFoundError",
+    "CorrectionNotFoundError",
+    "PointOutOfBoundsError",
+    "ParseParFileError",
+]
+
 
 class Error(Exception):
     """The root error of this package."""
