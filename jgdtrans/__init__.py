@@ -38,6 +38,6 @@ __all__ = [
     #
     "ParameterNotFoundError",
     "CorrectionNotFoundError",
-    "PointOutOfBoundsError",
     "ParseParFileError",
+    "PointOutOfBoundsError",
 ]
