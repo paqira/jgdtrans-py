@@ -3,7 +3,16 @@ from __future__ import annotations
 import unittest
 
 from jgdtrans import Point, mesh
-from jgdtrans.mesh import MeshCell, MeshCoord, MeshNode
+from jgdtrans.mesh import MeshCell, MeshCoord, MeshNode, is_meshcode
+
+
+class IsMeshcode(unittest.TestCase):
+    def test(self):
+        self.assertTrue(is_meshcode(54401027))
+        self.assertFalse(is_meshcode(-1))
+        self.assertFalse(is_meshcode(100000000))
+        self.assertFalse(is_meshcode(10810000))
+        self.assertFalse(is_meshcode(10100800))
 
 
 class MeshCoordTest(unittest.TestCase):
