@@ -11,6 +11,7 @@ from typing_extensions import (
 )
 
 __all__ = [
+    "MeshUnitType",
     "FormatType",
     #
     "ParameterDict",
