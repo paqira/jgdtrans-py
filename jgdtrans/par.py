@@ -226,7 +226,7 @@ def loads(
 
 
 def load(
-    fp: TextIO[str],
+    fp: TextIO,
     format: _types.FormatType,
     *,
     description: str | None = None,
