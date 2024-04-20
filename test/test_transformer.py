@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import unittest
 from typing import Sequence
 
@@ -291,6 +292,76 @@ class Transformer(unittest.TestCase):
             tf.backward_safe_corr(0, 99)
         with self.assertRaises(PointOutOfBoundsError):
             tf.backward_safe_corr(0, 181)
+
+    def test_statistics(self):
+        stats = jgdtrans.from_dict(DATA["SemiDynaEXE"]).statistics()
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(
+                4, -0.006422499999999999, 0.00021264700797330775, 0.006422499999999999, -0.00664, -0.0062
+            ),
+            stats.latitude,
+        )
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(4, 0.0151075, 0.00013553136168429814, 0.0151075, 0.01492, 0.01529),
+            stats.longitude,
+        )
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(4, 0.0972325, 0.005453133846697696, 0.0972325, 0.08972, 0.10374),
+            stats.altitude,
+        )
+
+        stats = jgdtrans.Transformer("TKY2JGD", {}).statistics()
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ),
+            stats.latitude,
+        )
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ),
+            stats.longitude,
+        )
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ),
+            stats.longitude,
+        )
+
+        stats = jgdtrans.Transformer(
+            "TKY2JGD", {54401005: jgdtrans.transformer.Parameter(1.0, 0.0, math.nan)}
+        ).statistics()
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(1, 1.0, 0.0, 1.0, 1.0, 1.0),
+            stats.latitude,
+        )
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(1, 0.0, 0.0, 0.0, 0.0, 0.0),
+            stats.longitude,
+        )
+        self.assertEqual(stats.altitude.count, 1)
+        self.assertTrue(math.isnan(stats.altitude.mean))
+        self.assertTrue(math.isnan(stats.altitude.std))
+        self.assertTrue(math.isnan(stats.altitude.abs))
+        self.assertTrue(math.isnan(stats.altitude.min))
+        self.assertTrue(math.isnan(stats.altitude.max))
 
 
 if __name__ == "__main__":

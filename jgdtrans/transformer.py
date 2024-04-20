@@ -20,8 +20,8 @@ __all__ = [
     "Transformer",
     "Parameter",
     "Correction",
-    "StatisticalSummary",
     "Statistics",
+    "StatisticData",
     #
     "from_dict",
 ]
@@ -173,7 +173,7 @@ class Parameter(NamedTuple):
         return math.hypot(self.latitude, self.longitude)
 
 
-class Statistics(NamedTuple):
+class StatisticData(NamedTuple):
     """The statistics of parameter.
 
     This is a component of the result that :meth:`Transformer.summary` returns.
@@ -193,17 +193,17 @@ class Statistics(NamedTuple):
     """The maximum ([sec] or [m])."""
 
 
-class StatisticalSummary(NamedTuple):
+class Statistics(NamedTuple):
     """The statistical summary of parameter.
 
     This is a result that :meth:`Transformer.summary` returns.
     """
 
-    latitude: Statistics
+    latitude: StatisticData
     """The statistics of latitude."""
-    longitude: Statistics
+    longitude: StatisticData
     """The statistics of longitude."""
-    altitude: Statistics
+    altitude: StatisticData
     """The statistics of altitude."""
 
 
@@ -414,13 +414,10 @@ class Transformer:
             "description": self.description,
         }
 
-    def summary(self) -> StatisticalSummary:
-        """Returns the statistical summary.
+    def statistics(self) -> Statistics:
+        """Returns the statistics of the parameter.
 
-        This fills the result by :obj:`None` if the population is empty,
-        and drops :obj:`nan` from the population of the summary.
-
-        See :class:`Statistics` for details of result's components.
+        See :class:`StatisticData` for details of result's components.
 
         Returns:
             the statistics of the parameter
@@ -437,7 +434,7 @@ class Transformer:
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
             ...     }
             ... )
-            >>> tf.summary()
+            >>> tf.statistics()
             StatisticalSummary(
                 latitude=Statistics(
                     count=4,
@@ -467,23 +464,27 @@ class Transformer:
         """
         # Surprisingly, the following code is fast enough.
 
-        latitude = tuple(filter(lambda v: not math.isnan(v), map(lambda p: p.latitude, self.parameter.values())))
-        longitude = tuple(filter(lambda v: not math.isnan(v), map(lambda p: p.longitude, self.parameter.values())))
-        altitude = tuple(filter(lambda v: not math.isnan(v), map(lambda p: p.altitude, self.parameter.values())))
-
         kwargs = {}
-        for name, arr in (("latitude", latitude), ("longitude", longitude), ("altitude", altitude)):
+        for name, arr in (
+            ("latitude", tuple(map(lambda p: p.latitude, self.parameter.values()))),
+            ("longitude", tuple(map(lambda p: p.longitude, self.parameter.values()))),
+            ("altitude", tuple(map(lambda p: p.altitude, self.parameter.values()))),
+        ):
             if not arr:
-                kwargs[name] = Statistics(None, None, None, None, None, None)
+                kwargs[name] = StatisticData(None, None, None, None, None, None)
+                continue
+
+            sum_ = math.fsum(arr)
+
+            if math.isnan(sum_):
+                kwargs[name] = StatisticData(len(arr), math.nan, math.nan, math.nan, math.nan, math.nan)
                 continue
 
             length = len(arr)
-
-            sum_ = math.fsum(arr)
             mean = sum_ / length
             std = math.sqrt(math.fsum((mean - x) ** 2 for x in arr) / length)
 
-            kwargs[name] = Statistics(
+            kwargs[name] = StatisticData(
                 count=length,
                 mean=mean,
                 std=std,
@@ -492,7 +493,7 @@ class Transformer:
                 max=max(arr),
             )
 
-        return StatisticalSummary(**kwargs)
+        return Statistics(**kwargs)
 
     def transform(
         self,
