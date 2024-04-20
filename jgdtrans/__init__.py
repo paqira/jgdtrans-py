@@ -15,7 +15,6 @@ from . import (
 )
 from .error import (
     CorrectionNotFoundError,
-    DeserializeError,
     ParameterNotFoundError,
     ParseParFileError,
     PointOutOfBoundsError,
@@ -39,6 +38,6 @@ __all__ = [
     #
     "ParameterNotFoundError",
     "CorrectionNotFoundError",
-    "DeserializeError",
+    "PointOutOfBoundsError",
     "ParseParFileError",
 ]

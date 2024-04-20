@@ -28,9 +28,5 @@ class ParseParFileError(Error, ValueError):
     """Failed to parse par file."""
 
 
-class DeserializeError(Error, ValueError):
-    """Failed to deserialize :class:`.Transformer`."""
-
-
 if __name__ == "__main__":
     pass
