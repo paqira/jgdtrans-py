@@ -9,9 +9,39 @@ from . import transformer as _trans
 from . import types as _types
 
 __all__ = [
+    "is_format",
     "load",
     "loads",
 ]
+
+
+def is_format(format: _types.FormatType) -> bool:
+    """Returns :obj:`True` when `format` is valid.
+
+    Args:
+        format: a test value
+
+    Returns:
+        :obj:`True` when `format` is valid
+
+    Examples:
+        >>> is_format('TKY2JGD')
+        True
+        >>> is_format('SemiDynaEXE')
+        True
+        >>> is_format('Hi!')
+        False
+    """
+    return format in (
+        "TKY2JGD",
+        "PatchJGD",
+        "PatchJGD_H",
+        "PatchJGD_HV",
+        "HyokoRev",
+        "SemiDynaEXE",
+        "geonetF3",
+        "ITRF2014",
+    )
 
 
 def parse(
