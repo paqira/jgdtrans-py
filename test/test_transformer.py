@@ -4,6 +4,7 @@ import unittest
 from typing import Sequence
 
 import jgdtrans
+from jgdtrans.error import PointOutOfBoundsError
 
 DATA = {
     "TKY2JGD": {
@@ -254,6 +255,42 @@ class Transformer(unittest.TestCase):
         expected = tuple(trans.backward(*origin))
         actual = tuple(trans.transform(*origin, backward=True))
         self.assert_equal_point(expected, actual)
+
+    def test_forward_corr(self):
+        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.forward_corr(-1, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.forward_corr(67, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.forward_corr(0, 99)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.forward_corr(0, 181)
+
+    def test_backward_corr(self):
+        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_corr(0, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_corr(67, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_corr(0, 99)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_corr(0, 181)
+
+    def test_backward_safe_corr(self):
+        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_safe_corr(-1, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_safe_corr(67, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_safe_corr(0, 99)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_safe_corr(0, 181)
 
 
 if __name__ == "__main__":
