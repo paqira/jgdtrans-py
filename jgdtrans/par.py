@@ -1,4 +1,4 @@
-"""Provides parsers."""
+"""Provides par file parsers."""
 
 from __future__ import annotations
 
