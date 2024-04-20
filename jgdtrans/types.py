@@ -3,19 +3,24 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Literal
+from typing import Literal, TypedDict
 
-from typing_extensions import NotRequired, Required, TypeAlias, TypedDict
+from typing_extensions import (
+    Required,  # typing @ >= 3.11
+    TypeAlias,  # typing @ >= 3.10
+)
 
 __all__ = [
     "FormatType",
     #
     "ParameterDict",
     "TransformerDict",
-    #
-    "ParameterLikeMapping",
     "TransformerLikeMapping",
 ]
+
+MeshUnitType: TypeAlias = Literal[1, 5]
+"""Type of mesh unit."""
+
 
 FormatType: TypeAlias = Literal[
     "TKY2JGD",
@@ -46,46 +51,35 @@ Notes:
 
 
 class ParameterDict(TypedDict):
-    """Type for :meth:`.Transformer.to_dict` output."""
+    """Type for :meth:`.Transformer.to_dict` and :meth:`.Transformer.from_dict`."""
 
-    latitude: Required[float]
+    latitude: float
     """The latitude parameter on the point [sec]."""
-    longitude: Required[float]
+    longitude: float
     """The longitude parameter on the point [sec]."""
-    altitude: Required[float]
-    """The altitude parameter on the point [m]."""
-
-
-class ParameterLikeMapping(TypedDict):
-    """Type for :meth:`.Transformer.from_dict` input."""
-
-    latitude: Required[float]
-    """The latitude parameter on the point [sec]."""
-    longitude: Required[float]
-    """The longitude parameter on the point [sec]."""
-    altitude: Required[float]
+    altitude: float
     """The altitude parameter on the point [m]."""
 
 
 class TransformerDict(TypedDict):
-    """Type of :meth:`.Transformer.to_dict` output."""
+    """Return type of :meth:`.Transformer.to_dict`."""
 
-    format: Required[FormatType]
-    """The unit of the mesh, :obj:`1` or :obj:`5`."""
-    parameter: Required[dict[int, ParameterDict]]
+    format: FormatType
+    """The format of par file."""
+    parameter: dict[int, ParameterDict]
     """The parameters."""
-    description: Required[str | None]
+    description: str | None
     """The description of the parameter."""
 
 
-class TransformerLikeMapping(TypedDict):
-    """Type of :meth:`.Transformer.from_dict` input."""
+class TransformerLikeMapping(TypedDict, total=False):
+    """Argument type of :meth:`.Transformer.from_dict`."""
 
     format: Required[FormatType]
-    """The unit of the mesh, :obj:`1` or :obj:`5`."""
-    parameter: Required[Mapping[int | str, ParameterLikeMapping]]
+    """The format of par file."""
+    parameter: Required[Mapping[int | str, ParameterDict]]
     """The parameters, the key must be integer-like."""
-    description: NotRequired[str | None]
+    description: str | None
     """The description of the parameter, optional."""
 
 

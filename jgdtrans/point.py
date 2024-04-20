@@ -7,11 +7,12 @@ from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 from typing import Literal, overload
 
-from typing_extensions import Self
+from typing_extensions import Self  # typing @ >= 3.11
 
 from . import dms as _dms
 from . import mesh as _mesh
 from . import transformer as _trans
+from . import types as _types
 
 __all__ = [
     "Point",
@@ -262,7 +263,7 @@ class Point(Sequence[float]):
             self.altitude,
         )
 
-    def to_meshcode(self, mesh_unit: Literal[1, 5]) -> int:
+    def to_meshcode(self, mesh_unit: _types.MeshUnitType) -> int:
         """Returns the meshcode of the nearest south-east mesh node of `self`.
 
         Args:
@@ -284,7 +285,7 @@ class Point(Sequence[float]):
         """
         return self.mesh_node(mesh_unit).to_meshcode()
 
-    def mesh_node(self, mesh_unit: Literal[1, 5]) -> _mesh.MeshNode:
+    def mesh_node(self, mesh_unit: _types.MeshUnitType) -> _mesh.MeshNode:
         """Returns the nearest south-east mesh node of `self`.
 
         We note that the result does not depend on the :attr:`Point.altitude`.
@@ -310,7 +311,7 @@ class Point(Sequence[float]):
         """
         return _mesh.MeshNode.from_point(self, mesh_unit=mesh_unit)
 
-    def mesh_cell(self, mesh_unit: Literal[1, 5]) -> _mesh.MeshCell:
+    def mesh_cell(self, mesh_unit: _types.MeshUnitType) -> _mesh.MeshCell:
         """Returns the unit mesh cell containing `self`.
 
         Args:
