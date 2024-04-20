@@ -25,6 +25,7 @@ from . import types as _types
 
 __all__ = [
     "mesh_unit",
+    "is_meshcode",
     # "MeshUnit",
     "MeshCoord",
     "MeshNode",
@@ -56,6 +57,33 @@ def mesh_unit(format: _types.FormatType) -> Literal[1, 5]:
         return 5
 
     raise ValueError(f"invalid format, we got {format}")
+
+
+def is_meshcode(meshcode: int) -> bool:
+    """Returns :obj:`True` when `meshcode` is a valid.
+
+    This does not test `meshcode` is a :class:`int` obj.
+
+    Args:
+        meshcode: a test value.
+
+    Returns:
+        :obj:`True` when `meshcode` is a valid.
+
+    Examples:
+        >>> is_meshcode(54401027)
+        True
+        >>> is_meshcode(-1)
+        False
+        >>> is_meshcode(100000000)
+        False
+    """
+    try:
+        MeshNode.from_meshcode(meshcode)
+    except ValueError:
+        return False
+    else:
+        return True
 
 
 class MeshUnit(IntEnum):
