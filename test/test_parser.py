@@ -5,6 +5,13 @@ import unittest
 import jgdtrans
 
 
+class IsFormat(unittest.TestCase):
+    def test(self):
+        self.assertTrue(jgdtrans.parser.is_format("TKY2JGD"))
+        self.assertTrue(jgdtrans.parser.is_format("SemiDynaEXE"))
+        self.assertFalse(jgdtrans.parser.is_format("Hi!"))
+
+
 class TKY2JGD(unittest.TestCase):
     def test_no_parameter(self):
         text = "\n" * 2
