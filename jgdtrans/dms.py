@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from typing import Literal
 
-from typing_extensions import Self
+from typing_extensions import Self  # typing @ >= 3.11
 
 __all__ = [
     "to_dms",

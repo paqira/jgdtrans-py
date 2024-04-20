@@ -16,9 +16,9 @@ import ctypes
 import math
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import Final, Literal
+from typing import Final
 
-from typing_extensions import Self
+from typing_extensions import Self  # typing @ >= 3.11
 
 from . import point as _point
 from . import types as _types
@@ -33,7 +33,7 @@ __all__ = [
 ]
 
 
-def mesh_unit(format: _types.FormatType) -> Literal[1, 5]:
+def mesh_unit(format: _types.FormatType) -> _types.MeshUnitType:
     """Returns the mesh unit of the format.
 
     Returns:
@@ -224,7 +224,7 @@ class MeshCoord:
         return self.first > other.first
 
     @classmethod
-    def _from_degree(cls, degree: float, mesh_unit: Literal[1, 5]) -> Self:
+    def _from_degree(cls, degree: float, mesh_unit: _types.MeshUnitType) -> Self:
         integer = math.floor(degree)
 
         first = integer % 100
@@ -236,7 +236,7 @@ class MeshCoord:
         return cls(first, second, 0 if third < 5 else 5)
 
     @classmethod
-    def from_latitude(cls, degree: float, mesh_unit: Literal[1, 5]) -> Self:
+    def from_latitude(cls, degree: float, mesh_unit: _types.MeshUnitType) -> Self:
         """Makes the greatest :class:`MeshCoord` obj less than the latitude `v` with `unit`.
 
         Args:
@@ -275,7 +275,7 @@ class MeshCoord:
         return cls._from_degree(d, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_longitude(cls, degree: float, mesh_unit: Literal[1, 5]) -> Self:
+    def from_longitude(cls, degree: float, mesh_unit: _types.MeshUnitType) -> Self:
         """Makes the greatest :class:`MeshCoord` obj less than the longitude `v` with `unit`.
 
         Args:
@@ -304,7 +304,7 @@ class MeshCoord:
 
         return cls._from_degree(degree, mesh_unit=mesh_unit)
 
-    def is_mesh_unit(self, mesh_unit: Literal[1, 5]) -> bool:
+    def is_mesh_unit(self, mesh_unit: _types.MeshUnitType) -> bool:
         """Returns :obj:`True` if `self` is compatible to the `unit`.
 
         Always returns :obj:`True` if `unit` is :obj:`1`.
@@ -368,7 +368,7 @@ class MeshCoord:
         """
         return 100 + self._to_degree()
 
-    def next_up(self, mesh_unit: Literal[1, 5]) -> MeshCoord:
+    def next_up(self, mesh_unit: _types.MeshUnitType) -> MeshCoord:
         """Returns the smallest :class:`MeshCoord` obj greater than `self`.
 
         Args:
@@ -409,7 +409,7 @@ class MeshCoord:
             return MeshCoord(self.first, self.second + 1, self.MIN.third)
         return MeshCoord(self.first, self.second, self.third + mesh_unit)
 
-    def next_down(self, mesh_unit: Literal[1, 5]) -> MeshCoord:
+    def next_down(self, mesh_unit: _types.MeshUnitType) -> MeshCoord:
         """Returns the greatest :class:`MeshCoord` obj less than `self`.
 
         Args:
@@ -514,7 +514,7 @@ class MeshNode:
                 f"expected latitude is less than or equal MeshCoord(80, 0, 0), we got {self.longitude}"
             ) from None
 
-    def is_mesh_unit(self, mesh_unit: Literal[1, 5]) -> bool:
+    def is_mesh_unit(self, mesh_unit: _types.MeshUnitType) -> bool:
         """Returns :obj:`True` if `self` is compatible to the `unit`.
 
         Always returns :obj:`True` if `unit` is :obj:`1`.
@@ -575,7 +575,7 @@ class MeshNode:
             raise ValueError(f"invalid meshcode, we got {meshcode}") from exc
 
     @classmethod
-    def from_point(cls, point: _point.Point, mesh_unit: Literal[1, 5]) -> Self:
+    def from_point(cls, point: _point.Point, mesh_unit: _types.MeshUnitType) -> Self:
         """Makes the nearest north-west :class:`MeshNode` of :class:`~JGDtrans.Point` p.
 
         We note that the result is independend of the :attr:`.Point.altitude`.
@@ -605,7 +605,7 @@ class MeshNode:
         return cls.from_pos(point.latitude, point.longitude, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_pos(cls, latitude: float, longitude: float, mesh_unit: Literal[1, 5]) -> Self:
+    def from_pos(cls, latitude: float, longitude: float, mesh_unit: _types.MeshUnitType) -> Self:
         """Makes the nearest north-west :class:`MeshNode` of point.
 
         Args:
@@ -759,7 +759,7 @@ class MeshCell:
     """The north-west node of the cell."""
     north_east: MeshNode
     """The north-east node of the cell."""
-    mesh_unit: Literal[1, 5]
+    mesh_unit: _types.MeshUnitType
     """The mesh unit, :obj:`1` or :obj:`5`."""
 
     def __post_init__(self):
@@ -803,7 +803,7 @@ class MeshCell:
             ) from None
 
     @classmethod
-    def from_meshcode(cls, meshcode: int, mesh_unit: Literal[1, 5]) -> Self:
+    def from_meshcode(cls, meshcode: int, mesh_unit: _types.MeshUnitType) -> Self:
         """Makes a :class:`MeshCell` with the south-east :class:`MeshNode` which represented by meshcode `code`.
 
         Args:
@@ -840,7 +840,7 @@ class MeshCell:
         return cls.from_node(south_west, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_point(cls, point: _point.Point, mesh_unit: Literal[1, 5]) -> Self:
+    def from_point(cls, point: _point.Point, mesh_unit: _types.MeshUnitType) -> Self:
         """Makes a :class:`MeshCell` which contains the :class:`.Point`.
 
         We note that the result does not depend on :attr:`.Point.altitude`.
@@ -879,7 +879,7 @@ class MeshCell:
         return cls.from_pos(point.latitude, point.longitude, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_pos(cls, latitude: float, longitude: float, mesh_unit: Literal[1, 5]) -> Self:
+    def from_pos(cls, latitude: float, longitude: float, mesh_unit: _types.MeshUnitType) -> Self:
         """Makes a :class:`MeshCell` which contains the point.
 
         Args:
@@ -918,7 +918,7 @@ class MeshCell:
         return cls.from_node(south_west, mesh_unit=mesh_unit)
 
     @classmethod
-    def from_node(cls, node: MeshNode, mesh_unit: Literal[1, 5]) -> Self:
+    def from_node(cls, node: MeshNode, mesh_unit: _types.MeshUnitType) -> Self:
         """Return the unit cell which has `node` as a south-east node.
 
         Args:

@@ -7,9 +7,9 @@ import textwrap
 from collections.abc import Mapping
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Final, Literal, NamedTuple
+from typing import Final, NamedTuple
 
-from typing_extensions import Self
+from typing_extensions import Self  # typing @ >= 3.11
 
 from . import error as _error
 from . import mesh as _mesh
@@ -26,7 +26,7 @@ __all__ = [
     "from_dict",
 ]
 
-FORMAT: Final = [
+FORMAT: Final = (
     "TKY2JGD",
     "PatchJGD",
     "PatchJGD_H",
@@ -35,7 +35,7 @@ FORMAT: Final = [
     "SemiDynaEXE",
     "geonetF3",
     "ITRF2014",
-]
+)
 
 
 def bilinear_interpolation(sw: float, se: float, nw: float, ne: float, lat: float, lng: float) -> float:
@@ -282,7 +282,7 @@ class Transformer:
             ),
         )
 
-    def mesh_unit(self) -> Literal[1, 5]:
+    def mesh_unit(self) -> _types.MeshUnitType:
         """Returns the mesh unit of the format.
 
         Returns:
