@@ -14,9 +14,9 @@ __all__ = [
     "MeshUnitType",
     "FormatType",
     #
-    "ParameterDict",
-    "TransformerDict",
-    "TransformerLikeMapping",
+    "ParameterDictType",
+    "TransformerDictType",
+    "TransformerLikeMappingType",
 ]
 
 MeshUnitType: TypeAlias = Literal[1, 5]
@@ -51,7 +51,7 @@ Notes:
 """
 
 
-class ParameterDict(TypedDict):
+class ParameterDictType(TypedDict):
     """Type for :meth:`.Transformer.to_dict` and :meth:`.Transformer.from_dict`."""
 
     latitude: float
@@ -62,23 +62,23 @@ class ParameterDict(TypedDict):
     """The altitude parameter on the point [m]."""
 
 
-class TransformerDict(TypedDict):
+class TransformerDictType(TypedDict):
     """Return type of :meth:`.Transformer.to_dict`."""
 
     format: FormatType
     """The format of par file."""
-    parameter: dict[int, ParameterDict]
+    parameter: dict[int, ParameterDictType]
     """The parameters."""
     description: str | None
     """The description of the parameter."""
 
 
-class TransformerLikeMapping(TypedDict, total=False):
+class TransformerLikeMappingType(TypedDict, total=False):
     """Argument type of :meth:`.Transformer.from_dict`."""
 
     format: Required[FormatType]
     """The format of par file."""
-    parameter: Required[Mapping[int | str, ParameterDict]]
+    parameter: Required[Mapping[int | str, ParameterDictType]]
     """The parameters, the key must be integer-like."""
     description: str | None
     """The description of the parameter, optional."""

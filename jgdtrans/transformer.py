@@ -74,7 +74,7 @@ def bilinear_interpolation(sw: float, se: float, nw: float, ne: float, lat: floa
     return sw * (1 - lng) * (1 - lat) + se * lng * (1 - lat) + nw * (1 - lng) * lat + ne * lng * lat
 
 
-def from_dict(obj: _types.TransformerLikeMapping) -> Transformer:
+def from_dict(obj: _types.TransformerLikeMappingType) -> Transformer:
     """Makes a :class:`Transformer` obj from :obj:`Mapping` obj.
 
     See :obj:`.FormatType` for detail of :obj:`'PatchJGD_HV'`.
@@ -299,7 +299,7 @@ class Transformer:
         return _mesh.mesh_unit(self.format)
 
     @classmethod
-    def from_dict(cls, obj: _types.TransformerLikeMapping) -> Self:
+    def from_dict(cls, obj: _types.TransformerLikeMappingType) -> Self:
         """Makes a :class:`Transformer` obj from :obj:`Mapping` obj.
 
         This parses meshcode, the key of `parameter`, into :obj:`int`.
@@ -378,7 +378,7 @@ class Transformer:
             description=obj.get("description"),
         )
 
-    def to_dict(self) -> _types.TransformerDict:
+    def to_dict(self) -> _types.TransformerDictType:
         """Returns a :obj:`dict` which represents `self`.
 
         This method is an inverse of :meth:`Transformer.from_dict`.
