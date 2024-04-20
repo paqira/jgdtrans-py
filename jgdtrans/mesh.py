@@ -24,8 +24,14 @@ from . import point as _point
 from . import types as _types
 
 __all__ = [
+    "MESH_COORD_MIN",
+    "MESH_COORD_MAX",
+    "MESH_NODE_MIN",
+    "MESH_NODE_MAX",
+    #
     "mesh_unit",
     "is_meshcode",
+    #
     # "MeshUnit",
     "MeshCoord",
     "MeshNode",
@@ -148,24 +154,6 @@ class MeshCoord:
     """takes values :obj:`0`, ..., :obj:`7`."""
     third: int
     """takes values :obj:`0`, ..., :obj:`9`."""
-
-    @classmethod
-    @property
-    def MIN(cls) -> MeshCoord:  # noqa: N802
-        """Smallest :class:`MeshCoord` value.
-
-        Equals to :obj:`MeshCoord(first=0, second=0, third=0)`.
-        """
-        return _MESH_COORD_MIN
-
-    @classmethod
-    @property
-    def MAX(cls) -> MeshCoord:  # noqa: N802
-        """Largest :class:`MeshCoord` value.
-
-        Equals to :obj:`MeshCoord(first=99, second=7, third=9)`.
-        """
-        return _MESH_COORD_MAX
 
     def __post_init__(self):
         if not (0 <= self.first <= 99):
@@ -402,11 +390,11 @@ class MeshCoord:
 
         # increment
         if self.third == bound:
-            if self.second == self.MAX.second:
-                if self.first == self.MAX.first:
+            if self.second == MESH_COORD_MAX.second:
+                if self.first == MESH_COORD_MAX.first:
                     raise OverflowError(f"unable to add {mesh_unit} to {self}") from None
-                return MeshCoord(self.first + 1, self.MIN.second, self.MIN.third)
-            return MeshCoord(self.first, self.second + 1, self.MIN.third)
+                return MeshCoord(self.first + 1, MESH_COORD_MIN.second, MESH_COORD_MIN.third)
+            return MeshCoord(self.first, self.second + 1, MESH_COORD_MIN.third)
         return MeshCoord(self.first, self.second, self.third + mesh_unit)
 
     def next_down(self, mesh_unit: _types.MeshUnitType) -> MeshCoord:
@@ -441,17 +429,13 @@ class MeshCoord:
         # that is self.THIRD_MAX - self.unit
         bound: Final = 9 if mesh_unit == 1 else 5
 
-        if self.third == self.MIN.third:
-            if self.second == self.MIN.second:
-                if self.first == self.MIN.first:
+        if self.third == MESH_COORD_MIN.third:
+            if self.second == MESH_COORD_MIN.second:
+                if self.first == MESH_COORD_MIN.first:
                     raise OverflowError(f"unable to subtract {mesh_unit} from {self}") from None
-                return MeshCoord(self.first - 1, self.MAX.second, bound)
+                return MeshCoord(self.first - 1, MESH_COORD_MAX.second, bound)
             return MeshCoord(self.first, self.second - 1, bound)
         return MeshCoord(self.first, self.second, self.third - mesh_unit)
-
-
-_MESH_COORD_MIN: Final = MeshCoord(0, 0, 0)
-_MESH_COORD_MAX: Final = MeshCoord(99, 7, 9)
 
 
 @dataclass(frozen=True)
@@ -489,24 +473,6 @@ class MeshNode:
 
     This satisfies :code:`MeshCoord(0, 0, 0)` <= and <= :code:`MeshCoord(80, 0, 0)`.
     """
-
-    @classmethod
-    @property
-    def MIN(cls) -> MeshNode:  # noqa: N802
-        """Smallest :obj:`MeshNode` value.
-
-        Equals to :obj:`MeshNode(latitude=MeshCoord(0, 0, 0), longitude=MeshCoord(0, 0, 0))`.
-        """
-        return _MESH_NODE_MIN
-
-    @classmethod
-    @property
-    def MAX(cls) -> MeshNode:  # noqa: N802
-        """Largest :obj:`MeshNode` value.
-
-        Equals to :obj:`MeshNode(latitude=MeshCoord(99, 7, 9), longitude=MeshCoord(80, 0, 0))`.
-        """
-        return _MESH_NODE_MAX
 
     def __post_init__(self):
         if MeshCoord(80, 0, 0) < self.longitude:
@@ -696,10 +662,6 @@ class MeshNode:
         """
         point = self.to_point()
         return point.latitude, point.longitude
-
-
-_MESH_NODE_MIN: Final = MeshNode(MeshCoord(0, 0, 0), MeshCoord(0, 0, 0))
-_MESH_NODE_MAX: Final = MeshNode(MeshCoord(99, 7, 9), MeshCoord(80, 0, 0))
 
 
 @dataclass(frozen=True)
@@ -1023,6 +985,31 @@ class MeshCell:
         if self.mesh_unit == 1:
             return 120 * lat, 80 * lng
         return 24 * lat, 16 * lng
+
+
+MESH_COORD_MIN: Final[MeshCoord] = MeshCoord(0, 0, 0)
+"""Smallest :class:`MeshCoord` value.
+
+Equals to :obj:`MeshCoord(first=0, second=0, third=0)`.
+"""
+
+MESH_COORD_MAX: Final[MeshCoord] = MeshCoord(99, 7, 9)
+"""Largest :class:`MeshCoord` value.
+
+Equals to :obj:`MeshCoord(first=99, second=7, third=9)`.
+"""
+
+MESH_NODE_MIN: Final[MeshNode] = MeshNode(MESH_COORD_MIN, MESH_COORD_MIN)
+"""Smallest :obj:`MeshNode` value.
+
+Equals to :obj:`MeshNode(latitude=MeshCoord(0, 0, 0), longitude=MeshCoord(0, 0, 0))`.
+"""
+
+MESH_NODE_MAX: Final[MeshNode] = MeshNode(MESH_COORD_MAX, MeshCoord(80, 0, 0))
+"""Largest :obj:`MeshNode` value.
+
+Equals to :obj:`MeshNode(latitude=MeshCoord(99, 7, 9), longitude=MeshCoord(80, 0, 0))`.
+"""
 
 
 if __name__ == "__main__":
