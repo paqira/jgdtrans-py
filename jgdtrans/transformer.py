@@ -176,7 +176,7 @@ class Parameter(NamedTuple):
 class StatisticData(NamedTuple):
     """The statistics of parameter.
 
-    This is a component of the result that :meth:`Transformer.summary` returns.
+    This is a component of the result that :meth:`Transformer.statistics` returns.
     """
 
     count: int | None
@@ -196,7 +196,7 @@ class StatisticData(NamedTuple):
 class Statistics(NamedTuple):
     """The statistical summary of parameter.
 
-    This is a result that :meth:`Transformer.summary` returns.
+    This is a result that :meth:`Transformer.statistics` returns.
     """
 
     latitude: StatisticData
@@ -269,10 +269,11 @@ class Transformer:
 
     def __repr__(self):
         # the parameter is too long for display
-        fmt = "{}(format={}, parameter=<object ({} length) at 0x{:x}>, description={})"
+        fmt = "{}(format={}, parameter=<{} object ({} length) at 0x{:x}>, description={})"
         return fmt.format(
             self.__class__.__name__,
             self.format,
+            self.parameter.__class_.__name__,
             len(self.parameter),
             id(self.parameter),
             (
