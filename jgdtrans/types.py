@@ -72,7 +72,7 @@ class TransformerDict(TypedDict):
 
     format: Required[FormatType]
     """The unit of the mesh, :obj:`1` or :obj:`5`."""
-    parameter: Required[Mapping[int, ParameterDict]]
+    parameter: Required[dict[int, ParameterDict]]
     """The parameters."""
     description: Required[str | None]
     """The description of the parameter."""
