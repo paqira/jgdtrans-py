@@ -173,7 +173,8 @@ class Parameter(NamedTuple):
         return math.hypot(self.latitude, self.longitude)
 
 
-class StatisticData(NamedTuple):
+@dataclass(frozen=True)
+class StatisticData:
     """The statistics of parameter.
 
     This is a component of the result that :meth:`Transformer.statistics` returns.
@@ -193,7 +194,8 @@ class StatisticData(NamedTuple):
     """The maximum ([sec] or [m])."""
 
 
-class Statistics(NamedTuple):
+@dataclass(frozen=True)
+class Statistics:
     """The statistical summary of parameter.
 
     This is a result that :meth:`Transformer.statistics` returns.
@@ -273,7 +275,7 @@ class Transformer:
         return fmt.format(
             self.__class__.__name__,
             self.format,
-            self.parameter.__class_.__name__,
+            self.parameter.__class__.__name__,
             len(self.parameter),
             id(self.parameter),
             (
@@ -411,7 +413,7 @@ class Transformer:
         """
         return {
             "format": self.format,
-            "parameter": {k: v._asdict() for k, v in self.parameter.items()},
+            "parameter": {k: v._asdict() for k, v in self.parameter.items()},  # type: ignore
             "description": self.description,
         }
 
