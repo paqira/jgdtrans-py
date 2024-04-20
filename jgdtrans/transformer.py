@@ -364,9 +364,7 @@ class Transformer:
             try:
                 key = int(k)
             except ValueError:
-                raise _error.DeserializeError(
-                    f"expected integer for the key of the parameter field, we got {repr(k)}"
-                ) from None
+                raise ValueError(f"expected integer for the key of the parameter field, we got {repr(k)}") from None
 
             parameter[key] = Parameter(
                 latitude=v["latitude"],
