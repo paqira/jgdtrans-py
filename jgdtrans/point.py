@@ -203,7 +203,7 @@ class Point(Sequence[float]):
             a :class:`Point` obj
 
         Raises:
-            ValueError: if invalid `code` given
+            ValueError: when invalid `code` given
 
         Examples:
             >>> Point.from_meshcode(54401027)
@@ -228,7 +228,7 @@ class Point(Sequence[float]):
             a :class:`Point` obj with the DD notation latitude and longitude
 
         Raises:
-            ValueError: if `latitude` and/or `longitude` is invalied
+            ValueError: when `latitude` and/or `longitude` is invalied
 
         Examples:
             >>> Point.from_dms('360613.58925', '1400516.27815')
@@ -273,7 +273,7 @@ class Point(Sequence[float]):
             the meshcode
 
         Raises:
-            ValueError: if `latitude` and/or `longitude` is negative
+            ValueError: when `latitude` and/or `longitude` is negative
 
         Examples:
             >>> point = Point(36.103774791666666, 140.08785504166664, 10.0)
@@ -297,7 +297,7 @@ class Point(Sequence[float]):
             a :class:`.MeshNode`
 
         Raises:
-            ValueError: if `latitude` and/or `longitude` is negative
+            ValueError: when `latitude` and/or `longitude` is negative
 
         Examples:
             >>> point = Point(36.103774791666666, 140.08785504166664, 10.0)
@@ -321,7 +321,7 @@ class Point(Sequence[float]):
             the unit mesh cell containing `self`
 
         Raises:
-            ValueError: if `latitude` and/or `longitude` is negative,
+            ValueError: when `latitude` and/or `longitude` is negative,
                         or such :class:`.MeshCell` is not found
 
         Examples:

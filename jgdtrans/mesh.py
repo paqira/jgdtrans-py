@@ -112,7 +112,7 @@ class MeshCoord:
     the `first` values 0 to 9, the `second` does 0 to 7
     and the `third` does 0 to 99 inclusive.
 
-    The constructor throws :obj:`ValueError` if the digits are out-of-range.
+    The constructor throws :obj:`ValueError` when the digits are out-of-range.
 
     We note that the third digits takes either 0 or 5 only
     on the mesh with unit :obj:`5`.
@@ -274,7 +274,7 @@ class MeshCoord:
             the :class:`MeshCoord` obj
 
         Raises:
-            ValueError: if `v` is out-of-range
+            ValueError: when `v` is out-of-range
 
         Examples:
             >>> MeshCoord.from_longitude(140.08785504166664, 1)
@@ -293,15 +293,15 @@ class MeshCoord:
         return cls._from_degree(degree, mesh_unit=mesh_unit)
 
     def is_mesh_unit(self, mesh_unit: _types.MeshUnitType) -> bool:
-        """Returns :obj:`True` if `self` is compatible to the `unit`.
+        """Returns :obj:`True` when `self` is compatible to the `unit`.
 
-        Always returns :obj:`True` if `unit` is :obj:`1`.
+        Always returns :obj:`True` when `unit` is :obj:`1`.
 
         Args:
             mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
-            :obj:`True` if `self` is compatible to the `unit`.
+            :obj:`True` when `self` is compatible to the `unit`.
 
         Examples:
             >>> MeshCoord(1, 2, 3).is_mesh_unit(1)
@@ -366,8 +366,8 @@ class MeshCoord:
             the up-next :class:`MeshCoord`
 
         Raises:
-            ValueError: if `unit` is :obj:`5` although `self.third` is either :obj:`0` or :obj:`5`
-            OverflowError: if `self` is :code:`MeshCoord(first=99, second=7, third=9)`
+            ValueError: when `unit` is :obj:`5` although `self.third` is either :obj:`0` or :obj:`5`
+            OverflowError: when `self` is :code:`MeshCoord(first=99, second=7, third=9)`
 
         Examples:
             >>> MeshCoord(0, 0, 0).next_up(1)
@@ -404,8 +404,8 @@ class MeshCoord:
             mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Raises:
-            ValueError: if `unit` is :obj:`5` although `self.third` is either :obj:`0` or :obj:`5`
-            OverflowError: if `self` is :code:`MeshCoord(first=0, second=0, third=0)`
+            ValueError: when `unit` is :obj:`5` although `self.third` is either :obj:`0` or :obj:`5`
+            OverflowError: when `self` is :code:`MeshCoord(first=0, second=0, third=0)`
 
         Returns:
             the down-next :class:`MeshCoord`
@@ -481,15 +481,15 @@ class MeshNode:
             ) from None
 
     def is_mesh_unit(self, mesh_unit: _types.MeshUnitType) -> bool:
-        """Returns :obj:`True` if `self` is compatible to the `unit`.
+        """Returns :obj:`True` when `self` is compatible to the `unit`.
 
-        Always returns :obj:`True` if `unit` is :obj:`1`.
+        Always returns :obj:`True` when `unit` is :obj:`1`.
 
         Args:
             mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
-            :obj:`True` if `self` is compatible to the `unit`.
+            :obj:`True` when `self` is compatible to the `unit`.
 
         Examples:
             >>> MeshNode.from_meshcode(54401027).is_mesh_unit(1)
@@ -512,7 +512,7 @@ class MeshNode:
             the :class:`MeshNode`
 
         Raises:
-            ValueError: if `code` is invalid.
+            ValueError: when `code` is invalid.
 
         Examples:
             >>> MeshNode.from_meshcode(54401027)
@@ -673,12 +673,12 @@ class MeshCell:
 
     The cell must be a *unit cell* in the `unit`,
     otherwise, this constructor throws :obj:`ValueError`.
-    Also, :attr:`MeshCoord.third` of the nodes must be 1 or 5  if `unit` is :obj:`5`.
+    Also, :attr:`MeshCoord.third` of the nodes must be 1 or 5  when `unit` is :obj:`5`.
 
     The cell is, roughly, a square with `unit` [km] length edges.
 
     Raises:
-        ValueError: if `unit` is inconsistent with nodes,
+        ValueError: when `unit` is inconsistent with nodes,
                     or the nodes does not construct a unit mesh cell with `unit`.
 
     Examples:
@@ -776,7 +776,7 @@ class MeshCell:
             the meth cell
 
         Raises:
-            ValueError: if `code` is invalid, or `unit` is inconsistent meshcode
+            ValueError: when `code` is invalid, or `unit` is inconsistent meshcode
 
         Examples:
             >>> meshcode = 54401027
@@ -853,7 +853,7 @@ class MeshCell:
             the mesh cell
 
         Raises:
-            ValueError: if `latitude` or `longitude` is out-of-range,
+            ValueError: when `latitude` or `longitude` is out-of-range,
                         or one of nodes constructing the cell is out-of-range.
             OverflowError: the south-west node points (90, x) for latitude and longitude.
 
@@ -891,7 +891,7 @@ class MeshCell:
             the mesh cell
 
         Raises:
-            ValueError: if `unit` is inconsistent `node`,
+            ValueError: when `unit` is inconsistent `node`,
                         or one of nodes constructing the cell is out-of-range
             OverflowError: the south-west node points (90, x) for latitude and longitude.
 
@@ -929,7 +929,7 @@ class MeshCell:
         """Return the position in the cell.
 
         The result's components takes values from 0.0 to 1.0 (inclusive),
-        if `latitude` and/or `longitude` is inside `self`.
+        when `latitude` and/or `longitude` is inside `self`.
 
         We note that the result is a (latitude, longitude) pair,
         not a (right-handed) (x, y) pair.

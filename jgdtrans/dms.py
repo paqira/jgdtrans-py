@@ -26,7 +26,7 @@ def to_dms(t: float) -> str:
         a :obj:`str` of DMS notation `t`
 
     Raises:
-        ValueError: if conversion failed
+        ValueError: when conversion failed
 
     Examples:
         >>> to_dms(36.103774791666666)
@@ -47,7 +47,7 @@ def from_dms(s: str) -> float:
         a :obj:`float` of DD notation `s`
 
     Raises:
-        ValueError: if conversion failed
+        ValueError: when conversion failed
 
     Examples:
         >>> from_dms("360613.58925")
@@ -63,13 +63,13 @@ class DMS:
     """Represents latitude and/or longitude in DMS notation.
 
     Raises:
-        ValueError: if all the following conditions does not hold;
+        ValueError: when all the following conditions does not hold;
 
             - `degree` satisries 0 <= and <= 180,
             - `minute` does 0 <= and < 60,
             - `second` does 0 <= and < 60,
             - and `fract` does 0.0 <= and < 1.0.
-            - Additionally, `minute`, `second` and `fract` is `0` if `degree` is 180.
+            - Additionally, `minute`, `second` and `fract` is `0` when `degree` is 180.
 
     Examples:
         >>> dms = DMS(1, 36, 6, 13, 0.58925)
@@ -147,7 +147,7 @@ class DMS:
             a :class:`DMS` obj
 
         Raises:
-            ValueError: if `s` is invalid or out-of-range
+            ValueError: when `s` is invalid or out-of-range
 
         Examples:
             >>> DMS.from_str("360613.58925")
@@ -214,7 +214,7 @@ class DMS:
             a :obj:`DMS` obj
 
         Raises:
-            ValueError: if `t` is out-of-range
+            ValueError: when `t` is out-of-range
 
         Examples:
             >>> DMS.from_dd(36.103774791666666)
