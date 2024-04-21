@@ -908,13 +908,13 @@ class Transformer:
         # even if it increases the iteration.
 
         # the GIAJ parameter error is 1e-5 [sec] ~ 1e-9 [deg]
-        max_criteria: Final = 5e-14
+        criteria: Final = 5e-14
 
         # Effectively sufficient, we verified with
         # - TKY2JGD.par.
         # - touhokutaiheiyouoki2011.par,
         # - and pos2jgd_202307_ITRF2014.par
-        max_iteration: Final = 4
+        iteration: Final = 4
 
         # for [sec] to [deg]
         scale: Final = 3600
@@ -923,7 +923,7 @@ class Transformer:
         yn = latitude
         xn = longitude
 
-        for _ in range(max_iteration):
+        for _ in range(iteration):
             try:
                 cell = _mesh.MeshCell.from_pos(yn, xn, mesh_unit=self.mesh_unit())
             except ValueError as e:
@@ -974,11 +974,11 @@ class Transformer:
 
             # verify
             corr = self.forward_corr(yn, xn)
-            if abs(latitude - (yn + corr.latitude)) < max_criteria and abs(longitude - (xn + corr.longitude)) < max_criteria:
+            if abs(latitude - (yn + corr.latitude)) < criteria and abs(longitude - (xn + corr.longitude)) < criteria:
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
         raise _error.CorrectionNotFoundError(
-            f"exhaust {max_iteration} iterations but error is still high, "
+            f"exhaust {iteration} iterations but error is still high, "
             f"we finally got {yn} and {xn} from {latitude} and {longitude}"
         ) from None
 
