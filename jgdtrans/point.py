@@ -172,7 +172,6 @@ class Point(Sequence[float]):
             altitude=self.altitude - corr.altitude,
         )
 
-
     def normalize(self) -> Point:
         """Returns a new normalized :class:`Point` obj.
 
