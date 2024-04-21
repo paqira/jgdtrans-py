@@ -650,7 +650,7 @@ class Transformer:
 
         The result's drifting from the exact solution
         is less than error of the GIAJ latitude and longitude parameter,
-        2.7e-9 [deg], for each latitude and longitude.
+        1e-9 [deg], for each latitude and longitude.
         The altitude's drifting is less than 1e-5 [m] which is error of the GIAJ altitude parameter.
 
         Args:
@@ -915,14 +915,14 @@ class Transformer:
         # unable to find a solution near enough the exact solution
         # even if it increases the iteration.
 
-        # the GIAJ parameter error is 1e-5 [sec] ~ 2.7e-9 [deg]
-        criteria: Final = 2.5e-9
+        # the GIAJ parameter error is 1e-5 [sec] ~ 1e-9 [deg]
+        max_criteria: Final = 5e-14
 
         # Effectively sufficient, we verified with
         # - TKY2JGD.par.
         # - touhokutaiheiyouoki2011.par,
         # - and pos2jgd_202307_ITRF2014.par
-        iteration: Final = 3
+        max_iteration: Final = 4
 
         # for [sec] to [deg]
         scale: Final = 3600
@@ -931,9 +931,9 @@ class Transformer:
         yn = latitude
         xn = longitude
 
-        for _ in range(iteration):
+        for _ in range(max_iteration):
             try:
-                cell = _mesh.MeshCell.from_pos(latitude, longitude, mesh_unit=self.mesh_unit())
+                cell = _mesh.MeshCell.from_pos(yn, xn, mesh_unit=self.mesh_unit())
             except ValueError as e:
                 raise _error.PointOutOfBoundsError from e
 
@@ -971,7 +971,7 @@ class Transformer:
             fx_x = -1 - ((se.longitude - sw.longitude) * (1 - yn) + (ne.longitude - nw.longitude) * yn) / scale
             fx_y = -((nw.longitude - sw.longitude) * (1 - xn) + (ne.longitude - se.longitude) * xn) / scale
             fy_x = -((se.latitude - sw.latitude) * (1 - yn) + (ne.latitude - nw.latitude) * yn) / scale
-            fy_y = -1 - ((ne.latitude - sw.latitude) * (1 - xn) + (ne.latitude - se.latitude) * xn) / scale
+            fy_y = -1 - ((nw.latitude - sw.latitude) * (1 - xn) + (ne.latitude - se.latitude) * xn) / scale
 
             # and its determinant
             det = fx_x * fy_y - fy_x * fy_x
@@ -982,11 +982,11 @@ class Transformer:
 
             # verify
             corr = self.forward_corr(yn, xn)
-            if abs(latitude - (yn + corr.latitude)) <= criteria and abs(longitude - (xn + corr.longitude)) <= criteria:
+            if abs(latitude - (yn + corr.latitude)) <= max_criteria and abs(longitude - (xn + corr.longitude)) <= max_criteria:
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
         raise _error.CorrectionNotFoundError(
-            f"exhaust {iteration} iterations but error is still high, "
+            f"exhaust {max_iteration} iterations but error is still high, "
             f"we finally got {yn} and {xn} from {latitude} and {longitude}"
         ) from None
 
