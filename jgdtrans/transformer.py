@@ -245,7 +245,7 @@ class Transformer:
         Verified backward transformation
 
         >>> tf.backward_safe(36.103773017086695, 140.08785924333452, 2.4363138578103)
-        Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
+        Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
     """
 
     format: _types.FormatType
@@ -670,6 +670,10 @@ class Transformer:
         Examples:
             From `SemiDynaEXE2023.par`
 
+            The origin is forward transformation from
+            `Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)`.
+            In this case, no error remains.
+
             >>> tf = Transformer(
             ...     format='SemiDynaEXE',
             ...     parameter={
@@ -680,19 +684,7 @@ class Transformer:
             ...     }
             ... )
             >>> tf.backward_safe(36.103773017086695, 140.08785924333452, 2.4363138578103)
-            Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
-
-            The error is small enough,
-            it's zero for latitude and longitude in this case;
-
-            >>> origin = Point(36.10377479, 140.087855041, 2.34)
-            >>> result = tf.backward_safe(*tf.forward(*origin))
-            >>> result.latitude - origin.latitude
-            0.0
-            >>> result.longitude - origin.longitude
-            0.0
-            >>> result.altitude - origin.altitude
-            2.9913849175500218e-12
+            Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
         """
         corr = self.backward_safe_corr(latitude, longitude)
         return _point.Point(
@@ -905,7 +897,7 @@ class Transformer:
             ...     }
             ... )
             >>> tf.backward_safe_corr(36.103773017086695, 140.08785924333452)
-            Correction(latitude=1.772913310099049e-06, longitude=-4.202334510033827e-06, altitude=-0.0963138578132916)
+            Correction(latitude=1.7729133100878255e-06, longitude=-4.202334510058886e-06, altitude=-0.09631385781030007)
         """
         #
         # Newton's Method
