@@ -151,6 +151,28 @@ class Point(Sequence[float]):
             altitude=self.altitude + corr.altitude,
         )
 
+    def sub(self, corr: _trans.Correction) -> Point:
+        """Returns a :class:`Point` which is `self` substruct `corr` for each component.
+
+        This is not inplace.
+
+        Returns:
+            a :class:`Point` obj
+
+        Examples:
+            >>> point = Point(0.0, 0.0, 0.0)
+            >>> point.sub(Correction(1.0, 2.0, 3.0))
+            Point(latitude=-1.0, longitude=-2.0, altitude=-3.0)
+            >>> point
+            Point(latitude=0.0, longitude=0.0, altitude=0.0)
+        """
+        return Point(
+            latitude=self.latitude - corr.latitude,
+            longitude=self.longitude - corr.longitude,
+            altitude=self.altitude - corr.altitude,
+        )
+
+
     def normalize(self) -> Point:
         """Returns a new normalized :class:`Point` obj.
 
