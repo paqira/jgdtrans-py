@@ -87,7 +87,7 @@ def from_dict(obj: _types.TransformerLikeMappingType) -> Transformer:
         the :class:`Transformer` obj
 
     Raises:
-        ParseError: if fail to parse meshcode
+        ParseError: when fail to parse meshcode
 
     Examples:
         >>> data = {
@@ -157,7 +157,7 @@ class Parameter(NamedTuple):
     We emphasize that the unit of latitude and longitude is [sec], not [deg].
 
     It should fill by :obj:`0.0` instead of :obj:`nan`
-    if the parameter does not exist, as parsers does.
+    when the parameter does not exist, as parsers does.
     """
 
     latitude: float
@@ -317,7 +317,7 @@ class Transformer:
             the :class:`Transformer` obj
 
         Raises:
-            DeserializeError: if fail to parse the meshcode
+            DeserializeError: when fail to parse the meshcode
 
         Examples:
             >>> data = {
@@ -511,7 +511,7 @@ class Transformer:
         as the original *TKY2JGD for Windows Ver.1.3.79* and the web APIs are.
 
         There are points where unable to perform backward transformation
-        even if they are the results of the forward transformation,
+        even when they are the results of the forward transformation,
         because the forward transformation moves them to the area where the parameter does not support.
 
         We note that :meth:`Transformer.backward_safe` performs verified backward transformation.
@@ -520,15 +520,15 @@ class Transformer:
             latitude: the latitude [deg] of the point which satisfies 0.00333... <= and <= 66.666...
             longitude: the longitude [deg] of the point which satisfies 100.0 <= and <= 180.0
             altitude: the altitude [m] of the point
-            backward: if :obj:`True`, this performs backward transformation
+            backward: when :obj:`True`, this performs backward transformation
 
         Returns:
             the transformed point
 
         Raises:
-            ParameterNotFoundError: if `latitude` and `longitude` points to an area
+            ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            ValueError: if `latitude` or `longitude` is unsupported value
+            ValueError: when `latitude` or `longitude` is unsupported value
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -567,9 +567,9 @@ class Transformer:
             the transformed point
 
         Raises:
-            ParameterNotFoundError: if `latitude` and `longitude` points to an area
+            ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
+            PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -605,7 +605,7 @@ class Transformer:
         and the web APIs are (as far as we researched).
 
         There are points where unable to perform backward transformation
-        even if they are the results of the forward transformation,
+        even when they are the results of the forward transformation,
         because the forward transformation moves them to the area where the parameter does not support.
 
         We note that :meth:`Transformer.backward_safe` performs verified backward transformation.
@@ -619,9 +619,9 @@ class Transformer:
             the transformed point
 
         Raises:
-            ParameterNotFoundError: if `latitude` and `longitude` points to an area
+            ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
+            PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -662,10 +662,10 @@ class Transformer:
             the transformed point
 
         Raises:
-            ParameterNotFoundError: if `latitude` and `longitude` points to an area
+            ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            CorrectionNotFoundError: if verification failed
-            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
+            CorrectionNotFoundError: when verification failed
+            PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -733,9 +733,9 @@ class Transformer:
             the correction on forward transformation
 
         Raises:
-            ParameterNotFoundError: if `latitude` and `longitude` points to an area
+            ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
+            PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -828,9 +828,9 @@ class Transformer:
             the correction on backward transformation
 
         Raises:
-            ParameterNotFoundError: if `latitude` and `longitude` points to an area
+            ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
+            PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
@@ -879,10 +879,10 @@ class Transformer:
             the correction on backward transformation
 
         Raises:
-            ParameterNotFoundError: if `latitude` and `longitude` points to an area
+            ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            CorrectionNotFoundError: if verification failed
-            PointOutOfBoundsError: if `latitude` or `longitude` is out-of-bounds
+            CorrectionNotFoundError: when verification failed
+            PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`

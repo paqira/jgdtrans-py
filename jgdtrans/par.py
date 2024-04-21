@@ -70,7 +70,7 @@ def parse(
         the arguments of :class:`.Transformer` constructor
 
     Raises:
-        ParseParFileError: if unexpected data found
+        ParseParFileError: when unexpected data found
     """
     lines = text.splitlines()
 
@@ -138,7 +138,7 @@ def loads(
         the :class:`.Transformer` obj
 
     Raises:
-        ParseParFileError: if invalid data found
+        ParseParFileError: when invalid data found
 
     Examples:
         >>> s = '''<15 lines>
@@ -247,7 +247,7 @@ def load(
         the :class:`.Transformer` obj
 
     Raises:
-        ParseParFileError: if invalid data found
+        ParseParFileError: when invalid data found
 
     Examples:
         >>> with open('SemiDyna2023.par') as fp:
