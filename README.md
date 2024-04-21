@@ -70,7 +70,7 @@ print(point)
 
 # verified backward transformation
 q = tf.backward_safe(*result)
-# prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
+# prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 print(q)
 ```
 
