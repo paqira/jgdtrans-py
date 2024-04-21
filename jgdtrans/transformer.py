@@ -671,7 +671,7 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             The origin is forward transformation from
-            `Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)`.
+            :obj:`Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)`.
             In this case, no error remains.
 
             >>> tf = Transformer(
