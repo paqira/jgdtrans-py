@@ -974,7 +974,7 @@ class Transformer:
 
             # verify
             corr = self.forward_corr(yn, xn)
-            if abs(latitude - (yn + corr.latitude)) <= max_criteria and abs(longitude - (xn + corr.longitude)) <= max_criteria:
+            if abs(latitude - (yn + corr.latitude)) < max_criteria and abs(longitude - (xn + corr.longitude)) < max_criteria:
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
         raise _error.CorrectionNotFoundError(
