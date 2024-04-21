@@ -65,7 +65,7 @@ API は {py:class}`.Transformer` を返します。
 >>> with open('SemiDyna2023.par') as fp:
 ...     tf = jgdtrans.load(fp, format='SemiDynaEXE')
 >>> tf
-Transformer(unit=5, parameter=<object (21134 length) at 0x123456789>, description='for [...]')
+Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description='for [...]')
 ```
 ヘッダ、 unit （{py:obj}`1` もしくは {py:obj}`5`、 [](#メッシュに関連する実装の導入) にて説明します)、パラメータには、それぞれ、
 {py:attr}`.Transformer.description` 、
@@ -137,7 +137,7 @@ Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 ... }
 >>> tf = jgdtrans.from_dict(data)
 >>> tf
-Transformer(unit=5, parameter=<object (21134 length) at 0x987654321>, description='my [...]')
+Transformer(unit=5, parameter=<dict (21134 length) at 0x987654321>, description='my [...]')
 ```
 
 これらを用いることで、 par 形式データを、 python {py:obj}`dict` や他シリアライズ形式（例えば JSON）に相互に変換できます。
