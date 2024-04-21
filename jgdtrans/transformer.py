@@ -271,7 +271,7 @@ class Transformer:
 
     def __repr__(self):
         # the parameter is too long for display
-        fmt = "{}(format={}, parameter=<{} object ({} length) at 0x{:x}>, description={})"
+        fmt = "{}(format={}, parameter=<{} ({} length) at 0x{:x}>, description={})"
         return fmt.format(
             self.__class__.__name__,
             self.format,

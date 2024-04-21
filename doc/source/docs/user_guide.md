@@ -60,7 +60,7 @@ It uses `format` argument to specify the format of the par file;
 >>> with open('SemiDyna2023.par') as fp:
 ...     tf = jgdtrans.load(fp, format='SemiDynaEXE')
 >>> tf
-Transformer(unit=5, parameter=<object (21134 length) at 0x123456789>, description='for [...]')
+Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description='for [...]')
 ```
 
 It can access to the header,
@@ -141,7 +141,7 @@ from the {py:obj}`dict` obj shown above;
 ...     },
 ... }
 >>> jgdtrans.from_dict(data)
-Transformer(unit=5, parameter=<object (21134 length) at 0x987654321>, description='my [...]')
+Transformer(unit=5, parameter=<dict (21134 length) at 0x987654321>, description='my [...]')
 ```
 
 Hence, it can convert data of par file to/from python {py:obj}`dict` or other serialization format (e.g. JSON).
