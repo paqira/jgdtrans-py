@@ -65,13 +65,13 @@ print(result)
 
 # backward transformation
 point = tf.backward(*result)
-# prints Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
+# prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 print(point)
 
-# verified backward transformation
-q = tf.backward_safe(*result)
-# prints Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
-print(q)
+# backward transformation compatible to GIAJ web app/APIs
+p = tf.backward_compat(*result)
+# prints Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
+print(p)
 ```
 
 ## Licence

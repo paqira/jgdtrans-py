@@ -18,7 +18,7 @@ This package depends on [`typing-extensions`][typing-extensions] only, and requi
 Run [`Sphinx`][Sphinx] to builds the documentation:
 
 ```shell
-sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
+# sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
 sphinx-build -b html ./doc/source ./doc/build/html
 ```
 
@@ -34,21 +34,27 @@ In this section, we show how to load par file,
 and serialize and deserialize {py:class}`.Transformer` obj.
 
 [GIAJ]: https://www.gsi.go.jp/ENGLISH/
+
 [TKY2JGD]: https://www.gsi.go.jp/sokuchikijun/tky2jgd.html
+
 [PatchJGD]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd/index.html
+
 [PatchJGD(H)]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd_h/index.html
+
 [HyokoRev]: https://vldb.gsi.go.jp/sokuchi/surveycalc/hyokorev/hyokorev.html
+
 [SemiDynaEXE]: https://vldb.gsi.go.jp/sokuchi/surveycalc/semidyna/web/index.html
+
 [POS2JGD]: https://positions.gsi.go.jp/cdcs
 
 We note that none of par files are included in this package,
 download them from GIAJ [^1].
 
 [^1]: Download links;
-      TKY2JGD: <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html>;
-      PatchJGD, PatchJGD(H) and HyokoRev: <https://www.gsi.go.jp/sokuchikijun/sokuchikijun41012.html>;
-      SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
-      geonetF3 and ITRF2014 (POS2JGD): <https://positions.gsi.go.jp/cdcs/>.
+TKY2JGD: <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html>;
+PatchJGD, PatchJGD(H) and HyokoRev: <https://www.gsi.go.jp/sokuchikijun/sokuchikijun41012.html>;
+SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
+geonetF3 and ITRF2014 (POS2JGD): <https://positions.gsi.go.jp/cdcs/>.
 
 {py:mod}`jgdtrans` defines read/load API of par file
 {py:func}`~jgdtrans.load` and {py:func}`~jgdtrans.loads`
@@ -64,7 +70,8 @@ Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description=
 ```
 
 It can access to the header,
-the mesh unit ({py:obj}`1` or {py:obj}`5`, we define _mesh unit_ in [](#brief-introduction-of-mesh-related-implementation))
+the mesh unit ({py:obj}`1` or {py:obj}`5`, we define _mesh unit_
+in [](#brief-introduction-of-mesh-related-implementation))
 and the parameter by
 {py:attr}`.Transformer.description`,
 {py:attr}`.Transformer.unit` and
@@ -153,13 +160,13 @@ with {py:class}`.Transformer` obj.
 
 {py:meth}`.Transformer.forward` performs forward transformation,
 and {py:meth}`.Transformer.backward` does backward transformation.
-These return more precise results than the _TKY2JGD for Windows Ver.1.3.79_ and the GIAJ web APIs.
+These return more precise results than the GIAJ web app/API.
 
 ```pycon
 >>> tf.forward(36.10377479, 140.087855041, 2.34)
 Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
 >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
-Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
+Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 ```
 
 The return value is {py:class}`~jgdtrans.Point` obj.
@@ -182,7 +189,7 @@ It is unpackable because {py:class}`~jgdtrans.Point` is
 >>> origin = Point(36.10377479, 140.087855041, 2.34)
 >>> result = tf.forward(*origin)
 >>> tf.backward(*result)
-Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
+Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.34)
 ```
 
 There is {py:meth}`.Transformer.transform`
@@ -199,40 +206,17 @@ True
 True
 ```
 
-We note that the backward transformation,
-{py:meth}`.Transformer.backward`,
-is _not_ exact as the original _TKY2JGD for Windows Ver.1.3.79_ and the web APIs are [^2].
-Its result drifts slightly from the exact solution (see the two previous example).
+We note that {py:meth}`.Transformer.backward` is _not_ exact,
+but {py:meth}`.Transformer.backward` ensures that the error from exact solution is
+suppressed by {py:attr}`.Transformer.ERROR_MAX`.
+That is, the error from exact solution is less than $10^{-9}$ \[deg\],
+which is error of GIAJ latitude and longitude parameter [^10].
+This implies that altitude's error is less than $10^{-5}$ \[m\],
+which is error of the GIAJ altitude parameter.
 
-[^2]: As far as we researched.
-
-{py:meth}`.Transformer.backward_safe`
-does backward transformation
-as well as {py:meth}`.Transformer.backward`,
-but returns the verified result for each latitude and longitude
-whose drift from the exact solution is less than the GIAJ parameter error,
-$2.7\times10^{-9}$ \[deg\].
-It constrains (we believe) the drift of resulting altitude
-to be less than the GIAJ parameter error, $10^{-5}$ \[m\];
-
-```pycon
->>> point = Point(36.10377479, 140.087855041, 2.34)
->>> tf.backward_safe(*tf.forward(*point))
-Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
-```
-
-In the example above, the `SemiDyna2023.par` case,
-no error remain on latitude and longitude.
-
-If it does not find any solution whose drift from the exact solution
-is less than $2.7\times10^{-9}$ \[deg\],
-{py:meth}`.Transformer.backward_safe` throws
-{py:class}`~jgdtrans.NotConvergeError`.
-We believe that it works fine for most of practical cases;
-as far as numerical experiments on
-`TKY2JGD.par`, `touhokutaiheiyouoki2011.par` and
-`pos2jgd_202307_ITRF2014.par`,
-there is no location where such a solution is not found.
+{py:meth}`.Transformer.backward` is not compatible to
+GIAJ web service/APIs. We provide a compatible backward transformation by
+{py:meth}`.Transformer.backward_compat`.
 
 If the parameters are zero, e.g. altitude of TKY2JGD and PathJGD,
 and latitude and longitude of PathJGD(H) and HyokoRev,
@@ -274,7 +258,7 @@ for example,
 
 In this section, we briefly provide definitions of terms and corresponding to implementations
 to help you understand the mesh-related implementations.
-Please skip this section if you just want to use {py:mod}`jgdtrans`. 
+Please skip this section if you just want to use {py:mod}`jgdtrans`.
 
 The following terms, except for meshcode, are specific to our implementation
 and do not correspond to any other implementation, including official ones.
