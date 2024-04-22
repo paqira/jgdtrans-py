@@ -602,9 +602,8 @@ class Transformer:
     ) -> _point.Point:
         """Returns the backward-transformed position compatible to GIAJ web app/APIs.
 
-        This is compatible to GIAJ web app/APIs.
-
-        This is **not** exact as the original as.
+        This is compatible to GIAJ web app/APIs,
+        and is **not** exact as the original as.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.00333... <= and <= 66.666...
@@ -646,7 +645,7 @@ class Transformer:
     def backward(self, latitude: float, longitude: float, altitude: float = 0.0):
         """Returns the backward-transformed position.
 
-        The result's error is suppressed under :attr:`Transformer::ERROR_MAX`.
+        The result's error from an exact solution is suppressed under :attr:`Transformer::ERROR_MAX`.
 
         Notes, the error is less than 1e-9 deg, which is
         error of GIAJ latitude and longitude parameter.
