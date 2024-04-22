@@ -7,7 +7,7 @@ import textwrap
 from collections.abc import Mapping
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Final, NamedTuple
+from typing import ClassVar, Final, NamedTuple
 
 from typing_extensions import Self  # typing @ >= 3.11
 
@@ -240,12 +240,12 @@ class Transformer:
         Backward transformation
 
         >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
-        Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
-
-        Verified backward transformation
-
-        >>> tf.backward_safe(36.103773017086695, 140.08785924333452, 2.4363138578103)
         Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
+
+        Compatible backward transformation to GIAJ web app/APIs
+
+        >>> tf.backward_compat(36.103773017086695, 140.08785924333452, 2.4363138578103)
+        Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
     """
 
     format: _types.FormatType
@@ -264,6 +264,9 @@ class Transformer:
 
     description: str | None = None
     """The description."""
+
+    ERROR_MAX: ClassVar[float] = 5e-14
+    """Max error of :meth:`Transformer.backward` and :meth:`Transformer.backward_corr`."""
 
     def __post_init__(self):
         if self.format not in FORMAT:
@@ -507,15 +510,6 @@ class Transformer:
     ) -> _point.Point:
         """Returns the transformed position.
 
-        Backward-transformation is *not* exact
-        as the original *TKY2JGD for Windows Ver.1.3.79* and the web APIs are.
-
-        There are points where unable to perform backward transformation
-        even when they are the results of the forward transformation,
-        because the forward transformation moves them to the area where the parameter does not support.
-
-        We note that :meth:`Transformer.backward_safe` performs verified backward transformation.
-
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.00333... <= and <= 66.666...
             longitude: the longitude [deg] of the point which satisfies 100.0 <= and <= 180.0
@@ -545,7 +539,14 @@ class Transformer:
             >>> tf.transform(36.10377479, 140.087855041, 2.34, backward=False)
             Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
             >>> tf.transform(36.103773017086695, 140.08785924333452, 2.4363138578102994, backward=True)
-            Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
+            Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
+
+            Following identities hold:
+
+            >>> tf.transform(*point, backward=False) == tf.forward(*point)
+            True
+            >>> tf.transform(*point, backward=True) == tf.backward(*point)
+            True
         """
         func = self.backward if backward else self.forward
         return func(latitude, longitude, altitude=altitude)  # type: ignore
@@ -593,22 +594,17 @@ class Transformer:
             altitude=altitude + corr.altitude,
         )
 
-    def backward(
+    def backward_compat(
         self,
         latitude: float,
         longitude: float,
         altitude: float = 0.0,
     ) -> _point.Point:
-        """Returns the backward-transformed position by the original TKY2JGD method.
+        """Returns the backward-transformed position compatible to GIAJ web app/APIs.
 
-        This is *not* exact as the original *TKY2JGD for Windows Ver.1.3.79*
-        and the web APIs are (as far as we researched).
+        This is compatible to GIAJ web app/APIs.
 
-        There are points where unable to perform backward transformation
-        even when they are the results of the forward transformation,
-        because the forward transformation moves them to the area where the parameter does not support.
-
-        We note that :meth:`Transformer.backward_safe` performs verified backward transformation.
+        This is **not** exact as the original as.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.00333... <= and <= 66.666...
@@ -626,6 +622,8 @@ class Transformer:
         Examples:
             From `SemiDynaEXE2023.par`
 
+            Notes, the exact solution is :obj:`Point(36.10377479, 140.087855041, 2.34)`.
+
             >>> tf = Transformer(
             ...     format='SemiDynaEXE',
             ...     parameter={
@@ -635,23 +633,27 @@ class Transformer:
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
             ...     }
             ... )
-            >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
+            >>> tf.backward_compat(36.103773017086695, 140.08785924333452, 2.4363138578103)
             Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
         """
-        corr = self.backward_corr(latitude, longitude)
+        corr = self.backward_compat_corr(latitude, longitude)
         return _point.Point(
             latitude=latitude + corr.latitude,
             longitude=longitude + corr.longitude,
             altitude=altitude + corr.altitude,
         )
 
-    def backward_safe(self, latitude: float, longitude: float, altitude: float = 0.0):
+    def backward(self, latitude: float, longitude: float, altitude: float = 0.0):
         """Returns the backward-transformed position.
 
-        The result's drifting from the exact solution
-        is less than error of the GIAJ latitude and longitude parameter,
-        1e-9 [deg], for each latitude and longitude.
-        The altitude's drifting is less than 1e-5 [m] which is error of the GIAJ altitude parameter.
+        The result's error is suppressed under :attr:`Transformer::ERROR_MAX`.
+
+        Notes, the error is less than 1e-9 deg, which is
+        error of GIAJ latitude and longitude parameter.
+        This implies that altitude's error is less than 1e-5 [m],
+        which is error of the GIAJ altitude parameter.
+
+        Notes, this is not compatible to GIAJ web app/APIs (but more accurate).
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.0 <= and <= 66.666...
@@ -664,14 +666,14 @@ class Transformer:
         Raises:
             ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
-            CorrectionNotFoundError: when verification failed
+            CorrectionNotFoundError: when the error from the exact solution is larger
+                                     than :attr:`Transformer::ERROR_MAX`.
             PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:
             From `SemiDynaEXE2023.par`
 
-            The origin is forward transformation from
-            :obj:`Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)`.
+            Notes, the exact solution is :obj:`Point(36.10377479, 140.087855041, 2.34)`.
             In this case, no error remains.
 
             >>> tf = Transformer(
@@ -683,10 +685,10 @@ class Transformer:
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
             ...     }
             ... )
-            >>> tf.backward_safe(36.103773017086695, 140.08785924333452, 2.4363138578103)
+            >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
             Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
         """
-        corr = self.backward_safe_corr(latitude, longitude)
+        corr = self.backward_corr(latitude, longitude)
         return _point.Point(
             latitude=latitude + corr.latitude,
             longitude=longitude + corr.longitude,
@@ -723,7 +725,7 @@ class Transformer:
     def forward_corr(self, latitude: float, longitude: float) -> Correction:
         """Return the correction on forward-transformation.
 
-        This is used by :meth:`Transformer.forward`.
+        Used by :meth:`Transformer.forward`.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.0 <= and <= 66.666...
@@ -815,10 +817,10 @@ class Transformer:
 
         return Correction(lat, lng, alt)
 
-    def backward_corr(self, latitude: float, longitude: float) -> Correction:
-        """Return the correction on backward-transformation.
+    def backward_compat_corr(self, latitude: float, longitude: float) -> Correction:
+        """Return the correction on backward-transformation compatible to GIAJ web app/APIs.
 
-        This is used by :meth:`Transformer.backward`.
+        Used by :meth:`Transformer.backward_compat`.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.00333... <= and <= 66.666...
@@ -844,7 +846,7 @@ class Transformer:
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
             ...     }
             ... )
-            >>> tf.backward_corr(36.103773017086695, 140.08785924333452)
+            >>> tf.backward_compat_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.7729133219831587e-06, longitude=-4.202334509042613e-06, altitude=-0.0963138582320569)
         """
         delta: Final = 1 / 300  # 12. / 3600.
@@ -862,14 +864,14 @@ class Transformer:
         corr = self.forward_corr(lat, lng)
         return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
-    def backward_safe_corr(
+    def backward_corr(
         self,
         latitude: float,
         longitude: float,
     ) -> Correction:
         """Return the correction on backward-transformation.
 
-        This is used by :meth:`Transformer.backward_safe`.
+        Used by :meth:`Transformer.backward`.
 
         Args:
             latitude: the latitude [deg] of the point which satisfies 0.0 <= and <= 66.666...
@@ -896,7 +898,7 @@ class Transformer:
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
             ...     }
             ... )
-            >>> tf.backward_safe_corr(36.103773017086695, 140.08785924333452)
+            >>> tf.backward_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.7729133100878255e-06, longitude=-4.202334510058886e-06, altitude=-0.09631385781030007)
         """
         #
@@ -906,9 +908,6 @@ class Transformer:
         # but, technically, there are (a lot of) parameters
         # unable to find a solution near enough the exact solution
         # even if it increases the iteration.
-
-        # the GIAJ parameter error is 1e-5 [sec] ~ 1e-9 [deg]
-        criteria: Final = 5e-14
 
         # Effectively sufficient, we verified with
         # - TKY2JGD.par.
@@ -974,7 +973,10 @@ class Transformer:
 
             # verify
             corr = self.forward_corr(yn, xn)
-            if abs(latitude - (yn + corr.latitude)) < criteria and abs(longitude - (xn + corr.longitude)) < criteria:
+            if (
+                abs(latitude - (yn + corr.latitude)) < self.ERROR_MAX
+                and abs(longitude - (xn + corr.longitude)) < self.ERROR_MAX
+            ):
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
         raise _error.CorrectionNotFoundError(

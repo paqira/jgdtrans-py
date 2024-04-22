@@ -17,7 +17,7 @@ pip install jgdtrans
 ドキュメントは [`Sphinx`][Sphinx] によってビルドできます。
 
 ```shell
-sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
+# sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
 sphinx-build -b html ./doc/source ./doc/build/html
 ```
 
@@ -37,11 +37,17 @@ par ファイルと呼びます）の読み込みに対応しています。
 - [POS2JGD] (geonetF3 and ITRF2014)
 
 [GIAJ]: https://www.gsi.go.jp
+
 [TKY2JGD]: https://www.gsi.go.jp/sokuchikijun/tky2jgd.html
+
 [PatchJGD]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd/index.html
+
 [PatchJGD(H)]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd_h/index.html
+
 [HyokoRev]: https://vldb.gsi.go.jp/sokuchi/surveycalc/hyokorev/hyokorev.html
+
 [SemiDynaEXE]: https://vldb.gsi.go.jp/sokuchi/surveycalc/semidyna/web/index.html
+
 [POS2JGD]: https://positions.gsi.go.jp/cdcs
 
 ここでは、 par ファイルの読み込み方法と紹介します。
@@ -55,7 +61,7 @@ par ファイルを利用する場合は、国土地理院よりダウンロー�
       SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
       geonetF3 and ITRF2014 (POS2JGD): <https://positions.gsi.go.jp/cdcs/>.
 
-{py:func}`.load` と {py:func}`.loads` 
+{py:func}`.load` と {py:func}`.loads`
 によって par ファイルを読み込みます。この
 API は {py:class}`.Transformer` を返します。
 `format` 引数を用いて、par ファイルのフォーマットを指定してください。
@@ -67,6 +73,7 @@ API は {py:class}`.Transformer` を返します。
 >>> tf
 Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description='for [...]')
 ```
+
 ヘッダ、 unit （{py:obj}`1` もしくは {py:obj}`5`、 [](#メッシュに関連する実装の導入) にて説明します)、パラメータには、それぞれ、
 {py:attr}`.Transformer.description` 、
 {py:attr}`.Transformer.unit` 、
@@ -91,7 +98,7 @@ Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description=
 {py:attr}`.Transformer.parameter` のエントリは、
 par ファイルのパラメータ部の一行に対応します。キーはメッシュコード（_meshcode_）、値は {py:class}`.Parameter` オブジェクトです。
 
-TKY2JGD の高度、 PatchJGD(H) の経緯度は {py:obj}`0.0` になります。 
+TKY2JGD の高度、 PatchJGD(H) の経緯度は {py:obj}`0.0` になります。
 
 ```pycon
 >>> with open('TKY2JGD.par') as fp:
@@ -147,13 +154,13 @@ Transformer(unit=5, parameter=<dict (21134 length) at 0x987654321>, description=
 ここでは、 {py:class}`.Transformer` オブジェクトを使った座標変換方法を紹介します。
 
 順方向の変換は {py:meth}`.Transformer.forward` によって、
-逆方向の変換は {py:meth}`.Transformer.backward` によって行います。いずれも _TKY2JGD for Windows Ver.1.3.79_ や国土地理院の web API よりも高い精度の結果を返します。
+逆方向の変換は {py:meth}`.Transformer.backward` によって行います。いずれも国土地理院の web API よりも精度が高いです。
 
 ```pycon
 >>> tf.forward(36.10377479, 140.087855041, 2.34)
 Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
 >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
-Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995782443)
+Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 ```
 
 戻り値は {py:class}`~jgdtrans.Point` オブジェクトです。経緯度、高度には各属性でアクセスできます。
@@ -175,7 +182,7 @@ Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.3399999995
 >>> origin = Point(36.10377479, 140.087855041, 2.34)
 >>> result = tf.forward(*origin)
 >>> tf.backward(*result)
-Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
+Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.34)
 ```
 
 引数（{py:obj}`backward`）によって順逆変換を切り替える {py:meth}`.Transformer.transform`
@@ -189,29 +196,12 @@ True
 True
 ```
 
-{py:meth}`.Transformer.backward` は _TKY2JGD for Windows Ver.1.3.79_ や国土地理院の web API
-がそうである様に、正確ではありません [^2]。逆変換の結果は、厳密解からわずかですがズレています（２つ前のコードを見てください）。
+{py:meth}`.Transformer.backward` は厳密解を提供しませんが、真の解からの誤差を {py:attr}`.Transformer.ERROR_MAX`
+以下であることを保証します。すなわち、経緯度の誤差は、国土地理院が公開しているパラメータの誤差
+$10^{-9}$ \[deg\] 以下となり、高度の誤差は、 $10^{-5}$ \[m\] 以下となります（と思います）。
 
-[^2]: 私が調べたかぎりでは。
-
-{py:meth}`.Transformer.backward_safe`
-を用いることで、結果の精度（厳密解からのずれ）を保証した逆変換が行えます。経緯度の誤差は、国土地理院が公開しているパラメータの誤差
-$2.7\times10^{-9}$ \[deg\] 以下となることを保証し、高度の誤差は、経緯度の精度保証によって
-$10^{-5}$ \[m\] 以下となります（と思います）。
-
-```pycon
->>> point = Point(36.10377479, 140.087855041, 2.34)
->>> tf.backward_safe(*tf.forward(*point))
-Point(latitude=36.10377479, longitude=140.087855041, altitude=2.3399999999970085)
-```
-
-上記の例（ `SemiDyna2023.par`）では、経緯度の誤差がありません。
-
-もし、その様な解を見つけられなかった場合、
-{py:meth}`.Transformer.backward_safe` は
-{py:class}`~jgdtrans.NotConvergeError` を送出します。私が `TKY2JGD.par` 、
-`touhokutaiheiyouoki2011.par` 、 `pos2jgd_202307_ITRF2014.par`
-を用いて数値的に検証した限りでは、必ずその様な解が見つかっていますので、多くの場合で問題なく動作すると思います。
+{py:meth}`.Transformer.backward` は国土地理院の web API と互換性はありません。互換な逆変換は
+{py:meth}`.Transformer.backward_compat` で行えます。
 
 TKY2JGD や PathJGD の高度や PatchJGD(H) や HyokoRev
 の経緯度のように、パタメータが 0.0 の場合、その成分上の変換は（順逆ともに）恒等変換になります。つぎは
@@ -258,16 +248,18 @@ Point(36.10377479166667, 140.08785504166664, 2.34)
 _mesh coordinate_ 、格子点のことを _mesh node_ （もしくは _node_）と呼びます。それぞれ {py:class}`.MeshCoord` と
 {py:class}`.MeshNode` として実装しています。
 mesh node には、対応するある非負整数が存在し、それをメッシュコード（_meshcode_）と呼びます。経緯度高度の各パラメータは、メッシュコードによって、
-mesh node に紐づけられます。特に par ファイルでは、そのように紐づけられています。  
+mesh node に紐づけられます。特に par ファイルでは、そのように紐づけられています。
 
 メッシュは、格子間隔がおよそ 1 \[km\] のメッシュと、 5 \[km\]
-のメッシュの 2 種類が存在します。格子間隔のことを _mesh unit_ （もしくは _unit_）と呼び、 
+のメッシュの 2 種類が存在します。格子間隔のことを _mesh unit_ （もしくは _unit_）と呼び、
 {py:obj}`1` ならびに {py:obj}`5` リテラルで表現しています。
 
 Mesh coordinate （{py:class}`.MeshCoord`）は unit {py:obj}`1` の座標系として実装しています。
-unit {py:obj}`5` の座標系は、簡単のために、５つ飛びの unit {py:obj}`1` の座標系として実装しています。したがって、５つ飛びでない node は、
+unit {py:obj}`5` の座標系は、簡単のために、５つ飛びの unit {py:obj}`1` の座標系として実装しています。したがって、５つ飛びでない
+node は、
 unit {py:obj}`5` の時に扱うことができません。例えば、
-node だけでは unit を決定できないので、 node から cell （すぐあとで説明します）の解決では、ユーザーが明示的に unit を指定しなければなりません。
+node だけでは unit を決定できないので、 node から cell （すぐあとで説明します）の解決では、ユーザーが明示的に unit
+を指定しなければなりません。
 
 変換の補正を計算するには、その unit における単位胞が必要です。単位胞 のことを _mesh cell_（もしくは _cell_ ）と呼び、
 {py:class}`.MeshCell` として実装しています。

@@ -177,7 +177,7 @@ class Transformer(unittest.TestCase):
         self.assert_equal_point(expected, actual)
 
         origin = (36.10696628160147, 140.08457686629436, 0.0)
-        actual = tuple(trans.backward(*origin))
+        actual = tuple(trans.backward_compat(*origin))
         expected = (36.103774792, 140.087855042, 0.0)
         self.assert_equal_point(expected, actual)
 
@@ -193,7 +193,7 @@ class Transformer(unittest.TestCase):
         self.assert_equal_point(expected, actual)
 
         origin = (38.29849530463122, 141.55596301776936, 0.0)
-        actual = tuple(trans.backward(*origin))
+        actual = tuple(trans.backward_compat(*origin))
         expected = (38.298512058, 141.555900614, 1.264)
         self.assert_equal_point(expected, actual)
 
@@ -208,7 +208,7 @@ class Transformer(unittest.TestCase):
         self.assert_equal_point(expected, actual)
 
         origin = (36.10377301875336, 140.08785924400115, 0.0)
-        actual = tuple(trans.backward(*origin))
+        actual = tuple(trans.backward_compat(*origin))
         expected = (36.103774792, 140.087855042, -0.096)
         self.assert_equal_point(expected, actual)
 
@@ -224,7 +224,7 @@ class Transformer(unittest.TestCase):
         expected = (36.10377301875335, 140.08785924400115, 0.09631385775572238)
         self.assert_equal_point_exact(expected, actual)
 
-        actual = tuple(trans.backward(*actual))
+        actual = tuple(trans.backward_compat(*actual))
         expected = (36.10377479166668, 140.08785504166664, -4.2175864502150125955e-10)
         self.assert_equal_point_exact(expected, actual)
 
@@ -241,7 +241,7 @@ class Transformer(unittest.TestCase):
         actual = tuple(trans.transform(*origin))
         self.assert_equal_point(expected, actual)
 
-        expected = tuple(trans.backward(*origin))
+        expected = tuple(trans.backward_compat(*origin))
         actual = tuple(trans.transform(*origin, backward=True))
         self.assert_equal_point(expected, actual)
 
@@ -253,7 +253,7 @@ class Transformer(unittest.TestCase):
         actual = tuple(trans.transform(*origin))
         self.assert_equal_point(expected, actual)
 
-        expected = tuple(trans.backward(*origin))
+        expected = tuple(trans.backward_compat(*origin))
         actual = tuple(trans.transform(*origin, backward=True))
         self.assert_equal_point(expected, actual)
 
@@ -269,29 +269,29 @@ class Transformer(unittest.TestCase):
         with self.assertRaises(PointOutOfBoundsError):
             tf.forward_corr(0, 181)
 
+    def test_backward_compat_corr(self):
+        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_compat_corr(0, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_compat_corr(67, 0)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_compat_corr(0, 99)
+        with self.assertRaises(PointOutOfBoundsError):
+            tf.backward_compat_corr(0, 181)
+
     def test_backward_corr(self):
         tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
 
         with self.assertRaises(PointOutOfBoundsError):
-            tf.backward_corr(0, 0)
+            tf.backward_corr(-1, 0)
         with self.assertRaises(PointOutOfBoundsError):
             tf.backward_corr(67, 0)
         with self.assertRaises(PointOutOfBoundsError):
             tf.backward_corr(0, 99)
         with self.assertRaises(PointOutOfBoundsError):
             tf.backward_corr(0, 181)
-
-    def test_backward_safe_corr(self):
-        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
-
-        with self.assertRaises(PointOutOfBoundsError):
-            tf.backward_safe_corr(-1, 0)
-        with self.assertRaises(PointOutOfBoundsError):
-            tf.backward_safe_corr(67, 0)
-        with self.assertRaises(PointOutOfBoundsError):
-            tf.backward_safe_corr(0, 99)
-        with self.assertRaises(PointOutOfBoundsError):
-            tf.backward_safe_corr(0, 181)
 
     def test_statistics(self):
         stats = jgdtrans.from_dict(DATA["SemiDynaEXE"]).statistics()
