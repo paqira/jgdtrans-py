@@ -918,8 +918,8 @@ class Transformer:
         scale: Final = 3600
 
         # Xn
-        yn = latitude
         xn = longitude
+        yn = latitude
 
         for _ in range(iteration):
             try:
@@ -930,23 +930,23 @@ class Transformer:
             sw, se, nw, ne = self._parameter_quadruple(cell)
             y, x = cell.position(yn, xn)
 
-            corr_y = (
-                bilinear_interpolation(
-                    sw=sw.latitude,
-                    se=se.latitude,
-                    nw=nw.latitude,
-                    ne=ne.latitude,
-                    lat=y,
-                    lng=x,
-                )
-                / scale
-            )
             corr_x = (
                 bilinear_interpolation(
                     sw=sw.longitude,
                     se=se.longitude,
                     nw=nw.longitude,
                     ne=ne.longitude,
+                    lat=y,
+                    lng=x,
+                )
+                / scale
+            )
+            corr_y = (
+                bilinear_interpolation(
+                    sw=sw.latitude,
+                    se=se.latitude,
+                    nw=nw.latitude,
+                    ne=ne.latitude,
                     lat=y,
                     lng=x,
                 )
@@ -964,7 +964,7 @@ class Transformer:
             fy_y = -1 - ((nw.latitude - sw.latitude) * (1 - xn) + (ne.latitude - se.latitude) * xn) / scale
 
             # and its determinant
-            det = fx_x * fy_y - fy_x * fy_x
+            det = fx_x * fy_y - fx_y * fy_x
 
             # update Xn
             xn -= (fy_y * fx - fx_y * fy) / det
