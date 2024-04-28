@@ -6,7 +6,6 @@ import math
 import textwrap
 from collections.abc import Mapping
 from dataclasses import dataclass
-from functools import cached_property
 from typing import ClassVar, Final, NamedTuple
 
 from typing_extensions import Self  # typing @ >= 3.11
@@ -145,7 +144,7 @@ class Correction(NamedTuple):
     altitude: float
     """The altitude correction [m]."""
 
-    @cached_property
+    @property
     def horizontal(self) -> float:
         r""":math:`\sqrt{\text{latitude}^2 + \text{longitude}^2}` [deg]."""
         return math.hypot(self.latitude, self.longitude)
@@ -167,7 +166,7 @@ class Parameter(NamedTuple):
     altitude: float
     """The altitude parameter [m]."""
 
-    @cached_property
+    @property
     def horizontal(self) -> float:
         r""":math:`\sqrt{\text{latitude}^2 + \text{longitude}^2}` [sec]."""
         return math.hypot(self.latitude, self.longitude)
