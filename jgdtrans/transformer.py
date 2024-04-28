@@ -206,6 +206,8 @@ class Statistics:
     """The statistics of longitude."""
     altitude: StatisticData
     """The statistics of altitude."""
+    horizontal: StatisticData
+    """The statistics of horizontal."""
 
 
 @dataclass(frozen=True)
@@ -469,11 +471,15 @@ class Transformer:
         """
         # Surprisingly, the following code is fast enough.
 
+        # ensure summation order
+        params = sorted(((k, v) for k, v in self.parameter.items()), key=lambda t: t[0])
+
         kwargs = {}
         for name, arr in (
-            ("latitude", tuple(map(lambda p: p.latitude, self.parameter.values()))),
-            ("longitude", tuple(map(lambda p: p.longitude, self.parameter.values()))),
-            ("altitude", tuple(map(lambda p: p.altitude, self.parameter.values()))),
+            ("latitude", tuple(map(lambda p: p[1].latitude, params))),
+            ("longitude", tuple(map(lambda p: p[1].longitude, params))),
+            ("altitude", tuple(map(lambda p: p[1].altitude, params))),
+            ("horizontal", tuple(map(lambda p: p[1].horizontal, params))),
         ):
             if not arr:
                 kwargs[name] = StatisticData(None, None, None, None, None, None)
