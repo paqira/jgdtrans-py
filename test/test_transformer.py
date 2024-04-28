@@ -309,6 +309,17 @@ class Transformer(unittest.TestCase):
             jgdtrans.transformer.StatisticData(4, 0.0972325, 0.005453133846697696, 0.0972325, 0.08972, 0.10374),
             stats.altitude,
         )
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(
+                4,
+                0.016417802947905496,
+                6.630508084291115e-05,
+                0.016417802947905496,
+                0.016326766366920303,
+                0.016499215132847987,
+            ),
+            stats.horizontal,
+        )
 
         stats = jgdtrans.Transformer("TKY2JGD", {}).statistics()
         self.assertEqual(
@@ -344,6 +355,17 @@ class Transformer(unittest.TestCase):
             ),
             stats.longitude,
         )
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ),
+            stats.horizontal,
+        )
 
         stats = jgdtrans.Transformer(
             "TKY2JGD", {54401005: jgdtrans.transformer.Parameter(1.0, 0.0, math.nan)}
@@ -362,6 +384,10 @@ class Transformer(unittest.TestCase):
         self.assertTrue(math.isnan(stats.altitude.abs))
         self.assertTrue(math.isnan(stats.altitude.min))
         self.assertTrue(math.isnan(stats.altitude.max))
+        self.assertEqual(
+            jgdtrans.transformer.StatisticData(1, 1.0, 0.0, 1.0, 1.0, 1.0),
+            stats.horizontal,
+        )
 
 
 if __name__ == "__main__":
