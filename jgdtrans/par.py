@@ -110,7 +110,7 @@ def parse(
         parameters[_mesh_code] = _trans.Parameter(latitude=_latitude, longitude=_longitude, altitude=_altitude)
 
     return {
-        "description": "\n".join(lines[header]) if description is None else description,
+        "description": "\n".join(lines[header]) + "\n" if description is None else description,
         "format": format,
         "parameter": parameters,
     }
