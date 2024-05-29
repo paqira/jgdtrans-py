@@ -44,6 +44,7 @@ def is_format(format: _types.FormatType) -> bool:
     )
 
 
+# TODO: typing error
 def parse(
     text: str,
     header: slice,
@@ -53,7 +54,7 @@ def parse(
     altitude: Callable[[str], float],
     format: _types.FormatType,
     description: str | None = None,
-) -> dict[str, str | None | int | dict[int, _trans.Parameter] | _types.FormatType]:
+):
     """Returns the arguments of :class:`.Transformer` constructor by parsing `s`.
 
     Args:
@@ -222,7 +223,7 @@ def loads(
     else:
         raise ValueError(f"unexpected format give, we got '{format}'")
 
-    return _trans.Transformer(**parse(**kwargs))
+    return _trans.Transformer(**parse(**kwargs))  # type: ignore
 
 
 def load(

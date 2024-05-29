@@ -111,7 +111,7 @@ class DMS:
             raise ValueError(f"invalid value given, we got {self.degree}, {self.minute}, {self.second}, {self.fract}")
 
     @staticmethod
-    def _carry(sign: int, degree: int, minute: int, second: int, fract: float) -> dict[str, float | int]:
+    def _carry(sign: Literal[1, -1], degree: int, minute: int, second: int, fract: float):
         carry, second = divmod(second, 60)
         carry, minute = divmod(minute + carry, 60)
         return {
@@ -164,7 +164,6 @@ class DMS:
         mo = re.match(r"^\s*([+-]?)(\d+(?:[_\d]*\d+|))(\.\d+(?:[_\d]*\d+|))\s*$", s)
         if mo:
             sign, integer, fraction = mo.groups()
-            sign: Literal[1, -1] = -1 if sign == "-" else 1  # type: ignore
 
             try:
                 integer = int(integer)
@@ -172,34 +171,29 @@ class DMS:
             except ValueError:
                 pass
             else:
-                return _parser(sign, integer, fraction)
+                return _parser(-1 if sign == "-" else 1, integer, fraction)
 
         mo = re.match(r"^\s*([+-]?)(\.\d+(?:[_\d]*\d+|))\s*$", s)
         if mo:
-            sign, fraction = mo.groups()
-
-            sign: Literal[1, -1] = -1 if sign == "-" else 1  # type: ignore
-            integer = 0
+            sign, integer, fraction = mo.groups()
 
             try:
                 fraction = float(fraction)
             except ValueError:
                 pass
             else:
-                return _parser(sign, integer, fraction)
+                return _parser(-1 if sign == "-" else 1, 0, fraction)
 
         mo = re.match(r"^\s*([+-]?)(\d+(?:[_\d]*\d+|))\.?\s*$", s)
         if mo:
-            sign, integer = mo.groups()
-            sign: Literal[1, -1] = -1 if sign == "-" else 1  # type: ignore
-            fraction = 0.0
+            sign, integer, fraction = mo.groups()
 
             try:
                 integer = int(integer)
             except ValueError:
                 pass
             else:
-                return _parser(sign, integer, fraction)
+                return _parser(-1 if sign == "-" else 1, integer, 0.0)
 
         raise ValueError(f"unexpected DMS notation angle, we got {repr(s)}") from None
 
@@ -234,11 +228,13 @@ class DMS:
         assert mm <= 60
         assert ss <= 60
 
-        carry, ss = divmod(math.trunc(ss), 60)
-        carry, mm = divmod(math.trunc(mm) + carry, 60)
+        carry, second = divmod(math.trunc(ss), 60)
+        carry, minute = divmod(math.trunc(mm) + carry, 60)
 
         return cls(
-            **DMS._carry(sign=1 if 0 <= t else -1, degree=math.trunc(dd) + carry, minute=mm, second=ss, fract=fract)
+            **DMS._carry(
+                sign=1 if 0 <= t else -1, degree=math.trunc(dd) + carry, minute=minute, second=second, fract=fract
+            )
         )
 
     def to_str(self) -> str:
