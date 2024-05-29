@@ -417,7 +417,7 @@ class Transformer:
         """
         return {
             "format": self.format,
-            "parameter": {k: v._asdict() for k, v in self.parameter.items()},
+            "parameter": {k: v._asdict() for k, v in self.parameter.items()},  # type: ignore
             "description": self.description,
         }
 
