@@ -175,7 +175,7 @@ class DMS:
 
         mo = re.match(r"^\s*([+-]?)(\.\d+(?:[_\d]*\d+|))\s*$", s)
         if mo:
-            sign, integer, fraction = mo.groups()
+            sign, fraction = mo.groups()
 
             try:
                 fraction = float(fraction)
@@ -186,7 +186,7 @@ class DMS:
 
         mo = re.match(r"^\s*([+-]?)(\d+(?:[_\d]*\d+|))\.?\s*$", s)
         if mo:
-            sign, integer, fraction = mo.groups()
+            sign, integer = mo.groups()
 
             try:
                 integer = int(integer)
