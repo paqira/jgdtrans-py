@@ -493,7 +493,7 @@ class Transformer:
 
             length = len(arr)
             mean = sum_ / length
-            std = math.sqrt(math.fsum((mean - x) ** 2 for x in arr) / length)
+            std = math.sqrt(math.fsum(tuple((mean - x) ** 2 for x in arr)) / length)
 
             kwargs[name] = StatisticData(
                 count=length,
