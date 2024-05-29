@@ -9,18 +9,18 @@ for Python.
 Features:
 
 - Supports offline transformation (no web API)
-  - オフライン変換（web API 不使用）
+    - オフライン変換（web API 不使用）
 - Supports both original forward and backward transformation
-  - 順変換と逆変換の両方をサポート
+    - 順変換と逆変換の両方をサポート
 - Supports verified backward transformation
-  - 精度を保証した逆変換のサポート
+    - 精度を保証した逆変換のサポート
 - Supports all [TKY2JGD], [PatchJGD], [PatchJGD(H)], [HyokoRev], [SemiDynaEXE]
   and [POS2JGD] (geonetF3 and ITRF2014)
-  - For example, Tokyo Datum to JGD2000 ([EPSG:4301] to [EPSG:4612])
-    and JGD2000 to JGD2011 ([EPSG:4612] to [EPSG:6668])
-  - 上記の全てをサポート
+    - For example, Tokyo Datum to JGD2000 ([EPSG:4301] to [EPSG:4612])
+      and JGD2000 to JGD2011 ([EPSG:4612] to [EPSG:6668])
+    - 上記の全てをサポート
 - Clean implementation
-  - 保守が容易な実装
+    - 保守が容易な実装
 
 [TKY2JGD]: https://www.gsi.go.jp/sokuchikijun/tky2jgd.html
 [PatchJGD]: https://vldb.gsi.go.jp/sokuchi/surveycalc/patchjgd/index.html
@@ -84,7 +84,7 @@ MIT
    <https://www.gsi.go.jp/>,
    (English) <https://www.gsi.go.jp/ENGLISH/>.
 2. _TKY2JGD for Windows Ver.1.3.79_ (reference implementation):
-   <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html> 
+   <https://www.gsi.go.jp/sokuchikijun/tky2jgd_download.html>
    released under [国土地理院コンテンツ利用規約] which compatible to CC BY 4.0.
 3. Other implementation:
    Rust <https://github.com/paqira/jgdtrans-rs>,
