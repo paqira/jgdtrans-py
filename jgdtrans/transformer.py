@@ -266,7 +266,7 @@ class Transformer:
     description: str | None = None
     """The description."""
 
-    ERROR_MAX: ClassVar[float] = 5e-14
+    MAX_ERROR: ClassVar[float] = 5e-14
     """Max error of :meth:`Transformer.backward` and :meth:`Transformer.backward_corr`."""
 
     def __post_init__(self):
@@ -978,8 +978,8 @@ class Transformer:
             # verify
             corr = self.forward_corr(yn, xn)
             if (
-                abs(latitude - (yn + corr.latitude)) < self.ERROR_MAX
-                and abs(longitude - (xn + corr.longitude)) < self.ERROR_MAX
+                abs(latitude - (yn + corr.latitude)) < self.MAX_ERROR
+                and abs(longitude - (xn + corr.longitude)) < self.MAX_ERROR
             ):
                 return Correction(-corr.latitude, -corr.longitude, -corr.altitude)
 
