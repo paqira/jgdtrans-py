@@ -486,12 +486,12 @@ class Transformer:
                 continue
 
             sum_ = math.fsum(arr)
+            length = len(arr)
 
             if math.isnan(sum_):
-                kwargs[name] = StatisticData(len(arr), math.nan, math.nan, math.nan, math.nan, math.nan)
+                kwargs[name] = StatisticData(length, math.nan, math.nan, math.nan, math.nan, math.nan)
                 continue
 
-            length = len(arr)
             mean = sum_ / length
             std = math.sqrt(math.fsum(tuple((mean - x) ** 2 for x in arr)) / length)
 
