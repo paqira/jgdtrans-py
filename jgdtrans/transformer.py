@@ -554,7 +554,7 @@ class Transformer:
             True
         """
         func = self.backward if backward else self.forward
-        return func(latitude, longitude, altitude=altitude)  # type: ignore
+        return func(latitude, longitude, altitude=altitude)
 
     def forward(
         self,
