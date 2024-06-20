@@ -12,6 +12,38 @@ class IsFormat(unittest.TestCase):
         self.assertFalse(jgdtrans.par.is_format("Hi!"))
 
 
+class Error(unittest.TestCase):
+    def test_short_text(self):
+        text = "\n" * 15
+
+        with self.assertRaises(jgdtrans.error.ParseParFileError):
+            jgdtrans.par.loads(text, format="SemiDynaEXE")
+
+    def test_meshcode(self):
+        text = "\n" * 16 + "123a5678   0.00001   0.00002   0.00003"
+
+        with self.assertRaises(jgdtrans.error.ParseParFileError):
+            jgdtrans.par.loads(text, format="SemiDynaEXE")
+
+    def test_latitude(self):
+        text = "\n" * 16 + "12345678   0.0000a   0.00002   0.00003"
+
+        with self.assertRaises(jgdtrans.error.ParseParFileError):
+            jgdtrans.par.loads(text, format="SemiDynaEXE")
+
+    def test_longitude(self):
+        text = "\n" * 16 + "12345678   0.00001   0.0000a   0.00003"
+
+        with self.assertRaises(jgdtrans.error.ParseParFileError):
+            jgdtrans.par.loads(text, format="SemiDynaEXE")
+
+    def test_altitude(self):
+        text = "\n" * 16 + "12345678   0.00001   0.00002   0.0000a"
+
+        with self.assertRaises(jgdtrans.error.ParseParFileError):
+            jgdtrans.par.loads(text, format="SemiDynaEXE")
+
+
 class TKY2JGD(unittest.TestCase):
     def test_no_parameter(self):
         text = "\n" * 2
