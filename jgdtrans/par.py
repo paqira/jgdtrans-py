@@ -75,6 +75,13 @@ def parse(
     """
     lines = text.splitlines()
 
+    if len(lines) < header.stop:
+        raise _error.ParseParFileError(
+            f"too short text, we got {len(lines)} line(s), we expected {header.stop} at least"
+        ) from None
+
+    description = "\n".join(lines[header]) + "\n" if description is None else description
+
     parameters: dict[int, _trans.Parameter] = {}
     lineno = header.stop
     for line in lines[lineno:]:
@@ -111,7 +118,7 @@ def parse(
         parameters[_mesh_code] = _trans.Parameter(latitude=_latitude, longitude=_longitude, altitude=_altitude)
 
     return {
-        "description": "\n".join(lines[header]) + "\n" if description is None else description,
+        "description": description,
         "format": format,
         "parameter": parameters,
     }
