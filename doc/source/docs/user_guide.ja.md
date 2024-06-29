@@ -14,15 +14,6 @@ pip install jgdtrans
 
 [typing-extensions]: https://pypi.org/project/typing-extensions/
 
-ドキュメントは [`Sphinx`][Sphinx] によってビルドできます。
-
-```shell
-# sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
-sphinx-build -b html ./doc/source ./doc/build/html
-```
-
-[Sphinx]: https://pypi.org/project/Sphinx/
-
 ## par ファイルの読み込み
 
 {py:mod}`jgdtrans` は、以下の[国土地理院][GIAJ]が2023年時点で公開している全ての
@@ -50,7 +41,7 @@ par ファイルと呼びます）の読み込みに対応しています。
 
 [POS2JGD]: https://positions.gsi.go.jp/cdcs
 
-ここでは、 par ファイルの読み込み方法と紹介します。
+ここでは、 par ファイルの読み込み方法を紹介します。
 
 {py:mod}`jgdtrans` は par ファイルを提供しません。
 par ファイルを利用する場合は、国土地理院よりダウンロードしてください [^1]。
@@ -74,9 +65,9 @@ API は {py:class}`.Transformer` を返します。
 Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description='for [...]')
 ```
 
-ヘッダ、 unit （{py:obj}`1` もしくは {py:obj}`5`、 [](#メッシュに関連する実装の導入) にて説明します)、パラメータには、それぞれ、
+ヘッダ、 フォーマット、パラメータには、それぞれ、
 {py:attr}`.Transformer.description` 、
-{py:attr}`.Transformer.unit` 、
+{py:attr}`.Transformer.format` 、
 {py:attr}`.Transformer.parameter` にてアクセスできます。
 
 ```pycon
@@ -226,7 +217,7 @@ Point(36.10377479166667, 140.08785504166664, 2.34)
 ```
 
 {py:meth}`.Point.to_dms` の戻り値は
-{py:obj}`tuple[str, str float]` であり {py:class}`~jgdtrans.Point` ではないことに注意してください。
+{py:obj}`tuple[str, str, float]` であり {py:class}`~jgdtrans.Point` ではないことに注意してください。
 
 これらを組み合わせることで、DMS 形式による {py:class}`.Transformer` の I/O が可能です。
 
