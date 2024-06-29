@@ -11,7 +11,7 @@ You can install {py:mod}`jgdtrans` from PyPI:
 pip install jgdtrans
 ```
 
-This package depends on [`typing-extensions`][typing-extensions] only, and requires `python>=3.9`.
+This package depends on [`typing-extensions`][typing-extensions] only, and requires Python `>=3.9`.
 
 [typing-extensions]: https://pypi.org/project/typing-extensions/
 

@@ -41,7 +41,7 @@ You can install `jgdtrans` from PyPI:
 pip install jgdtrans
 ```
 
-`jgdtrans` depends on `typing-extensions` only, and requires `python>=3.9`.
+`jgdtrans` depends on `typing-extensions` only, and requires Python `>=3.9`.
 
 This package does not contain parameter files, download it from GIAJ.
 

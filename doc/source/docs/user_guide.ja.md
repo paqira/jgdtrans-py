@@ -10,7 +10,7 @@ PyPI よりインストールできます。
 pip install jgdtrans
 ```
 
-依存は [`typing-extensions`][typing-extensions] のみです。また `Python>=3.9` であることが必要です。
+依存は [`typing-extensions`][typing-extensions] のみです。また Python `>=3.9` であることが必要です。
 
 [typing-extensions]: https://pypi.org/project/typing-extensions/
 
