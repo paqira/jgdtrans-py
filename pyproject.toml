@@ -36,6 +36,12 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.optional-dependencies]
+doc = [
+    "myst_nb",
+    "sphinx_book_theme"
+]
+
 [tool.setuptools]
 packages = ["jgdtrans"]
 
