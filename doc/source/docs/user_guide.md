@@ -15,15 +15,6 @@ This package depends on [`typing-extensions`][typing-extensions] only, and requi
 
 [typing-extensions]: https://pypi.org/project/typing-extensions/
 
-Run [`Sphinx`][Sphinx] to builds the documentation:
-
-```shell
-# sphinx-apidoc -f -e --no-toc -d 1 -o ./doc/source/autodoc ./jgdtrans/ 
-sphinx-build -b html ./doc/source ./doc/build/html
-```
-
-[Sphinx]: https://pypi.org/project/Sphinx/
-
 ## Deserialize par File
 
 {py:mod}`jgdtrans` supports deserialization of all kind of _Gridded Correction Parameter_ file
@@ -69,12 +60,9 @@ It uses `format` argument to specify the format of the par file;
 Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description='for [...]')
 ```
 
-It can access to the header,
-the mesh unit ({py:obj}`1` or {py:obj}`5`, we define _mesh unit_
-in [](#brief-introduction-of-mesh-related-implementation))
-and the parameter by
+It can access to header, format and parameter by
 {py:attr}`.Transformer.description`,
-{py:attr}`.Transformer.unit` and
+{py:attr}`.Transformer.format` and
 {py:attr}`.Transformer.parameter`
 respectively.
 
@@ -243,7 +231,7 @@ Point(36.10377479166667, 140.08785504166664, 2.34)
 ```
 
 We note that {py:meth}`.Point.to_dms` returns
-{py:obj}`tuple[str, str float]`, not {py:class}`~jgdtrans.Point`.
+{py:obj}`tuple[str, str, float]`, not {py:class}`~jgdtrans.Point`.
 
 By combining these, it can use DMS notation for I/O of {py:class}`.Transformer`,
 for example,
