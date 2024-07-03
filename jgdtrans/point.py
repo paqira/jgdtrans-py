@@ -252,7 +252,7 @@ class Point(Sequence[float]):
             ValueError: when `latitude` and/or `longitude` is invalied
 
         Examples:
-            >>> Point.from_dms('360613.58925', '1400516.27815')
+            >>> Point.from_dms("360613.58925", "1400516.27815")
             Point(latitude=36.10377479166667, longitude=140.08785504166664, altitude=0.0)
         """
         if isinstance(latitude, str):
@@ -274,7 +274,7 @@ class Point(Sequence[float]):
             a tuple of latitude, longtitude and altitude
 
         Examples:
-            >>> point = Point.from_dms('360613.58925', '1400516.27815')
+            >>> point = Point.from_dms("360613.58925", "1400516.27815")
             >>> point.to_dms()
             ('360613.58925', '1400516.27815', 0.0)
         """

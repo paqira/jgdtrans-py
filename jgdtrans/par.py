@@ -25,11 +25,11 @@ def is_format(format: _types.FormatType) -> bool:
         :obj:`True` when `format` is valid
 
     Examples:
-        >>> is_format('TKY2JGD')
+        >>> is_format("TKY2JGD")
         True
-        >>> is_format('SemiDynaEXE')
+        >>> is_format("SemiDynaEXE")
         True
-        >>> is_format('Hi!')
+        >>> is_format("Hi!")
         False
     """
     return format in (
@@ -152,13 +152,13 @@ def loads(
         >>> s = '''<15 lines>
         ... MeshCode dB(sec)  dL(sec) dH(m)
         ... 12345678   0.00001   0.00002   0.00003'''
-        >>> tf = loads(s, format='SemiDynaEXE')
+        >>> tf = loads(s, format="SemiDynaEXE")
         >>> result = tf.transform(35.0, 145.0)
 
         >>> s = '''<15 lines>
         ... MeshCode dB(sec)  dL(sec) dH(m)
         ... 12345678   0.00001   0.00002   0.00003'''
-        >>> loads(s, format='SemiDynaEXE').parameter[12345678]
+        >>> loads(s, format="SemiDynaEXE").parameter[12345678]
         Parameter(latitude=0.00001, longitude=0.0002, altitude=0.0003)
     """
     if format == "TKY2JGD":
@@ -258,15 +258,15 @@ def load(
         ParseParFileError: when invalid data found
 
     Examples:
-        >>> with open('SemiDyna2023.par') as fp:
-        ...     tf = load(fp, format='SemiDynaEXE')
+        >>> with open("SemiDyna2023.par") as fp:
+        ...     tf = load(fp, format="SemiDynaEXE")
         >>> result = tf.transform(35.0, 145.0)
 
         >>> s = '''<15 lines>
         ... MeshCode dB(sec)  dL(sec) dH(m)
         ... 12345678   0.00001   0.00002   0.00003'''
         >>> with io.StringIO(s) as fp:
-        ...     load(fp, format='SemiDynaEXE').parameter[12345678]
+        ...     load(fp, format="SemiDynaEXE").parameter[12345678]
         Parameter(latitude=0.00001, longitude=0.0002, altitude=0.0003)
     """
     return loads(fp.read(), format=format, description=description)

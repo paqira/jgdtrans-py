@@ -46,9 +46,9 @@ def mesh_unit(format: _types.FormatType) -> _types.MeshUnitType:
         1 or 5
 
     Examples:
-        >>> mesh_unit('TKY2JGD')
+        >>> mesh_unit("TKY2JGD")
         1
-        >>> mesh_unit('SemiDynaEXE')
+        >>> mesh_unit("SemiDynaEXE")
         5
     """
     if format in (
