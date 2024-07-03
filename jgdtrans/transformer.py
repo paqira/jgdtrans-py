@@ -224,13 +224,13 @@ class Transformer:
         From `SemiDynaEXE2023.par`
 
         >>> tf = Transformer(
-        ...     format='SemiDynaEXE',
+        ...     format="SemiDynaEXE",
         ...     parameter={
         ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
         ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
         ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
         ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-        ...     }
+        ...     },
         ... )
 
         Forward transformation
@@ -296,10 +296,10 @@ class Transformer:
             1 or 5
 
         Examples:
-            >>> tf = Transformer(format='TKY2JGD', parameter={})
+            >>> tf = Transformer(format="TKY2JGD", parameter={})
             >>> tf.mesh_unit()
             1
-            >>> tf = Transformer(format='SemiDynaEXE', parameter={})
+            >>> tf = Transformer(format="SemiDynaEXE", parameter={})
             >>> tf.mesh_unit()
             5
         """
@@ -395,8 +395,8 @@ class Transformer:
 
         Examples:
             >>> tf = Transformer(
-            ...     description='my param',
-            ...     format='SemiDynaEXE',
+            ...     description="my param",
+            ...     format="SemiDynaEXE",
             ...     parameter={12345678: Parameter(0.1, 0.2, 0.3)},
             ... )
             >>> tf.to_dict()
@@ -533,17 +533,19 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format='SemiDynaEXE',
+            ...     format="SemiDynaEXE",
             ...     parameter={
             ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
             ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
             ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
+            ...     },
             ... )
             >>> tf.transform(36.10377479, 140.087855041, 2.34, backward=False)
             Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
-            >>> tf.transform(36.103773017086695, 140.08785924333452, 2.4363138578102994, backward=True)
+            >>> tf.transform(
+            ...     36.103773017086695, 140.08785924333452, 2.4363138578102994, backward=True
+            ... )
             Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 
             Following identities hold:
@@ -581,13 +583,13 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format='SemiDynaEXE',
+            ...     format="SemiDynaEXE",
             ...     parameter={
             ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
             ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
             ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
+            ...     },
             ... )
             >>> tf.forward(36.10377479, 140.087855041, 2.34)
             Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
@@ -629,13 +631,13 @@ class Transformer:
             Notes, the exact solution is :obj:`Point(36.10377479, 140.087855041, 2.34)`.
 
             >>> tf = Transformer(
-            ...     format='SemiDynaEXE',
+            ...     format="SemiDynaEXE",
             ...     parameter={
             ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
             ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
             ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
+            ...     },
             ... )
             >>> tf.backward_compat(36.103773017086695, 140.08785924333452, 2.4363138578103)
             Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
@@ -681,13 +683,13 @@ class Transformer:
             In this case, no error remains.
 
             >>> tf = Transformer(
-            ...     format='SemiDynaEXE',
+            ...     format="SemiDynaEXE",
             ...     parameter={
             ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
             ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
             ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
+            ...     },
             ... )
             >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
             Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
@@ -747,13 +749,13 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format='SemiDynaEXE',
+            ...     format="SemiDynaEXE",
             ...     parameter={
             ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
             ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
             ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
+            ...     },
             ... )
             >>> tf.forward_corr(36.10377479, 140.087855041)
             Correction(latitude=-1.7729133100878255e-06, longitude=4.202334510058886e-06, altitude=0.09631385781030007)
@@ -842,13 +844,13 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format='SemiDynaEXE',
+            ...     format="SemiDynaEXE",
             ...     parameter={
             ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
             ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
             ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
+            ...     },
             ... )
             >>> tf.backward_compat_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.7729133219831587e-06, longitude=-4.202334509042613e-06, altitude=-0.0963138582320569)
@@ -894,13 +896,13 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format='SemiDynaEXE',
+            ...     format="SemiDynaEXE",
             ...     parameter={
             ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
             ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
             ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
             ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
+            ...     },
             ... )
             >>> tf.backward_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.7729133100878255e-06, longitude=-4.202334510058886e-06, altitude=-0.09631385781030007)
