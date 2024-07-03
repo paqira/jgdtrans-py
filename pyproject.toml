@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "jgdtrans"
@@ -36,23 +36,42 @@ dependencies = [
 ]
 dynamic = ["version"]
 
-[project.optional-dependencies]
-doc = [
-    "myst_nb",
-    "sphinx_book_theme"
-]
-
-[tool.setuptools]
-packages = ["jgdtrans"]
-
-[tool.setuptools.dynamic]
-version = { attr = "jgdtrans.__version__" }
-
 [project.urls]
 Repository = "https://github.com/paqira/jgdtrans-py"
 
-[tool.black]
-line-length = 120
+[tool.hatch.version]
+path = "jgdtrans/__init__.py"
+pattern = '__version__: Final = "(?P<version>.+?)"'
+
+# hatch.build
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+
+[tool.hatch.build.targets.sdist]
+only-include = ["jgdtrans", ]
+
+# docs
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "sphinx",
+    "myst_nb",
+    "sphinx_book_theme",
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "sphinx-build -b html ./doc/source ./doc/build/html"
+
+# test
+
+[tool.hatch.envs.hatch-test]
+default-args = ["test"]
+randomize = true
+parallel = true
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.9", "3.10", "3.11", "3.12"]
 
 [tool.ruff]
 line-length = 120
@@ -61,7 +80,8 @@ exclude = [
     "doc",
 ]
 
-lint.select = [
+[tool.ruff.lint]
+select = [
     "E",
     "F",
     "W",
@@ -71,7 +91,7 @@ lint.select = [
     "B",
     "D",
 ]
-lint.ignore = [
+ignore = [
     "N999", # Invalid module name:
     "D104", #  Missing docstring in public package
     "D105", # Missing docstring in magic method
