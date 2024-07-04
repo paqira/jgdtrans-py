@@ -1,6 +1,6 @@
 # ユーザーガイド
 
-ここでは {py:mod}`jgdtrans` の使い方を紹介します。各 API の詳細は [API Reference](../autodoc/jgdtrans.rst) をみてください。
+ここでは {py:mod}`jgdtrans` の使い方を紹介します。各 API の詳細は [API Reference](../autodoc/package.rst) をみてください。
 
 ## インストール
 

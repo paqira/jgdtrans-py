@@ -1,7 +1,7 @@
 # User Guide
 
 In this section, we briefly explain usages of {py:mod}`jgdtrans`.
-See [API Reference](../autodoc/jgdtrans.rst) for detail.
+See [API Reference](../autodoc/package.rst) for detail.
 
 ## Install
 
