@@ -17,7 +17,7 @@
     :glob:
     :caption: API Reference:
     
-    autodoc/jgdtrans
+    autodoc/package
 ```
 
 # jgdtrans

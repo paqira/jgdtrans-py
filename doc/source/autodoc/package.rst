@@ -10,7 +10,7 @@ Submodules
    jgdtrans.dms
    jgdtrans.error
    jgdtrans.mesh
-   jgdtrans.parser
+   jgdtrans.par
    jgdtrans.point
    jgdtrans.transformer
    jgdtrans.types
