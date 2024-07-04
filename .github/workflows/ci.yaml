@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   pull_request:
   workflow_dispatch:
 
@@ -11,26 +13,67 @@ permissions:
   contents: read
 
 jobs:
-  linux:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: 'pip'
-      - name: Install black ruff
-        run: |
-          pip install --upgrade pip
-          pip install black ruff
-      - name: Install jgdtrans
-        run: pip install .
+          python-version: |
+            3.9
+            3.10
+            3.11
+            3.12
+      - name: Set up pip cache
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          restore-keys: ${{ runner.os }}-pip-
+      - name: Install Hatch
+        run: pipx install hatch
       - name: Check
-        run: |
-          black --check jgdtrans
-          ruff check jgdtrans
+        run: hatch fmt --check
       - name: Test
-        run: python3 -m unittest discover -s test
+        run: hatch test
+      - name: Build
+        if: startsWith(github.ref, 'refs/tags/')
+        run: hatch build
+      - name: Upload dist
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+  release-publish:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: test
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - name: Set up pip cache
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+          restore-keys: ${{ runner.os }}-pip-
+      - name: Install Hatch
+        run: pipx install hatch
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: gh release create '${{ github.ref_name }}' dist/** --draft --title 'Release ${{ github.ref_name }}' --notes ""
+      - name: Publish to PyPI
+        env:
+          HATCH_INDEX_USER: ${{ secrets.PYPI_USER }}
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_TOKEN }}
+        run: hatch publish
