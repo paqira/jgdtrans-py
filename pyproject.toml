@@ -61,6 +61,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.docs.scripts]
+apidoc = "sphinx-apidoc -e -o ./doc/source/autodoc jgdtrans"
 build = "sphinx-build -b html ./doc/source ./doc/build/html"
 
 # test
