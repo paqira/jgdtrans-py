@@ -46,23 +46,16 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-  release-publish:
-    runs-on: ubuntu-latest
+  release:
+    # Just make Release draft
     if: startsWith(github.ref, 'refs/tags/')
-    needs: test
+    runs-on: ubuntu-latest
+    needs: [ test ]
+    permissions:
+      contents: write
+      id-token: write
     steps:
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.9
-      - name: Set up pip cache
-        if: runner.os == 'Linux'
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
-          restore-keys: ${{ runner.os }}-pip-
-      - name: Install Hatch
-        run: pipx install hatch
+      - uses: actions/checkout@v4
       - name: Download dist
         uses: actions/download-artifact@v4
         with:
@@ -72,8 +65,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: gh release create '${{ github.ref_name }}' dist/** --draft --title 'Release ${{ github.ref_name }}' --notes ""
-      - name: Publish to PyPI
-        env:
-          HATCH_INDEX_USER: ${{ secrets.PYPI_USER }}
-          HATCH_INDEX_AUTH: ${{ secrets.PYPI_TOKEN }}
-        run: hatch publish
