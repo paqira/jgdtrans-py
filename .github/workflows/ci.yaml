@@ -33,10 +33,12 @@ jobs:
           restore-keys: ${{ runner.os }}-pip-
       - name: Install Hatch
         run: pipx install hatch
-      - name: Check
-        run: hatch fmt --check
+      - name: Check fmt & types
+        run: |
+          hatch fmt --check
+          hatch run types:check
       - name: Test
-        run: hatch test
+        run: hatch test --all --randomize --parallel
       - name: Build
         if: startsWith(github.ref, 'refs/tags/')
         run: hatch build
