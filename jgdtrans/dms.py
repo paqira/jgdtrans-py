@@ -235,7 +235,9 @@ class DMS:
             )
         )
 
-    def _to_str(self) -> (str, str | None, str | None, str, float):
+    def _to_str(
+        self,
+    ) -> tuple[str, None, None, int, str] | tuple[str, None, int, int, str] | tuple[str, int, int, int, str]:
         s = "" if self.sign == 1 else "-"
         _, fract = f"{self.fract:.15f}".rstrip("0").split(".")
         if not fract:
