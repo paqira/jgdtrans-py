@@ -216,7 +216,7 @@ class MeshCoordTest(unittest.TestCase):
         with self.assertRaises(TypeError, msg="error"):
             MeshCoord(0, 0, 0).next_down(2)
 
-    def test_identity_on_coord_to_lat_lng(self):
+    def test_identity_on_coord_to_lat(self):
         bound = MeshCoord(99, 7, 9)
         coord = MeshCoord(0, 0, 0)
         while coord < bound:
@@ -227,6 +227,7 @@ class MeshCoordTest(unittest.TestCase):
             with self.subTest(kind="latitude", node=coord, v=str(coord.to_latitude())):
                 self.assertEqual(coord, MeshCoord.from_latitude(coord.to_latitude(), 1))
 
+    def test_identity_on_coord_to_lng(self):
         bound = MeshCoord(80, 0, 0)
         coord = MeshCoord(0, 0, 0)
         while coord < bound:
