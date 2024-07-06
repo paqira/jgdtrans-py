@@ -30,6 +30,30 @@ class DMS(unittest.TestCase):
         self.assertEqual("360613.58925", dms.DMS(1, 36, 6, 13, 0.58925).to_str())
         self.assertEqual("1400516.27815", dms.DMS(1, 140, 5, 16, 0.27815).to_str())
 
+    def test_to_str_primed(self):
+        cases = (
+            ("0.0″", dms.DMS(1, 0, 0, 0, 0.0).to_primed_str()),
+            ("-0.0″", dms.DMS(-1, 0, 0, 0, 0.0).to_primed_str()),
+            ("0.000012″", dms.DMS(1, 0, 0, 0, 0.000012).to_primed_str()),
+            ("-0.000012″", dms.DMS(-1, 0, 0, 0, 0.000012).to_primed_str()),
+            ("1.0″", dms.DMS(1, 0, 0, 1, 0.0).to_primed_str()),
+            ("-1.0″", dms.DMS(-1, 0, 0, 1, 0.0).to_primed_str()),
+            ("10.0″", dms.DMS(1, 0, 0, 10, 0.0).to_primed_str()),
+            ("-10.0″", dms.DMS(-1, 0, 0, 10, 0.0).to_primed_str()),
+            ("1′00.0″", dms.DMS(1, 0, 1, 0, 0.0).to_primed_str()),
+            ("-1′00.0″", dms.DMS(-1, 0, 1, 0, 0.0).to_primed_str()),
+            ("1°00′00.0″", dms.DMS(1, 1, 0, 0, 0.0).to_primed_str()),
+            ("-1°00′00.0″", dms.DMS(-1, 1, 0, 0, 0.0).to_primed_str()),
+            ("1°01′01.0″", dms.DMS(1, 1, 1, 1, 0.0).to_primed_str()),
+            ("-1°01′01.0″", dms.DMS(-1, 1, 1, 1, 0.0).to_primed_str()),
+        )
+        for e, a in cases:
+            with self.subTest(e=e, a=a):
+                self.assertEqual(e, a)
+
+        self.assertEqual("36°06′13.58925″", dms.DMS(1, 36, 6, 13, 0.58925).to_primed_str())
+        self.assertEqual("140°05′16.27815″", dms.DMS(1, 140, 5, 16, 0.27815).to_primed_str())
+
     def test_from_str(self):
 
         cases = (

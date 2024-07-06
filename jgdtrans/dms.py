@@ -235,6 +235,19 @@ class DMS:
             )
         )
 
+    def _to_str(self) -> (str, str | None, str | None, str, float):
+        s = "" if self.sign == 1 else "-"
+        _, fract = f"{self.fract:.15f}".rstrip("0").split(".")
+        if not fract:
+            fract = "0"
+
+        if not self.degree:
+            if self.minute:
+                return s, None, self.minute, self.second, fract
+            else:
+                return s, None, None, self.second, fract
+        return s, self.degree, self.minute, self.second, fract
+
     def to_str(self) -> str:
         """Returns a DMS notation :obj:`str` obj of `self`.
 
@@ -247,17 +260,33 @@ class DMS:
             >>> DMS(1, 140, 5, 16, 0.27815).to_str()
             "1400516.27815"
         """
-        s = "" if self.sign == 1 else "-"
-        _, fract = f"{self.fract:.15f}".rstrip("0").split(".")
-        if not fract:
-            fract = "0"
-
-        if not self.degree:
-            if self.minute:
-                return f"{s}{self.minute}{self.second:02}.{fract}"
+        sign, d, m, s, f = self._to_str()
+        if d == 0 or d is None:
+            if m == 0 or m is None:
+                return f"{sign}{s}.{f}"
             else:
-                return f"{s}{self.second}.{fract}"
-        return f"{s}{self.degree}{self.minute:02}{self.second:02}.{fract}"
+                return f"{sign}{m}{s:02}.{f}"
+        return f"{sign}{d}{m:02}{s:02}.{f}"
+
+    def to_primed_str(self) -> str:
+        """Returns a DMS notation :obj:`str` obj of `self` with primes.
+
+        Returns:
+            a DMS notation :obj:`str` obj
+
+        Examples:
+            >>> DMS(1, 36, 6, 13, 0.58925).to_str()
+            "36°06′13.58925″"
+            >>> DMS(1, 140, 5, 16, 0.27815).to_str()
+            "140°05′16.27815″"
+        """
+        sign, d, m, s, f = self._to_str()
+        if d == 0 or d is None:
+            if m == 0 or m is None:
+                return f"{sign}{s}.{f}″"
+            else:
+                return f"{sign}{m}′{s:02}.{f}″"
+        return f"{sign}{d}°{m:02}′{s:02}.{f}″"
 
     def to_dd(self) -> float:
         """Returns a DD notation :obj:`float` obj of `self`.
