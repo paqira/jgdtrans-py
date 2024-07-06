@@ -1,7 +1,7 @@
 # jgdtrans for Python
 
-[![PyPI - Version](https://img.shields.io/pypi/v/jgdtrans?logo=Python)](https://pypi.org/project/jgdtrans/)
-![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?logo=Python&tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fpaqira%2Fjgdtrans-py%2Fmain%2Fpyproject.toml)
+[![PyPI - Version](https://img.shields.io/pypi/v/jgdtrans?logo=PyPI&label=PyPI)](https://pypi.org/project/jgdtrans/)
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?logo=Python&label=Python&&tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fpaqira%2Fjgdtrans-py%2Fmain%2Fpyproject.toml)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/paqira/jgdtrans-py/ci.yaml?logo=GitHub)
 [![Read the Docs](https://img.shields.io/readthedocs/jgdtrans-py?logo=readthedocs)](https://jgdtrans-py.readthedocs.io/en/latest/?badge=latest)
 ![PyPI - License](https://img.shields.io/pypi/l/jgdtrans)
