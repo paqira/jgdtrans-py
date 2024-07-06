@@ -26,7 +26,11 @@ keywords = [
 ]
 license = { text = "MIT" }
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering :: GIS",
@@ -37,7 +41,9 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Repository = "https://github.com/paqira/jgdtrans-py"
+Documentation = "https://jgdtrans-py.readthedocs.io"
+Issues = "https://github.com/paqira/jgdtrans-py/issues"
+Source = "https://github.com/paqira/jgdtrans-py"
 
 [tool.hatch.version]
 path = "jgdtrans/__init__.py"
@@ -55,10 +61,10 @@ only-include = ["jgdtrans", ]
 
 [tool.hatch.envs.types]
 extra-dependencies = [
-  "mypy>=1.0.0",
+    "mypy>=1.0.0",
 ]
 [tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive jgdtrans"
+check = "mypy --install-types --non-interactive {args:jgdtrans}"
 
 # docs
 
@@ -77,6 +83,26 @@ build = "sphinx-build -b html ./doc/source ./doc/build/html"
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
+
+# coverage
+
+[tool.coverage.run]
+source_pkgs = ["jgdtrans", "tests"]
+branch = true
+parallel = true
+
+[tool.coverage.paths]
+jgdtrans = ["jgdtrans", ]
+tests = ["tests", ]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+# ruff
 
 [tool.ruff]
 line-length = 120
