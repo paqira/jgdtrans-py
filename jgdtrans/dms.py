@@ -219,21 +219,19 @@ class DMS:
         if not (-180 <= t <= 180):
             raise ValueError(f"expected t is -180.0 <= and <= 180.0, we got {t}")
 
-        _, dd = math.modf(abs(t))
-        rest, _ = math.modf(math.nextafter(abs(t), math.inf))
-        ss, mm = math.modf(60 * rest)
-        fract, ss = math.modf(60 * ss)
+        mm, _ = math.modf(t)
+        mm *= 60
+        ss, _ = math.modf(mm)
+        ss *= 60
 
-        assert dd <= 180
-        assert mm <= 60
-        assert ss <= 60
-
-        carry, second = divmod(math.trunc(ss), 60)
-        carry, minute = divmod(math.trunc(mm) + carry, 60)
+        degree = math.trunc(t)
+        minute = math.trunc(mm)
+        second = math.trunc(ss)
+        fract, _ = math.modf(ss)
 
         return cls(
             **DMS._carry(
-                sign=1 if 0 <= t else -1, degree=math.trunc(dd) + carry, minute=minute, second=second, fract=fract
+                sign=1 if 0 <= t else -1, degree=abs(degree), minute=abs(minute), second=abs(second), fract=abs(fract)
             )
         )
 

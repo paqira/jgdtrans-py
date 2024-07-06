@@ -77,42 +77,34 @@ class DMS(unittest.TestCase):
 
     def test_from_dd(self):
         actual = dms.DMS.from_dd(36.103774791666666)
-        expected = dms.DMS(1, 36, 6, 13, 0.5892500000232985)
+        expected = dms.DMS(1, 36, 6, 13, 0.589249999997719)
         self.assertEqual(expected, actual)
 
         actual = dms.DMS.from_dd(140.08785504166667)
-        expected = dms.DMS(1, 140, 5, 16, 0.2781500001187851)
+        expected = dms.DMS(1, 140, 5, 16, 0.27815000001646695)
         self.assertEqual(expected, actual)
 
     def test_identity(self):
-        for deg in range(20, 160):
+        for deg in range(180):
             for min in range(60):
                 for sec in range(60):
-                    # plus
-                    expected = dms.DMS(1, deg, min, sec, 0.0)
-                    actual = dms.DMS.from_dd(expected.to_dd())
+                    for frac in range(10):
+                        frac = frac / 10.0
+                        # plus
+                        origin = dms.DMS(1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
 
-                    self.assertEqual(expected.sign, actual.sign, msg=f"{expected!r} {actual!r}")
-                    self.assertEqual(expected.degree, actual.degree, msg=f"{expected!r} {actual!r}")
-                    self.assertEqual(expected.minute, actual.minute, msg=f"{expected!r} {actual!r}")
-                    self.assertEqual(expected.second, actual.second, msg=f"{expected!r} {actual!r}")
-                    self.assertAlmostEqual(expected.fract, actual.fract, delta=3e-10, msg=f"{expected!r} {actual!r}")
-
-                    # minus
-                    expected = dms.DMS(-1, deg, min, sec, 0.0)
-                    actual = dms.DMS.from_dd(expected.to_dd())
-
-                    self.assertEqual(expected.sign, actual.sign, msg=f"{expected!r} {actual!r}")
-                    self.assertEqual(expected.degree, actual.degree, msg=f"{expected!r} {actual!r}")
-                    self.assertEqual(expected.minute, actual.minute, msg=f"{expected!r} {actual!r}")
-                    self.assertEqual(expected.second, actual.second, msg=f"{expected!r} {actual!r}")
-                    self.assertAlmostEqual(expected.fract, actual.fract, delta=3e-10, msg=f"{expected!r} {actual!r}")
+                        # minus
+                        origin = dms.DMS(-1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
 
 
 class ToFromDMS(unittest.TestCase):
     def test_to(self):
-        self.assertEqual("360613.589250000023299", dms.to_dms(36.103774791666666))
-        self.assertEqual("1400516.278150000118785", dms.to_dms(140.08785504166667))
+        self.assertEqual("360613.589249999997719", dms.to_dms(36.103774791666666))
+        self.assertEqual("1400516.278150000016467", dms.to_dms(140.08785504166667))
 
     def test_from(self):
         self.assertEqual(36.103774791666666, dms.from_dms("360613.58925"))
