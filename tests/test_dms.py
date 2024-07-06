@@ -107,8 +107,56 @@ class DMS(unittest.TestCase):
         expected = dms.DMS(1, 140, 5, 16, 0.27815000001646695)
         self.assertEqual(expected, actual)
 
-    def test_identity(self):
-        for deg in range(180):
+    def test_identity_1(self):
+        for deg in range(45):
+            for min in range(60):
+                for sec in range(60):
+                    for frac in range(10):
+                        frac = frac / 10.0
+                        # plus
+                        origin = dms.DMS(1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
+
+                        # minus
+                        origin = dms.DMS(-1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
+
+    def test_identity_2(self):
+        for deg in range(45, 90):
+            for min in range(60):
+                for sec in range(60):
+                    for frac in range(10):
+                        frac = frac / 10.0
+                        # plus
+                        origin = dms.DMS(1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
+
+                        # minus
+                        origin = dms.DMS(-1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
+
+    def test_identity_3(self):
+        for deg in range(90, 135):
+            for min in range(60):
+                for sec in range(60):
+                    for frac in range(10):
+                        frac = frac / 10.0
+                        # plus
+                        origin = dms.DMS(1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
+
+                        # minus
+                        origin = dms.DMS(-1, deg, min, sec, frac).to_dd()
+                        z = dms.DMS.from_dd(origin)
+                        self.assertLess(abs(z.to_dd() - origin), 3e-15)
+
+    def test_identity_4(self):
+        for deg in range(135, 180):
             for min in range(60):
                 for sec in range(60):
                     for frac in range(10):
