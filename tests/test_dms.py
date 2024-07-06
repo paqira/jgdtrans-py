@@ -55,7 +55,6 @@ class DMS(unittest.TestCase):
         self.assertEqual("140°05′16.27815″", dms.DMS(1, 140, 5, 16, 0.27815).to_primed_str())
 
     def test_from_str(self):
-
         cases = (
             # sign
             ("00", dms.DMS(1, 0, 0, 0, 0.0)),
@@ -85,7 +84,7 @@ class DMS(unittest.TestCase):
         cases = ("", "-", "a", "-a", ".", "-.", "..0", "-..0", ".0.", "-.0.", "0..", "-0..")
         for v in cases:
             with self.assertRaises(ValueError):
-                dms.DMS.from_str(v),
+                dms.DMS.from_str(v)
 
         self.assertEqual(dms.DMS(1, 36, 6, 13, 0.58925), dms.DMS.from_str("360613.58925"))
         self.assertEqual(dms.DMS(1, 140, 5, 16, 0.27815), dms.DMS.from_str("1400516.27815"))
