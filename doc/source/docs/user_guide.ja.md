@@ -187,7 +187,7 @@ True
 True
 ```
 
-{py:meth}`.Transformer.backward` は厳密解を提供しませんが、真の解からの誤差を {py:attr}`.Transformer.ERROR_MAX`
+{py:meth}`.Transformer.backward` は厳密解を提供しませんが、真の解からの誤差を {py:attr}`.Transformer.MAX_ERROR`
 以下であることを保証します。すなわち、経緯度の誤差は、国土地理院が公開しているパラメータの誤差
 $10^{-9}$ \[deg\] 以下となり、高度の誤差は、 $10^{-5}$ \[m\] 以下となります（と思います）。
 

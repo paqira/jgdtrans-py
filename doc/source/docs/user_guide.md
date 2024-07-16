@@ -196,7 +196,7 @@ True
 
 We note that {py:meth}`.Transformer.backward` is _not_ exact,
 but {py:meth}`.Transformer.backward` ensures that the error from exact solution is
-suppressed by {py:attr}`.Transformer.ERROR_MAX`.
+suppressed by {py:attr}`.Transformer.MAX_ERROR`.
 That is, the error from exact solution is less than $10^{-9}$ \[deg\],
 which is error of GIAJ latitude and longitude parameter [^10].
 This implies that altitude's error is less than $10^{-5}$ \[m\],
