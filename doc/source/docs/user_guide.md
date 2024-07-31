@@ -47,10 +47,10 @@ PatchJGD, PatchJGD(H) and HyokoRev: <https://www.gsi.go.jp/sokuchikijun/sokuchik
 SemiDynaEXE: <https://www.gsi.go.jp/sokuchikijun/semidyna.html>;
 geonetF3 and ITRF2014 (POS2JGD): <https://positions.gsi.go.jp/cdcs/>.
 
-{py:mod}`jgdtrans` defines read/load API of par file
+{py:mod}`jgdtrans` provides read/load APIs of par file
 {py:func}`~jgdtrans.load` and {py:func}`~jgdtrans.loads`
 which return a {py:class}`.Transformer` obj.
-It uses `format` argument to specify the format of the par file;
+You need to specify the format of the par file by `format` argument;
 
 ```pycon
 >>> import jgdtrans
@@ -60,11 +60,11 @@ It uses `format` argument to specify the format of the par file;
 Transformer(unit=5, parameter=<dict (21134 length) at 0x123456789>, description='for [...]')
 ```
 
-It can access to header, format and parameter by
+You can access to header, format and parameter of par file by
 {py:attr}`.Transformer.description`,
 {py:attr}`.Transformer.format` and
 {py:attr}`.Transformer.parameter`
-respectively.
+attributes respectively.
 
 ```pycon
 >>> tf.description
@@ -82,9 +82,9 @@ respectively.
 }
 ```
 
-The entry of {py:attr}`.Transformer.parameter`
-represents one line of par file's parameter section,
-its key is _meshcode_ and the key value is a {py:class}`.Parameter` obj.
+{py:attr}`.Transformer.parameter` is :obj:`dict` obj,
+its key is _meshcode_ and the value is a {py:class}`.Parameter` obj.
+The entry represents one line of par file's parameter section.
 
 We note that it fills by {py:obj}`0.0` for altitude of TKY2JGD and PathJGD,
 and for latitude and longitude of PatchJGD(H) and HyokoRev;
@@ -96,12 +96,14 @@ and for latitude and longitude of PatchJGD(H) and HyokoRev;
 Parameter(latitude=12.79799, longitude=-8.13354, altitude=0.0)
 ```
 
-This does not break coordinate transformation, because
-it becomes the identity transformation
-on the components whose parameter is zero.
+Such a placeholder ({py:obj}`0.0`) does not break coordinate transformation, because
+it becomes the identity transformation on the components whose parameter is zero
+(we show an example below).
 
 {py:meth}`.Transformer.to_dict`
-converts the {py:class}`.Transformer` (namely, contents of par file) to {py:obj}`dict` obj;
+converts the {py:class}`.Transformer` (namely, contents of par file) to {py:obj}`dict` obj
+and {py:func}`.from_dict` is a constructor of {py:class}`.Transformer`
+from the {py:obj}`dict` obj;
 
 ```pycon
 >>> tf.to_dict()
@@ -117,29 +119,11 @@ converts the {py:class}`.Transformer` (namely, contents of par file) to {py:obj}
         # and go on
     },
 }
-```
-
-and {py:func}`.from_dict` is a constructor of {py:class}`.Transformer`
-from the {py:obj}`dict` obj shown above;
-
-```pycon
->>> data = {
-...     'description': 'my SemiDynaEXE',
-...     'format': 'SemiDynaEXE',
-...     'parameter': {
-...         36230600: {
-...             'latitude': -0.05475,
-...             'longitude': 0.04,
-...             'altitude': 0.07721,
-...         },
-...     # and go on
-...     },
-... }
->>> jgdtrans.from_dict(data)
+>>> jgdtrans.from_dict(tf.to_dict())
 Transformer(unit=5, parameter=<dict (21134 length) at 0x987654321>, description='my [...]')
 ```
 
-Hence, it can convert data of par file to/from python {py:obj}`dict` or other serialization format (e.g. JSON).
+Hence, you can convert data of par file to/from python {py:obj}`dict` or other serialization format (e.g. JSON).
 
 ## Coordinate Transformation
 
@@ -147,8 +131,8 @@ In this section, we describe how perform coordinate transformation
 with {py:class}`.Transformer` obj.
 
 {py:meth}`.Transformer.forward` performs forward transformation,
-and {py:meth}`.Transformer.backward` does backward transformation.
-These return more precise results than the GIAJ web app/API.
+and {py:meth}`.Transformer.backward` does backward one.
+These return more precise results than the GIAJ web app/APIs.
 
 ```pycon
 >>> tf.forward(36.10377479, 140.087855041, 2.34)
@@ -158,7 +142,7 @@ Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 ```
 
 The return value is {py:class}`~jgdtrans.Point` obj.
-It can access by the attribute to the resulting values, latitude, longitude and altitude;
+You can access by the attribute to the resulting values, latitude, longitude and altitude;
 
 ```pycon
 >>> point = tf.forward(36.10377479, 140.087855041, 2.34)
@@ -170,8 +154,8 @@ It can access by the attribute to the resulting values, latitude, longitude and 
 2.4363138578103
 ```
 
-It is unpackable because {py:class}`~jgdtrans.Point` is
-{py:obj}`Sequence[flaot]` with length 3;
+{py:class}`~jgdtrans.Point` obj is unpackable,
+because {py:class}`~jgdtrans.Point` is {py:obj}`Sequence[flaot]` with length 3;
 
 ```pycon
 >>> origin = Point(36.10377479, 140.087855041, 2.34)
@@ -180,11 +164,9 @@ It is unpackable because {py:class}`~jgdtrans.Point` is
 Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.34)
 ```
 
-There is {py:meth}`.Transformer.transform`
-which switches forward/backward transformation
+There is {py:meth}`.Transformer.transform` which switches forward/backward transformation
 depending on the {py:obj}`backward` argument.
-That is, the following identities hold,
-for all {py:obj}`point` which is {py:class}`~jgdtrans.Point` obj,
+That is, the following identities hold, for all {py:obj}`point` which is {py:class}`~jgdtrans.Point` obj,
 such that;
 
 ```pycon
@@ -195,20 +177,18 @@ True
 ```
 
 We note that {py:meth}`.Transformer.backward` is _not_ exact,
-but {py:meth}`.Transformer.backward` ensures that the error from exact solution is
+but {py:meth}`.Transformer.backward` ensures that the latitude/longitude error from exact solution is
 suppressed by {py:attr}`.Transformer.MAX_ERROR`.
 That is, the error from exact solution is less than $10^{-9}$ \[deg\],
-which is error of GIAJ latitude and longitude parameter [^10].
-This implies that altitude's error is less than $10^{-5}$ \[m\],
+which is error of GIAJ latitude and longitude parameter.
+This implies that altitude's error is (practically) less than $10^{-5}$ \[m\],
 which is error of the GIAJ altitude parameter.
 
-{py:meth}`.Transformer.backward` is not compatible to
-GIAJ web service/APIs. We provide a compatible backward transformation by
-{py:meth}`.Transformer.backward_compat`.
+Notes, {py:meth}`.Transformer.backward` is not compatible to
+GIAJ web service/APIs. We provide a compatible API, {py:meth}`.Transformer.backward_compat`.
 
-If the parameters are zero, e.g. altitude of TKY2JGD and PathJGD,
-and latitude and longitude of PathJGD(H) and HyokoRev,
-it becomes the identity transformation on such components.
+If the parameters are zero transformation becomes identity on such components
+(e.g. altitude of TKY2JGD and PathJGD, and latitude and longitude of PathJGD(H) and HyokoRev).
 We show an example of `TKY2JGD.par`.
 
 ```pycon
@@ -229,9 +209,6 @@ Point(36.10377479166667, 140.08785504166664, 2.34)
 >>> Point(36.10377479166667, 140.08785504166664, 2.34).to_dms()
 ("360613.58925", "1400516.27815", 2.34)
 ```
-
-We note that {py:meth}`.Point.to_dms` returns
-{py:obj}`tuple[str, str, float]`, not {py:class}`~jgdtrans.Point`.
 
 By combining these, it can use DMS notation for I/O of {py:class}`.Transformer`,
 for example,
@@ -268,7 +245,7 @@ Such mappings can be found in par files.
 It is known that there is two kind of mesh,
 the approx. 1 \[km\] lattice constant and the approx. 5 \[km\] lattice constant.
 We call lattice constant as _mesh unit_ or _unit_ shortly,
-and use {py:obj}`1` and {py:obj}`5` literals as unit.
+and use {py:obj}`1` and {py:obj}`5` literals/values as unit.
 
 The mesh coordinate, {py:class}`.MeshCoord`,
 is implemented for mesh with unit {py:obj}`1`,

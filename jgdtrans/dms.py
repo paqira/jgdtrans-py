@@ -23,7 +23,7 @@ def to_dms(t: float) -> str:
         t: the DD notation latitude or longitude which satisfies -180.0 <= and 180.0
 
     Returns:
-        a :obj:`str` of DMS notation `t`
+        `t` as a DMS notation
 
     Raises:
         ValueError: when conversion failed
@@ -44,7 +44,7 @@ def from_dms(s: str) -> float:
         s: the DMS notation latitude or longitude
 
     Returns:
-        a :obj:`float` of DD notation `s`
+        `s` as a DD notation `float`
 
     Raises:
         ValueError: when conversion failed

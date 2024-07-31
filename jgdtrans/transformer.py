@@ -243,7 +243,7 @@ class Transformer:
         >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
         Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
 
-        Compatible backward transformation to GIAJ web app/APIs
+        Backward transformation compatible to GIAJ web app/APIs
 
         >>> tf.backward_compat(36.103773017086695, 140.08785924333452, 2.4363138578103)
         Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
@@ -259,8 +259,8 @@ class Transformer:
     """The transformation parameter.
 
     The entry represents single line of the par file's parameter section,
-    the key is meshcode, and the value is a :class:`.Parameter`,
-    a triplet of latitude [sec], longitude [sec] and altitude [m].
+    the key is meshcode, and the value is a :class:`.Parameter`
+    (a triplet of latitude [sec], longitude [sec] and altitude [m]).
     """
 
     description: str | None = None
@@ -656,7 +656,7 @@ class Transformer:
 
         Notes, the error is less than 1e-9 deg, which is
         error of GIAJ latitude and longitude parameter.
-        This implies that altitude's error is less than 1e-5 [m],
+        This implies that altitude's error is (practically) less than 1e-5 [m],
         which is error of the GIAJ altitude parameter.
 
         Notes, this is not compatible to GIAJ web app/APIs (but more accurate).
@@ -673,7 +673,7 @@ class Transformer:
             ParameterNotFoundError: when `latitude` and `longitude` points to an area
                                     where the parameter does not support
             CorrectionNotFoundError: when the error from the exact solution is larger
-                                     than :attr:`Transformer::ERROR_MAX`.
+                                     than :attr:`Transformer.ERROR_MAX`.
             PointOutOfBoundsError: when `latitude` or `longitude` is out-of-bounds
 
         Examples:

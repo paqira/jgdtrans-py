@@ -68,7 +68,7 @@ def mesh_unit(format: _types.FormatType) -> _types.MeshUnitType:
 def is_meshcode(meshcode: int) -> bool:
     """Returns :obj:`True` when `meshcode` is a valid.
 
-    This does not test `meshcode` is a :class:`int` obj.
+    Notes, this does not test `meshcode` is a :class:`int` obj.
 
     Args:
         meshcode: a test value.
@@ -149,11 +149,11 @@ class MeshCoord:
     """
 
     first: int
-    """takes values :obj:`0`, ..., :obj:`99`."""
+    """takes values 0, ..., 99."""
     second: int
-    """takes values :obj:`0`, ..., :obj:`7`."""
+    """takes values 0, ..., 7."""
     third: int
-    """takes values :obj:`0`, ..., :obj:`9`."""
+    """takes values 0, ..., 9."""
 
     def __post_init__(self):
         if not (0 <= self.first <= 99):
@@ -229,7 +229,7 @@ class MeshCoord:
 
         Args:
             degree: the latitude [deg] which satisfies 0.0 <= and <= 66.666...
-            mesh_unit: the mesh unit, ::`1` or :obj:`5`
+            mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Returns:
             the :class:`MeshCoord` obj
@@ -366,7 +366,7 @@ class MeshCoord:
             the up-next :class:`MeshCoord`
 
         Raises:
-            ValueError: when `unit` is :obj:`5` although `self.third` is either :obj:`0` or :obj:`5`
+            ValueError: when `unit` is :obj:`5` although `self.third` is either 0 or 5
             OverflowError: when `self` is :code:`MeshCoord(first=99, second=7, third=9)`
 
         Examples:
@@ -404,7 +404,7 @@ class MeshCoord:
             mesh_unit: the mesh unit, :obj:`1` or :obj:`5`
 
         Raises:
-            ValueError: when `unit` is :obj:`5` although `self.third` is either :obj:`0` or :obj:`5`
+            ValueError: when `unit` is :obj:`5` although `self.third` is either 0 or 5
             OverflowError: when `self` is :code:`MeshCoord(first=0, second=0, third=0)`
 
         Returns:
@@ -447,7 +447,7 @@ class MeshNode:
     and <= :code:`MeshCoord(80, 0, 0)`.
 
     Raises:
-        If `longitude` is out-of-range.
+        ValueError: If `longitude` is out-of-range.
 
     Examples:
         Construct from latitude and longitude
@@ -542,7 +542,7 @@ class MeshNode:
 
     @classmethod
     def from_point(cls, point: _point.Point, mesh_unit: _types.MeshUnitType) -> Self:
-        """Makes the nearest north-west :class:`MeshNode` of :class:`~JGDtrans.Point` p.
+        """Makes the nearest north-west :class:`MeshNode` of `point`.
 
         We note that the result is independend of the :attr:`.Point.altitude`.
 
@@ -554,10 +554,10 @@ class MeshNode:
             the :class:`MeshNode` obj
 
         Raises:
-            ValueError: `p.latitude` and/or `p.longitude` is out-of-range
+            ValueError: `point.latitude` and/or `point.longitude` is out-of-range
 
         Examples:
-            >>> p = Point(36.103774791666666, 140.08785504166664, 10.0)
+            >>> point = Point(36.103774791666666, 140.08785504166664, 10.0)
             >>> MeshNode.from_point(point, 1)
             MeshNode(MeshCoord(54, 1, 2), MeshCoord(40, 0, 7))
             >>> MeshNode.from_point(point, 5)
