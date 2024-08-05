@@ -71,3 +71,23 @@ autodoc_member_order = "bysource"
 # autodoc_typehints = 'both'
 
 nb_execution_mode = "off"
+
+html_title = "jgdtrans"
+
+html_theme_options = {
+    "use_repository_button": True,
+    "repository_url": "https://github.com/paqira/jgdtrans-py",
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/paqira/jgdtrans-py",
+            "icon": "fa-brands fa-github",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/jgdtrans/",
+            "icon": "https://img.shields.io/pypi/v/jgdtrans?logo=PyPI&label=PyPI",
+            "type": "url",
+        },
+    ],
+}
