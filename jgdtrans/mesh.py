@@ -4,9 +4,9 @@ We note that :class:`MeshCoord` supports non-negative latitude and longitude onl
 Therefore, :class:`MeshNode` and :class:`MeshCell` have the same restriction of :class:`MeshCoord`.
 
 The third digit of :class:`MeshCoord` depends on mesh.
-If the mesh unit is :obj:`5`, it takes :obj:`0` or :obj:`5` only.
+If the mesh unit is :obj:`5`, it takes 0 or 5 only.
 Hence, the methods/operations that relate with :class:`MeshCoord` throws an exception,
-if :obj:`5` is given even though the third digit is neither :obj:`0` nor :obj:`5`,
+if :obj:`5` is given even though the third digit is neither 0 nor 5,
 in general.
 """
 
