@@ -161,8 +161,7 @@ class DMS:
             minute, second = divmod(rest, 100)
             return cls(sign=_sign, degree=degree, minute=minute, second=second, fract=_fraction)
 
-        mo = re.match(r"^\s*([+-]?)(\d+(?:[_\d]*\d+|))(\.\d+(?:[_\d]*\d+|))\s*$", s)
-        if mo:
+        if mo := re.match(r"^\s*([+-]?)(\d+(?:[_\d]*\d+|))(\.\d+(?:[_\d]*\d+|))\s*$", s):
             sign, integer, fraction = mo.groups()
 
             try:
@@ -173,8 +172,7 @@ class DMS:
             else:
                 return _parser(-1 if sign == "-" else 1, integer, fraction)
 
-        mo = re.match(r"^\s*([+-]?)(\.\d+(?:[_\d]*\d+|))\s*$", s)
-        if mo:
+        if mo := re.match(r"^\s*([+-]?)(\.\d+(?:[_\d]*\d+|))\s*$", s):
             sign, fraction = mo.groups()
 
             try:
@@ -184,8 +182,7 @@ class DMS:
             else:
                 return _parser(-1 if sign == "-" else 1, 0, fraction)
 
-        mo = re.match(r"^\s*([+-]?)(\d+(?:[_\d]*\d+|))\.?\s*$", s)
-        if mo:
+        if mo := re.match(r"^\s*([+-]?)(\d+(?:[_\d]*\d+|))\.?\s*$", s):
             sign, integer = mo.groups()
 
             try:
@@ -296,8 +293,6 @@ class DMS:
             if m == 0 or m is None:
                 return f"{sign}{s}.{f}{pp}"
             else:
-                return f"{sign}{m}′{s:02}.{f}″"
-        return f"{sign}{d}°{m:02}′{s:02}.{f}″"
                 return f"{sign}{m}{p}{s:02}.{f}{pp}"
         return f"{sign}{d}°{m:02}{p}{s:02}.{f}{pp}"
 
