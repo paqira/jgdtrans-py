@@ -270,8 +270,11 @@ class DMS:
                 return f"{sign}{m}{s:02}.{f}"
         return f"{sign}{d}{m:02}{s:02}.{f}"
 
-    def to_primed_str(self) -> str:
+    def to_primed_str(self, ascii: bool = False) -> str:
         """Returns a DMS notation :obj:`str` obj of `self` with primes.
+
+        Args:
+            ascii: use ascii :obj:`"'"` and :obj:`'"'` for separators
 
         Returns:
             a DMS notation :obj:`str` obj
@@ -283,12 +286,20 @@ class DMS:
             "140°05′16.27815″"
         """
         sign, d, m, s, f = self._to_str()
+
+        if ascii:
+            p, pp = "'", '"'
+        else:
+            p, pp = "′", "″"
+
         if d == 0 or d is None:
             if m == 0 or m is None:
-                return f"{sign}{s}.{f}″"
+                return f"{sign}{s}.{f}{pp}"
             else:
                 return f"{sign}{m}′{s:02}.{f}″"
         return f"{sign}{d}°{m:02}′{s:02}.{f}″"
+                return f"{sign}{m}{p}{s:02}.{f}{pp}"
+        return f"{sign}{d}°{m:02}{p}{s:02}.{f}{pp}"
 
     def to_dd(self) -> float:
         """Returns a DD notation :obj:`float` obj of `self`.
