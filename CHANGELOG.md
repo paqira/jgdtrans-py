@@ -1,5 +1,11 @@
 # Change Log
 
+## x.x.x
+
+### Added
+
+- Supports Python 3.13
+
 ## 0.2.1 - 2024-07-06
 
 ### Added
