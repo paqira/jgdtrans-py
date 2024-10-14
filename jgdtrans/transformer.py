@@ -4,16 +4,19 @@ from __future__ import annotations
 
 import math
 import textwrap
-from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import ClassVar, Final, NamedTuple
+from typing import TYPE_CHECKING, ClassVar, Final, NamedTuple
 
-from typing_extensions import Self  # typing @ >= 3.11
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from typing_extensions import Self  # typing @ >= 3.11
+
+    from . import types as _types
 
 from . import error as _error
 from . import mesh as _mesh
 from . import point as _point
-from . import types as _types
 
 __all__ = [
     "Transformer",

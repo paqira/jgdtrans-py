@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from typing import Callable, TextIO
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Callable, TextIO
+
+    from . import types as _types
 
 from . import error as _error
 from . import transformer as _trans
-from . import types as _types
 
 __all__ = [
     "is_format",

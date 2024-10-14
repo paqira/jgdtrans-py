@@ -16,12 +16,16 @@ import ctypes
 import math
 from dataclasses import dataclass
 from enum import IntEnum
-from typing import Final
+from typing import TYPE_CHECKING
 
-from typing_extensions import Self  # typing @ >= 3.11
+if TYPE_CHECKING:
+    from typing import Final
+
+    from typing_extensions import Self  # typing @ >= 3.11
+
+    from . import types as _types
 
 from . import point as _point
-from . import types as _types
 
 __all__ = [
     "MESH_COORD_MIN",

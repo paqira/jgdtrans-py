@@ -5,9 +5,12 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass
-from typing import Literal
+from typing import TYPE_CHECKING
 
-from typing_extensions import Self  # typing @ >= 3.11
+if TYPE_CHECKING:
+    from typing import Literal
+
+    from typing_extensions import Self  # typing @ >= 3.11
 
 __all__ = [
     "to_dms",

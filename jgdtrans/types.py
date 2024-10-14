@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
-from typing_extensions import (
-    Required,  # typing @ >= 3.11
-    TypeAlias,  # typing @ >= 3.10
-)
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from typing_extensions import (
+        Required,  # typing @ >= 3.11
+        TypeAlias,  # typing @ >= 3.10
+    )
 
 __all__ = [
     "MeshUnitType",

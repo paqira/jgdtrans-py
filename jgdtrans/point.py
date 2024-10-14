@@ -3,16 +3,21 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Iterator, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Literal, overload
+from typing import TYPE_CHECKING, overload
 
-from typing_extensions import Self  # typing @ >= 3.11
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from typing import Literal
+
+    from typing_extensions import Self  # typing @ >= 3.11
+
+    from . import types as _types
 
 from . import dms as _dms
 from . import mesh as _mesh
 from . import transformer as _trans
-from . import types as _types
 
 __all__ = [
     "Point",
