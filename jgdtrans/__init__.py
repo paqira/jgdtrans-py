@@ -23,7 +23,7 @@ from .par import load, loads
 from .point import Point
 from .transformer import Transformer, from_dict
 
-__version__: Final = "0.2.1"
+__version__: Final = "0.2.2"
 
 
 __all__ = [
