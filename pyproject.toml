@@ -48,7 +48,6 @@ Source = "https://github.com/paqira/jgdtrans-py"
 
 [tool.hatch.version]
 path = "jgdtrans/__init__.py"
-pattern = '__version__: Final = "(?P<version>.+?)"'
 
 # hatch.build
 

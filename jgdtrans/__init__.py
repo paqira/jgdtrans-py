@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Final
-
 from . import (
     dms,  # noqa: F401
     error,  # noqa: F401
@@ -23,7 +21,7 @@ from .par import load, loads
 from .point import Point
 from .transformer import Transformer, from_dict
 
-__version__: Final = "0.2.2"
+__version__ = "0.2.2"
 
 
 __all__ = [
