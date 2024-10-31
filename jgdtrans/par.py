@@ -48,7 +48,6 @@ def is_format(format: _types.FormatType) -> bool:
     )
 
 
-# TODO: typing error
 def parse(
     text: str,
     header: slice,
@@ -56,9 +55,8 @@ def parse(
     latitude: Callable[[str], float],
     longitude: Callable[[str], float],
     altitude: Callable[[str], float],
-    format: _types.FormatType,
     description: str | None = None,
-):
+) -> tuple[dict[int, _trans.Parameter], str | None]:
     """Returns the arguments of :class:`.Transformer` constructor by parsing `s`.
 
     Args:
@@ -84,7 +82,7 @@ def parse(
             f"too short text, we got {len(lines)} line(s), we expected {header.stop} at least"
         ) from None
 
-    description = "\n".join(lines[header]) + "\n" if description is None else description
+    desc = ("\n".join(lines[header]) + "\n") if description is None else description
 
     parameters: dict[int, _trans.Parameter] = {}
     lineno = header.stop
@@ -121,14 +119,10 @@ def parse(
 
         parameters[_mesh_code] = _trans.Parameter(latitude=_latitude, longitude=_longitude, altitude=_altitude)
 
-    return {
-        "description": description,
-        "format": format,
-        "parameter": parameters,
-    }
+    return parameters, desc
 
 
-def loads(
+def loads(  # noqa: C901
     s: str,
     format: _types.FormatType,
     *,
@@ -166,75 +160,72 @@ def loads(
         Parameter(latitude=0.00001, longitude=0.0002, altitude=0.0003)
     """
     if format == "TKY2JGD":
-        kwargs = dict(
-            text=s,
-            header=slice(None, 2),
-            mesh_code=lambda line: int(line[0:8]),
-            latitude=lambda line: float(line[9:18]),
-            longitude=lambda line: float(line[19:28]),
-            altitude=lambda line: 0.0,
-            format=format,
-            description=description,
-        )
+        header = slice(None, 2)
+
+        # fmt: off
+        def mesh_code(line: str): return int(line[0:8])
+        def latitude(line: str): return float(line[9:18])
+        def longitude(line: str): return float(line[19:28])
+        def altitude(line: str): return 0.0
+        # fmt: on
     elif format == "PatchJGD":
-        kwargs = dict(
-            text=s,
-            header=slice(None, 16),
-            mesh_code=lambda line: int(line[0:8]),
-            latitude=lambda line: float(line[9:18]),
-            longitude=lambda line: float(line[19:28]),
-            altitude=lambda line: 0,
-            format=format,
-            description=description,
-        )
+        header = slice(None, 16)
+
+        # fmt: off
+        def mesh_code(line: str): return int(line[0:8])
+        def latitude(line: str): return float(line[9:18])
+        def longitude(line: str): return float(line[19:28])
+        def altitude(line: str): return 0.0
+        # fmt: on
     elif format == "PatchJGD_H":
-        kwargs = dict(
-            text=s,
-            header=slice(None, 16),
-            mesh_code=lambda line: int(line[0:8]),
-            latitude=lambda line: 0,
-            longitude=lambda line: 0,
-            altitude=lambda line: float(line[9:18]),
-            format=format,
-            description=description,
-        )
+        header = slice(None, 16)
+
+        # fmt: off
+        def mesh_code(line: str): return int(line[0:8])
+        def latitude(line: str): return 0.0
+        def longitude(line: str): return 0.0
+        def altitude(line: str): return float(line[9:18])
+        # fmt: on
     elif format == "HyokoRev":
-        kwargs = dict(
-            text=s,
-            header=slice(None, 16),
-            mesh_code=lambda line: int(line[0:8]),
-            latitude=lambda line: 0,
-            longitude=lambda line: 0,
-            altitude=lambda line: float(line[12:21]),
-            format=format,
-            description=description,
-        )
+        header = slice(None, 16)
+
+        # fmt: off
+        def mesh_code(line: str): return int(line[0:8])
+        def latitude(line: str): return 0.0
+        def longitude(line: str): return 0.0
+        def altitude(line: str): return float(line[12:21])
+        # fmt: on
     elif format in ("SemiDynaEXE", "PatchJGD_HV"):
-        kwargs = dict(
-            text=s,
-            header=slice(None, 16),
-            mesh_code=lambda line: int(line[0:8]),
-            latitude=lambda line: float(line[9:18]),
-            longitude=lambda line: float(line[19:28]),
-            altitude=lambda line: float(line[29:38]),
-            format=format,
-            description=description,
-        )
+        header = slice(None, 16)
+
+        # fmt: off
+        def mesh_code(line: str): return int(line[0:8])
+        def latitude(line: str): return float(line[9:18])
+        def longitude(line: str): return float(line[19:28])
+        def altitude(line: str): return float(line[29:38])
+        # fmt: on
     elif format in ("geonetF3", "ITRF2014"):
-        kwargs = dict(
-            text=s,
-            header=slice(None, 18),
-            mesh_code=lambda line: int(line[0:8]),
-            latitude=lambda line: float(line[12:21]),
-            longitude=lambda line: float(line[22:31]),
-            altitude=lambda line: float(line[32:41]),
-            format=format,
-            description=description,
-        )
+        header = slice(None, 18)
+
+        # fmt: off
+        def mesh_code(line: str): return int(line[0:8])
+        def latitude(line: str): return float(line[12:21])
+        def longitude(line: str): return float(line[22:31])
+        def altitude(line: str): return float(line[32:41])
+        # fmt: on
     else:
         raise ValueError(f"unexpected format give, we got '{format}'")
 
-    return _trans.Transformer(**parse(**kwargs))  # type: ignore
+    parameter, desc = parse(
+        text=s,
+        header=header,
+        mesh_code=mesh_code,
+        latitude=latitude,
+        longitude=longitude,
+        altitude=altitude,
+        description=description,
+    )
+    return _trans.Transformer(format=format, parameter=parameter, description=desc)
 
 
 def load(
