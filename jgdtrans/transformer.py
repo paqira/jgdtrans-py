@@ -419,11 +419,15 @@ class Transformer:
         See Also:
             - :meth:`Transformer.from_dict`
         """
-        return {
-            "format": self.format,
-            "parameter": {k: v._asdict() for k, v in self.parameter.items()},  # type: ignore
-            "description": self.description,
-        }
+
+        def convert(v: Parameter) -> _types.ParameterDictType:
+            return _types.ParameterDictType(latitude=v.latitude, longitude=v.longitude, altitude=v.altitude)
+
+        return _types.TransformerDictType(
+            format=self.format,
+            parameter={k: convert(v) for k, v in self.parameter.items()},
+            description=self.description,
+        )
 
     def statistics(self) -> Statistics:
         """Returns the statistics of the parameter.
