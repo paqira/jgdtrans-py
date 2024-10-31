@@ -5,10 +5,11 @@ from __future__ import annotations
 import math
 import textwrap
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar, Final, NamedTuple
+from typing import TYPE_CHECKING, ClassVar, NamedTuple
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+    from typing import Final
 
     from typing_extensions import Self  # typing @ >= 3.11
 
