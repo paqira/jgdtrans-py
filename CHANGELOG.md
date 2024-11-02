@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.3
+
+### Added
+
+- Add typecheck in constructor on DMS sign
+
 ## 0.2.2
 
 ### Added

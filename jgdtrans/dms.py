@@ -100,7 +100,7 @@ class DMS:
     """The fraction part of second of latitude or longitude."""
 
     def __post_init__(self):
-        if self.sign not in (1, -1):
+        if not isinstance(self.sign, int) or self.sign not in (1, -1):
             raise ValueError(f"expected sign is 1 or -1, we got {self.sign}")
         elif not (0 <= self.degree <= 180):
             raise ValueError(f"expected degree satisfies 0 <= and <= 180, we got {self.degree}")
