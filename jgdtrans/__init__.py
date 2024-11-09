@@ -21,7 +21,7 @@ from .par import load, loads
 from .point import Point
 from .transformer import Transformer, from_dict
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 
 __all__ = [
