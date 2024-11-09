@@ -6,7 +6,7 @@
 
 - Add typecheck in constructor on DMS sign
 
-## 0.2.2
+## 0.2.2 - 2024-10-14
 
 ### Added
 
