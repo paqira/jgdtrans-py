@@ -37,7 +37,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 dependencies = [
-    "typing-extensions>=4.9",
+    'typing-extensions>=4.9; python_version < "3.11"',
 ]
 dynamic = ["version"]
 
@@ -65,6 +65,16 @@ extra-dependencies = [
 ]
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:jgdtrans}"
+
+# bench
+
+[tool.hatch.envs.bench]
+extra-dependencies = [
+    "pytest>=8.0.0",
+    "pytest-benchmark>=5.0.0"
+]
+[tool.hatch.envs.bench.scripts]
+run = "pytest --benchmark-only {args:benches}"
 
 # docs
 
