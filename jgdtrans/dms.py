@@ -10,7 +10,11 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Literal
 
-    from typing_extensions import Self  # typing @ >= 3.11
+    try:
+        from typing import Self  # typing @ >= 3.11
+    except ImportError:
+        from typing_extensions import Self
+
 
 __all__ = [
     "to_dms",
