@@ -7,7 +7,7 @@ from jgdtrans import Point, mesh
 from jgdtrans.mesh import MeshCoord, MeshNode
 
 
-class Point_(unittest.TestCase):
+class TestPoint(unittest.TestCase):
     def test_normalize(self):
         for e, v in (
             (0, 0),

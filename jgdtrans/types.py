@@ -17,8 +17,8 @@ __all__ = [
     "FormatType",
     #
     "ParameterDictType",
-    "TransformerDictType",
-    "TransformerLikeMappingType",
+    "ParDataDictType",
+    "ParDataLikeMappingType",
 ]
 
 MeshUnitType: TypeAlias = Literal[1, 5]
@@ -64,7 +64,7 @@ class ParameterDictType(TypedDict):
     """The altitude parameter on the point [m]."""
 
 
-class TransformerDictType(TypedDict):
+class ParDataDictType(TypedDict):
     """Return type of :meth:`.Transformer.to_dict`."""
 
     format: FormatType
@@ -75,7 +75,7 @@ class TransformerDictType(TypedDict):
     """The description of the parameter."""
 
 
-class TransformerLikeMappingType(TypedDict, total=False):
+class ParDataLikeMappingType(TypedDict, total=False):
     """Argument type of :meth:`.Transformer.from_dict`."""
 
     format: Required[FormatType]

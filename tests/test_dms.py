@@ -5,7 +5,7 @@ import unittest
 from jgdtrans import dms
 
 
-class DMS(unittest.TestCase):
+class TestDMS(unittest.TestCase):
     def test_to_str(self):
         cases = (
             ("0.0", dms.DMS(1, 0, 0, 0, 0.0).to_str()),
@@ -165,7 +165,7 @@ class DMS(unittest.TestCase):
                     self.assertLess(abs(z.to_dd() - origin), 3e-15)
 
 
-class ToFromDMS(unittest.TestCase):
+class TestToFromDMS(unittest.TestCase):
     def test_to(self):
         self.assertEqual("360613.589249999997719", dms.to_dms(36.103774791666666))
         self.assertEqual("1400516.278150000016467", dms.to_dms(140.08785504166667))

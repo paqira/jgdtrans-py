@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 import math
-import textwrap
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar, NamedTuple
+from typing import TYPE_CHECKING, ClassVar, Literal, NamedTuple, Protocol, TextIO
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
     from typing import Final
 
     try:
@@ -20,17 +18,18 @@ if TYPE_CHECKING:
 
 from . import error as _error
 from . import mesh as _mesh
+from . import par as _par
 from . import point as _point
 
 __all__ = [
     "Transformer",
-    "Parameter",
     "Correction",
-    "Statistics",
-    "StatisticData",
-    #
+    "ParameterSet",
+    "load",
+    "loads",
     "from_dict",
 ]
+
 
 FORMAT: Final = (
     "TKY2JGD",
@@ -80,63 +79,147 @@ def bilinear_interpolation(sw: float, se: float, nw: float, ne: float, lat: floa
     return sw * (1 - lng) * (1 - lat) + se * lng * (1 - lat) + nw * (1 - lng) * lat + ne * lng * lat
 
 
-def from_dict(obj: _types.TransformerLikeMappingType) -> Transformer:
-    """Makes a :class:`Transformer` obj from :obj:`Mapping` obj.
+def loads(  # noqa: C901
+    s: str,
+    format: _types.FormatType,
+    *,
+    description: str | None = None,
+) -> Transformer:
+    """Deserialize a par-formatted :obj:`str` into a :class:`Transformer`.
+
+    This fills by 0.0 for altituse parameter when :obj:`'TKY2JGD'` or :obj:`'PatchJGD'` given to `format`,
+    and for latitude and longitude when :obj:`'PatchJGD_H'` or :obj:`'HyokoRev'` given.
 
     See :obj:`.FormatType` for detail of :obj:`'PatchJGD_HV'`.
 
     Args:
-        obj: the :obj:`Mapping` of the unit, the parameter,
-             and the description (optional) fields
+        s: a par-formatted text
+        format: the format of `s`
+        description: the description of the parameter, defaulting the `s` header
 
     Returns:
         the :class:`Transformer` obj
 
     Raises:
-        ParseError: when fail to parse meshcode
+        ParseParFileError: when invalid data found
 
     Examples:
-        >>> data = {
-        ...     'format': 'TKY2JGD',
+        >>> s = '''<15 lines>
+        ... MeshCode dB(sec)  dL(sec) dH(m)
+        ... 12345678   0.00001   0.00002   0.00003'''
+        >>> tf = loads(s, format="SemiDynaEXE")
+        >>> result = tf.transform(35.0, 145.0)
+
+        >>> s = '''<15 lines>
+        ... MeshCode dB(sec)  dL(sec) dH(m)
+        ... 12345678   0.00001   0.00002   0.00003'''
+        >>> loads(s, format="SemiDynaEXE").parameter[12345678]
+        Parameter(latitude=0.00001, longitude=0.0002, altitude=0.0003)
+    """
+    return Transformer(data=_par.loads(s, format=format, description=description))
+
+
+def load(
+    fp: TextIO,
+    format: _types.FormatType,
+    *,
+    description: str | None = None,
+) -> Transformer:
+    """Deserialize a par-formatted file-like obj into a :class:`Transformer`.
+
+    This fills by 0.0 for altituse parameter when :obj:`'TKY2JGD'` or :obj:`'PatchJGD'` given to `format`,
+    and for latitude and longitude when :obj:`'PatchJGD_H'` or :obj:`'HyokoRev'` given.
+
+    See :obj:`.FormatType` for detail of :obj:`'PatchJGD_HV'`.
+
+    Args:
+        fp: a par-formatted file-like obj
+        format: the format of `fp`
+        description: the description of the parameter, defaulting the `fp` header
+
+    Returns:
+        the :class:`Transformer` obj
+
+    Raises:
+        ParseParFileError: when invalid data found
+
+    Examples:
+        >>> with open("SemiDyna2023.par") as fp:
+        ...     tf = load(fp, format="SemiDynaEXE")
+        >>> result = tf.transform(35.0, 145.0)
+
+        >>> s = '''<15 lines>
+        ... MeshCode dB(sec)  dL(sec) dH(m)
+        ... 12345678   0.00001   0.00002   0.00003'''
+        >>> with io.StringIO(s) as fp:
+        ...     tf = load(fp, format="SemiDynaEXE")
+        Parameter(latitude=0.00001, longitude=0.0002, altitude=0.0003)
+    """
+    return loads(fp.read(), format=format, description=description)
+
+
+def from_dict(obj) -> Transformer:
+    """Makes a :class:`Transformer` obj from :obj:`Mapping` obj.
+
+    This parses meshcode, the key of `parameter`, into :obj:`int`.
+
+    See :obj:`.FormatType` for detail of :obj:`'PatchJGD_HV'`.
+
+    Args:
+        obj: the :obj:`Mapping` of the format, the parameters,
+             and the description (optional)
+
+    Returns:
+        the :class:`Transformer` obj
+
+    Raises:
+        DeserializeError: when fail to parse the meshcode
+
+    Examples:
+        >>> mapping = {
+        ...     'format': 'SemiDynaEXE',
         ...     'parameter': {
         ...         12345678: {
-        ...             'latitude': 0.1
-        ...             'longitude': 0.2
-        ...             'altitude': 0.3
+        ...             'latitude': 0.1,
+        ...             'longitude': 0.2,
+        ...             'altitude': 0.3,
         ...         },
         ...         ...
         ...     },
         ...     'description': 'important my param',  # optional
         ... }
-        >>> tf = from_dict(data)
-        >>> tf.format
-        1
-        >>> tf.parameter
-        {12345678: Parameter(0.1, 0.2, 0.3), ...}
-        >>> tf.description
-        'important my param'
+        >>> tf = from_dict(mapping)
+        >>> tf.data
+        ParData(
+            format='SemiDynaEXE',
+            parameter={
+                12345678: Parameter('latitude': 0.1, 'longitude': 0.2, 'altitude': 0.3),
+                ...
+            },
+            description='important my param'
+        )
 
-        >>> data = {
-        ...     'format': 'TKY2JGD',
+        >>> mapping = {
+        ...     'format': 'SemiDynaEXE',
         ...     'parameter': {
         ...         '12345678': {
-        ...             'latitude': 0.1
-        ...             'longitude': 0.2
-        ...             'altitude': 0.3
+        ...             'latitude': 0.1,
+        ...             'longitude': 0.2,
+        ...             'altitude': 0.3,
         ...         },
         ...         ...
         ...     },
         ... }
-        >>> tf = from_dict(data)
-        >>> tf.format
-        1
-        >>> tf.parameter
-        {12345678: Parameter(0.1, 0.2, 0.3), ...}
-        >>> tf.description
-        None
-
-    See Also:
-        - :meth:`Transformer.from_dict`
+        >>> tf = from_dict(mapping)
+        >>> tf.data
+        ParData(
+            format='SemiDynaEXE',
+            parameter={
+                12345678: Parameter('latitude': 0.1, 'longitude': 0.2, 'altitude': 0.3),
+                ...
+            },
+            description=None
+        )
     """
     return Transformer.from_dict(obj)
 
@@ -157,64 +240,16 @@ class Correction(NamedTuple):
         return math.hypot(self.latitude, self.longitude)
 
 
-class Parameter(NamedTuple):
-    """The parameter triplet.
+class ParameterSet(Protocol):
+    """Interface for :class:`Transformer`."""
 
-    We emphasize that the unit of latitude and longitude is [sec], not [deg].
+    def get(self, meshcode: int) -> _par.Parameter | None:
+        """Returns :class:`Parameter` associated with `meshcode`, otherwise :class:`None`."""
+        pass
 
-    It should fill by :obj:`0.0` instead of :obj:`nan`
-    when the parameter does not exist, as parsers does.
-    """
-
-    latitude: float
-    """The latitude parameter [sec]."""
-    longitude: float
-    """The latitude parameter [sec]."""
-    altitude: float
-    """The altitude parameter [m]."""
-
-    @property
-    def horizontal(self) -> float:
-        r""":math:`\sqrt{\text{latitude}^2 + \text{longitude}^2}` [sec]."""
-        return math.hypot(self.latitude, self.longitude)
-
-
-@dataclass(frozen=True)
-class StatisticData:
-    """The statistics of parameter.
-
-    This is a component of the result that :meth:`Transformer.statistics` returns.
-    """
-
-    count: int | None
-    """The count."""
-    mean: float | None
-    """The mean ([sec] or [m])."""
-    std: float | None
-    """The standard variance ([sec] or [m])."""
-    abs: float | None
-    r""":math:`(1/n) \sum_{i=1}^n \left| \text{parameter}_i \right|` ([sec] or [m])."""
-    min: float | None
-    """The minimum ([sec] or [m])."""
-    max: float | None
-    """The maximum ([sec] or [m])."""
-
-
-@dataclass(frozen=True)
-class Statistics:
-    """The statistical summary of parameter.
-
-    This is a result that :meth:`Transformer.statistics` returns.
-    """
-
-    latitude: StatisticData
-    """The statistics of latitude."""
-    longitude: StatisticData
-    """The statistics of longitude."""
-    altitude: StatisticData
-    """The statistics of altitude."""
-    horizontal: StatisticData
-    """The statistics of horizontal."""
+    def mesh_unit(self) -> Literal[1, 5]:
+        """Returns a mesh unit."""
+        pass
 
 
 @dataclass(frozen=True)
@@ -231,13 +266,15 @@ class Transformer:
         From `SemiDynaEXE2023.par`
 
         >>> tf = Transformer(
-        ...     format="SemiDynaEXE",
-        ...     parameter={
-        ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-        ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-        ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-        ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-        ...     },
+        ...     data=ParData(
+        ...         format="SemiDynaEXE",
+        ...         parameter={
+        ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+        ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+        ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+        ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+        ...         },
+        ...     )
         ... )
 
         Forward transformation
@@ -256,64 +293,20 @@ class Transformer:
         Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
     """
 
-    format: _types.FormatType
-    """The format of par file.
-
-    See :obj:`.FormatType` for detail of :obj:`'PatchJGD_HV'`.
-    """
-
-    parameter: Mapping[int, Parameter]
-    """The transformation parameter.
-
-    The entry represents single line of the par file's parameter section,
-    the key is meshcode, and the value is a :class:`.Parameter`
-    (a triplet of latitude [sec], longitude [sec] and altitude [m]).
-    """
-
-    description: str | None = None
-    """The description."""
-
+    data: ParameterSet
     MAX_ERROR: ClassVar[float] = 5e-14
     """Max error of :meth:`Transformer.backward` and :meth:`Transformer.backward_corr`."""
 
-    def __post_init__(self):
-        if self.format not in FORMAT:
-            raise ValueError(f"unexpected format give, we got '{self.format}'")
-
     def __repr__(self):
         # the parameter is too long for display
-        fmt = "{}(format={}, parameter=<{} ({} length) at 0x{:x}>, description={})"
+        fmt = "{}(data={!r})"
         return fmt.format(
-            self.__class__.__name__,
-            self.format,
-            self.parameter.__class__.__name__,
-            len(self.parameter),
-            id(self.parameter),
-            (
-                repr(textwrap.shorten(self.description, width=11))
-                if isinstance(self.description, str)
-                else self.description
-            ),
+            self.__class__.__qualname__,
+            self.data,
         )
 
-    def mesh_unit(self) -> _types.MeshUnitType:
-        """Returns the mesh unit of the format.
-
-        Returns:
-            1 or 5
-
-        Examples:
-            >>> tf = Transformer(format="TKY2JGD", parameter={})
-            >>> tf.mesh_unit()
-            1
-            >>> tf = Transformer(format="SemiDynaEXE", parameter={})
-            >>> tf.mesh_unit()
-            5
-        """
-        return _mesh.mesh_unit(self.format)
-
     @classmethod
-    def from_dict(cls, obj: _types.TransformerLikeMappingType) -> Self:
+    def from_dict(cls, obj: _types.ParDataLikeMappingType) -> Self:
         """Makes a :class:`Transformer` obj from :obj:`Mapping` obj.
 
         This parses meshcode, the key of `parameter`, into :obj:`int`.
@@ -331,191 +324,52 @@ class Transformer:
             DeserializeError: when fail to parse the meshcode
 
         Examples:
-            >>> data = {
+            >>> mapping = {
             ...     'format': 'SemiDynaEXE',
             ...     'parameter': {
             ...         12345678: {
-            ...             'latitude': 0.1
-            ...             'longitude': 0.2
-            ...             'altitude': 0.3
+            ...             'latitude': 0.1,
+            ...             'longitude': 0.2,
+            ...             'altitude': 0.3,
             ...         },
             ...         ...
             ...     },
             ...     'description': 'important my param',  # optional
             ... }
-            >>> tf = Transformer.from_dict(data)
-            >>> tf.format
-            'SemiDynaEXE'
-            >>> tf.parameter
-            {12345678: Parameter(0.1, 0.2, 0.3), ...}
-            >>> tf.description
-            'important my param'
+            >>> tf = Transformer.from_dict(mapping)
+            >>> tf.data
+            ParData(
+                format='SemiDynaEXE',
+                parameter={
+                    12345678: Parameter('latitude': 0.1, 'longitude': 0.2, 'altitude': 0.3),
+                    ...
+                },
+                description='important my param'
+            )
 
-            >>> data = {
+            >>> mapping = {
             ...     'format': 'SemiDynaEXE',
             ...     'parameter': {
             ...         '12345678': {
-            ...             'latitude': 0.1
-            ...             'longitude': 0.2
-            ...             'altitude': 0.3
+            ...             'latitude': 0.1,
+            ...             'longitude': 0.2,
+            ...             'altitude': 0.3,
             ...         },
             ...         ...
             ...     },
             ... }
-            >>> tf = Transformer.from_dict(data)
-            >>> tf.format
-            'SemiDynaEXE'
-            >>> tf.parameter
-            {12345678: Parameter(0.1, 0.2, 0.3), ...}
-            >>> tf.description
-            None
-
-        See Also:
-            - :meth:`Transformer.to_dict`
-        """
-        parameter = {}
-        for k, v in obj["parameter"].items():
-            try:
-                key = int(k)
-            except ValueError:
-                raise ValueError(f"expected integer for the key of the parameter field, we got {repr(k)}") from None
-
-            parameter[key] = Parameter(
-                latitude=v["latitude"],
-                longitude=v["longitude"],
-                altitude=v["altitude"],
-            )
-
-        return cls(
-            format=obj["format"],
-            parameter=parameter,
-            description=obj.get("description"),
-        )
-
-    def to_dict(self) -> _types.TransformerDictType:
-        """Returns a :obj:`dict` which represents `self`.
-
-        This method is an inverse of :meth:`Transformer.from_dict`.
-
-        Returns:
-            the :obj:`dict` obj which typed as :obj:`.TransformerDict`
-
-        Examples:
-            >>> tf = Transformer(
-            ...     description="my param",
-            ...     format="SemiDynaEXE",
-            ...     parameter={12345678: Parameter(0.1, 0.2, 0.3)},
-            ... )
-            >>> tf.to_dict()
-            {
-                'format': 'SemiDynaEXE',
-                'parameter': {
-                    12345678: {
-                        'latitude': 0.1,
-                        'longitude': 0.2,
-                        'altitude': 0.3,
-                    }
+            >>> tf = Transformer.from_dict(mapping)
+            >>> tf.data
+            ParData(
+                format='SemiDynaEXE',
+                parameter={
+                    12345678: Parameter('latitude': 0.1, 'longitude': 0.2, 'altitude': 0.3),
+                    ...
                 },
-                'description': 'my param',
-            }
-
-        See Also:
-            - :meth:`Transformer.from_dict`
-        """
-
-        def convert(v: Parameter) -> _types.ParameterDictType:
-            return _types.ParameterDictType(latitude=v.latitude, longitude=v.longitude, altitude=v.altitude)
-
-        return _types.TransformerDictType(
-            format=self.format,
-            parameter={k: convert(v) for k, v in self.parameter.items()},
-            description=self.description,
-        )
-
-    def statistics(self) -> Statistics:
-        """Returns the statistics of the parameter.
-
-        See :class:`StatisticData` for details of result's components.
-
-        Returns:
-            the statistics of the parameter
-
-        Examples:
-            From `SemiDynaEXE2023.par`
-
-            >>> tf = Transformer(
-            ...     format='SemiDynaEXE'
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     }
-            ... )
-            >>> tf.statistics()
-            StatisticalSummary(
-                latitude=Statistics(
-                    count=4,
-                    mean=-0.006422499999999999,
-                    std=0.00021264700797330775,
-                    abs=0.006422499999999999,
-                    min=-0.00664,
-                    max=-0.0062
-                ),
-                longitude=Statistics(
-                    count=4,
-                    mean=0.0151075,
-                    std=0.00013553136168429814,
-                    abs=0.0151075,
-                    min=0.01492,
-                    max=0.01529
-                ),
-                altitude=Statistics(
-                    count=4,
-                    mean=0.0972325,
-                    std=0.005453133846697696,
-                    abs=0.0972325,
-                    min=0.08972,
-                    max=0.10374
-                )
+                description='important my param'
             )
         """
-        # Surprisingly, the following code is fast enough.
-
-        # ensure summation order
-        params = sorted(((k, v) for k, v in self.parameter.items()), key=lambda t: t[0])
-
-        kwargs = {}
-        for name, arr in (
-            ("latitude", tuple(map(lambda p: p[1].latitude, params))),
-            ("longitude", tuple(map(lambda p: p[1].longitude, params))),
-            ("altitude", tuple(map(lambda p: p[1].altitude, params))),
-            ("horizontal", tuple(map(lambda p: p[1].horizontal, params))),
-        ):
-            if not arr:
-                kwargs[name] = StatisticData(None, None, None, None, None, None)
-                continue
-
-            sum_ = math.fsum(arr)
-            length = len(arr)
-
-            if math.isnan(sum_):
-                kwargs[name] = StatisticData(length, math.nan, math.nan, math.nan, math.nan, math.nan)
-                continue
-
-            mean = sum_ / length
-            std = math.sqrt(math.fsum(tuple((mean - x) ** 2 for x in arr)) / length)
-
-            kwargs[name] = StatisticData(
-                count=length,
-                mean=mean,
-                std=std,
-                abs=math.fsum(map(abs, arr)) / length,
-                min=min(arr),
-                max=max(arr),
-            )
-
-        return Statistics(**kwargs)
+        return cls(data=_par.ParData.from_dict(obj))
 
     def transform(
         self,
@@ -544,13 +398,15 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format="SemiDynaEXE",
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     },
+            ...     data=Pardata(
+            ...         format="SemiDynaEXE",
+            ...         parameter={
+            ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...         },
+            ...     )
             ... )
             >>> tf.transform(36.10377479, 140.087855041, 2.34, backward=False)
             Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
@@ -594,13 +450,15 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format="SemiDynaEXE",
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     },
+            ...     data=ParData(
+            ...         format="SemiDynaEXE",
+            ...         parameter={
+            ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...         },
+            ...     )
             ... )
             >>> tf.forward(36.10377479, 140.087855041, 2.34)
             Point(latitude=36.103773017086695, longitude=140.08785924333452, altitude=2.4363138578103)
@@ -642,13 +500,15 @@ class Transformer:
             Notes, the exact solution is :obj:`Point(36.10377479, 140.087855041, 2.34)`.
 
             >>> tf = Transformer(
-            ...     format="SemiDynaEXE",
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     },
+            ...     data=ParData(
+            ...         format="SemiDynaEXE",
+            ...         parameter={
+            ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...         },
+            ...     )
             ... )
             >>> tf.backward_compat(36.103773017086695, 140.08785924333452, 2.4363138578103)
             Point(latitude=36.10377479000002, longitude=140.087855041, altitude=2.339999999578243)
@@ -694,13 +554,15 @@ class Transformer:
             In this case, no error remains.
 
             >>> tf = Transformer(
-            ...     format="SemiDynaEXE",
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     },
+            ...     data=ParData(
+            ...         format="SemiDynaEXE",
+            ...         parameter={
+            ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...         },
+            ...     )
             ... )
             >>> tf.backward(36.103773017086695, 140.08785924333452, 2.4363138578103)
             Point(latitude=36.10377479, longitude=140.087855041, altitude=2.34)
@@ -717,25 +579,21 @@ class Transformer:
         cell: _mesh.MeshCell,
     ):
         # finding parameter
-        try:
-            sw = self.parameter[cell.south_west.to_meshcode()]
-        except KeyError as e:
-            raise _error.ParameterNotFoundError(e.args[0], "sw") from None
+        sw = self.data.get(cell.south_west.to_meshcode())
+        if sw is None:
+            raise _error.ParameterNotFoundError("sw") from None
 
-        try:
-            se = self.parameter[cell.south_east.to_meshcode()]
-        except KeyError as e:
-            raise _error.ParameterNotFoundError(e.args[0], "se") from None
+        se = self.data.get(cell.south_east.to_meshcode())
+        if se is None:
+            raise _error.ParameterNotFoundError("se") from None
 
-        try:
-            nw = self.parameter[cell.north_west.to_meshcode()]
-        except KeyError as e:
-            raise _error.ParameterNotFoundError(e.args[0], "nw") from None
+        nw = self.data.get(cell.north_west.to_meshcode())
+        if nw is None:
+            raise _error.ParameterNotFoundError("nw") from None
 
-        try:
-            ne = self.parameter[cell.north_east.to_meshcode()]
-        except KeyError as e:
-            raise _error.ParameterNotFoundError(e.args[0], "ne") from None
+        ne = self.data.get(cell.north_east.to_meshcode())
+        if ne is None:
+            raise _error.ParameterNotFoundError("ne") from None
 
         return sw, se, nw, ne
 
@@ -760,20 +618,22 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format="SemiDynaEXE",
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     },
+            ...     data=ParData(
+            ...         format="SemiDynaEXE",
+            ...         parameter={
+            ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...         },
+            ...     )
             ... )
             >>> tf.forward_corr(36.10377479, 140.087855041)
             Correction(latitude=-1.7729133100878255e-06, longitude=4.202334510058886e-06, altitude=0.09631385781030007)
         """
         # resolving cell
         try:
-            cell = _mesh.MeshCell.from_pos(latitude, longitude, mesh_unit=self.mesh_unit())
+            cell = _mesh.MeshCell.from_pos(latitude, longitude, mesh_unit=self.data.mesh_unit())
         except ValueError as e:
             raise _error.PointOutOfBoundsError from e
 
@@ -855,13 +715,15 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format="SemiDynaEXE",
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     },
+            ...     data=ParData(
+            ...         format="SemiDynaEXE",
+            ...         parameter={
+            ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...         },
+            ...     )
             ... )
             >>> tf.backward_compat_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.7729133219831587e-06, longitude=-4.202334509042613e-06, altitude=-0.0963138582320569)
@@ -907,13 +769,15 @@ class Transformer:
             From `SemiDynaEXE2023.par`
 
             >>> tf = Transformer(
-            ...     format="SemiDynaEXE",
-            ...     parameter={
-            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
-            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
-            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
-            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
-            ...     },
+            ...     data=ParData(
+            ...         format="SemiDynaEXE",
+            ...         parameter={
+            ...             54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...             54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...             54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...             54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...         },
+            ...     )
             ... )
             >>> tf.backward_corr(36.103773017086695, 140.08785924333452)
             Correction(latitude=1.7729133100878255e-06, longitude=-4.202334510058886e-06, altitude=-0.09631385781030007)
@@ -941,7 +805,7 @@ class Transformer:
 
         for _ in range(iteration):
             try:
-                cell = _mesh.MeshCell.from_pos(yn, xn, mesh_unit=self.mesh_unit())
+                cell = _mesh.MeshCell.from_pos(yn, xn, mesh_unit=self.data.mesh_unit())
             except ValueError as e:
                 raise _error.PointOutOfBoundsError from e
 

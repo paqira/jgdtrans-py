@@ -6,7 +6,7 @@ from jgdtrans import Point, mesh
 from jgdtrans.mesh import MeshCell, MeshCoord, MeshNode, is_meshcode
 
 
-class IsMeshcode(unittest.TestCase):
+class TestIsMeshcode(unittest.TestCase):
     def test(self):
         self.assertTrue(is_meshcode(54401027))
         self.assertFalse(is_meshcode(-1))
@@ -15,7 +15,7 @@ class IsMeshcode(unittest.TestCase):
         self.assertFalse(is_meshcode(10100800))
 
 
-class MeshCoordTest(unittest.TestCase):
+class TestMeshCoord(unittest.TestCase):
     def test_init(self):
         with self.assertRaises(ValueError):
             MeshCoord(-1, 0, 0)
@@ -239,7 +239,7 @@ class MeshCoordTest(unittest.TestCase):
                 self.assertEqual(coord, MeshCoord.from_longitude(coord.to_longitude(), 1))
 
 
-class MeshNodeTest(unittest.TestCase):
+class TestMeshNode(unittest.TestCase):
     def test_init(self):
         coord = MeshCoord(0, 0, 0)
         while coord != MeshCoord(80, 0, 0):
@@ -346,7 +346,7 @@ class MeshNodeTest(unittest.TestCase):
             self.assertEqual(node, MeshNode.from_meshcode(node.to_meshcode()))
 
 
-class MeshCellTest(unittest.TestCase):
+class TestMeshCell(unittest.TestCase):
     def test_init(self):
         with self.assertRaises(ValueError):
             MeshCell(

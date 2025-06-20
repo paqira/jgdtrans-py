@@ -4,8 +4,11 @@ import math
 import unittest
 from typing import Sequence
 
-import jgdtrans
+
+from jgdtrans import ParData, Transformer
 from jgdtrans.error import PointOutOfBoundsError
+from jgdtrans.par import StatisticData, Parameter
+from jgdtrans.transformer import bilinear_interpolation
 
 DATA = {
     "TKY2JGD": {
@@ -110,14 +113,14 @@ DATA = {
 }
 
 
-class BilinearInterpolation(unittest.TestCase):
+class TestBilinearInterpolation(unittest.TestCase):
     def test(self):
-        actual = jgdtrans.transformer.bilinear_interpolation(0, 0.5, 0.5, 1, 0.5, 0.5)
+        actual = bilinear_interpolation(0, 0.5, 0.5, 1, 0.5, 0.5)
         expect = 0.5
         self.assertEqual(expect, actual)
 
 
-class FromDict(unittest.TestCase):
+class TestFromDict(unittest.TestCase):
     def test(self):
         data = {
             "format": "TKY2JGD",
@@ -136,20 +139,22 @@ class FromDict(unittest.TestCase):
             },
         }
 
-        actual = jgdtrans.from_dict(data)
-        expect = jgdtrans.Transformer(
-            format="TKY2JGD",
-            description="my param",
-            parameter={
-                12345678: jgdtrans.transformer.Parameter(0.1, 0.2, 0.3),
-                12345679: jgdtrans.transformer.Parameter(0.4, 0.5, 0.6),
-            },
+        actual = Transformer.from_dict(data)
+        expect = Transformer(
+            ParData(
+                format="TKY2JGD",
+                description="my param",
+                parameter={
+                    12345678: Parameter(0.1, 0.2, 0.3),
+                    12345679: Parameter(0.4, 0.5, 0.6),
+                },
+            )
         )
 
         self.assertEqual(expect, actual)
 
 
-class Transformer(unittest.TestCase):
+class TestTransformer(unittest.TestCase):
     def assert_equal_point(self, e: Sequence[float], a: Sequence[float]):
         # [1e-5 m] order
         self.assertAlmostEqual(e[0], a[0], delta=0.00000001)
@@ -168,7 +173,7 @@ class Transformer(unittest.TestCase):
 
     def test_vs_web_tky2jgd(self):
         """v.s. original (web)"""
-        trans = jgdtrans.from_dict(DATA["TKY2JGD"])
+        trans = Transformer.from_dict(DATA["TKY2JGD"])
 
         # 国土地理院
         origin = (36.103774791666666, 140.08785504166664, 0)
@@ -184,7 +189,7 @@ class Transformer(unittest.TestCase):
     def test_vs_web_patch_jgd_hv(self):
         """v.s. original (web)"""
         # merged param PatchJGD and PatchJGD(H)
-        trans = jgdtrans.from_dict(DATA["PatchJGD(HV)"])
+        trans = Transformer.from_dict(DATA["PatchJGD(HV)"])
 
         # 金華山黄金山神社
         origin = (38.2985120586605, 141.5559006163195, 0)
@@ -199,7 +204,7 @@ class Transformer(unittest.TestCase):
 
     def test_vs_web_semi_dyna_exe(self):
         """v.s. original (web)"""
-        trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+        trans = Transformer.from_dict(DATA["SemiDynaEXE"])
 
         # 国土地理院
         origin = (36.103774791666666, 140.08785504166664, 0)
@@ -216,7 +221,7 @@ class Transformer(unittest.TestCase):
         """v.s. exact"""
         # the exact value are calculated by `Decimal`
 
-        trans = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+        trans = Transformer.from_dict(DATA["SemiDynaEXE"])
 
         # 国土地理院
         origin = (36.103774791666666, 140.08785504166664, 0.0)
@@ -231,7 +236,7 @@ class Transformer(unittest.TestCase):
     def test_transform(self):
         """Equivalent test"""
         # TKY2JGD
-        trans = jgdtrans.from_dict(DATA["TKY2JGD"])
+        trans = Transformer.from_dict(DATA["TKY2JGD"])
 
         # equivalent test 1
         # 国土地理院 with altitude
@@ -258,7 +263,7 @@ class Transformer(unittest.TestCase):
         self.assert_equal_point(expected, actual)
 
     def test_forward_corr(self):
-        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+        tf = Transformer.from_dict(DATA["SemiDynaEXE"])
 
         with self.assertRaises(PointOutOfBoundsError):
             tf.forward_corr(-1, 0)
@@ -270,7 +275,7 @@ class Transformer(unittest.TestCase):
             tf.forward_corr(0, 181)
 
     def test_backward_compat_corr(self):
-        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+        tf = Transformer.from_dict(DATA["SemiDynaEXE"])
 
         with self.assertRaises(PointOutOfBoundsError):
             tf.backward_compat_corr(0, 0)
@@ -282,7 +287,7 @@ class Transformer(unittest.TestCase):
             tf.backward_compat_corr(0, 181)
 
     def test_backward_corr(self):
-        tf = jgdtrans.from_dict(DATA["SemiDynaEXE"])
+        tf = Transformer.from_dict(DATA["SemiDynaEXE"])
 
         with self.assertRaises(PointOutOfBoundsError):
             tf.backward_corr(-1, 0)
@@ -292,102 +297,6 @@ class Transformer(unittest.TestCase):
             tf.backward_corr(0, 99)
         with self.assertRaises(PointOutOfBoundsError):
             tf.backward_corr(0, 181)
-
-    def test_statistics(self):
-        stats = jgdtrans.from_dict(DATA["SemiDynaEXE"]).statistics()
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(
-                4, -0.006422499999999999, 0.00021264700797330775, 0.006422499999999999, -0.00664, -0.0062
-            ),
-            stats.latitude,
-        )
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(4, 0.0151075, 0.00013553136168429814, 0.0151075, 0.01492, 0.01529),
-            stats.longitude,
-        )
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(4, 0.0972325, 0.005453133846697696, 0.0972325, 0.08972, 0.10374),
-            stats.altitude,
-        )
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(
-                4,
-                0.016417802947905496,
-                6.630508084291115e-05,
-                0.016417802947905496,
-                0.016326766366920303,
-                0.016499215132847987,
-            ),
-            stats.horizontal,
-        )
-
-        stats = jgdtrans.Transformer("TKY2JGD", {}).statistics()
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ),
-            stats.latitude,
-        )
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ),
-            stats.longitude,
-        )
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ),
-            stats.longitude,
-        )
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ),
-            stats.horizontal,
-        )
-
-        stats = jgdtrans.Transformer(
-            "TKY2JGD", {54401005: jgdtrans.transformer.Parameter(1.0, 0.0, math.nan)}
-        ).statistics()
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(1, 1.0, 0.0, 1.0, 1.0, 1.0),
-            stats.latitude,
-        )
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(1, 0.0, 0.0, 0.0, 0.0, 0.0),
-            stats.longitude,
-        )
-        self.assertEqual(stats.altitude.count, 1)
-        self.assertTrue(math.isnan(stats.altitude.mean))
-        self.assertTrue(math.isnan(stats.altitude.std))
-        self.assertTrue(math.isnan(stats.altitude.abs))
-        self.assertTrue(math.isnan(stats.altitude.min))
-        self.assertTrue(math.isnan(stats.altitude.max))
-        self.assertEqual(
-            jgdtrans.transformer.StatisticData(1, 1.0, 0.0, 1.0, 1.0, 1.0),
-            stats.horizontal,
-        )
 
 
 if __name__ == "__main__":

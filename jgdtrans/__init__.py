@@ -17,20 +17,22 @@ from .error import (
     ParseParFileError,
     PointOutOfBoundsError,
 )
-from .par import load, loads
+from .par import Parameter, ParData
 from .point import Point
-from .transformer import Transformer, from_dict
+from .transformer import ParameterSet, Transformer, from_dict, load, loads
 
 __version__ = "0.2.3"
 
 
 __all__ = [
-    "load",
-    "loads",
-    #
-    "from_dict",
+    "Parameter",
+    "ParData",
     #
     "Transformer",
+    "ParameterSet",
+    "load",
+    "loads",
+    "from_dict",
     #
     "Point",
     #

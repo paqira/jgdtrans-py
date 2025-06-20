@@ -2,20 +2,32 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import math
+import textwrap
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Literal, NamedTuple
 
 if TYPE_CHECKING:
     from typing import Callable, TextIO
 
+    try:
+        from typing import Self  # typing @ >= 3.11
+    except ImportError:
+        from typing_extensions import Self
+
     from . import types as _types
 
 from . import error as _error
-from . import transformer as _trans
+from . import mesh as _mesh
 
 __all__ = [
     "is_format",
     "load",
     "loads",
+    "Parameter",
+    "ParData",
+    "StatisticData",
+    "Statistics",
 ]
 
 
@@ -48,6 +60,317 @@ def is_format(format: _types.FormatType) -> bool:
     )
 
 
+class Parameter(NamedTuple):
+    """The parameter triplet.
+
+    We emphasize that the unit of latitude and longitude is [sec], not [deg].
+
+    It should fill by :obj:`0.0` instead of :obj:`nan`
+    when the parameter does not exist, as parsers does.
+    """
+
+    latitude: float
+    """The latitude parameter [sec]."""
+    longitude: float
+    """The latitude parameter [sec]."""
+    altitude: float
+    """The altitude parameter [m]."""
+
+    @property
+    def horizontal(self) -> float:
+        r""":math:`\sqrt{\text{latitude}^2 + \text{longitude}^2}` [sec]."""
+        return math.hypot(self.latitude, self.longitude)
+
+
+@dataclass(frozen=True)
+class StatisticData:
+    """The statistics of parameter.
+
+    This is a component of the result that :meth:`Transformer.statistics` returns.
+    """
+
+    count: int | None
+    """The count."""
+    mean: float | None
+    """The mean ([sec] or [m])."""
+    std: float | None
+    """The standard variance ([sec] or [m])."""
+    abs: float | None
+    r""":math:`(1/n) \sum_{i=1}^n \left| \text{parameter}_i \right|` ([sec] or [m])."""
+    min: float | None
+    """The minimum ([sec] or [m])."""
+    max: float | None
+    """The maximum ([sec] or [m])."""
+
+
+@dataclass(frozen=True)
+class Statistics:
+    """The statistical summary of parameter.
+
+    This is a result that :meth:`Transformer.statistics` returns.
+    """
+
+    latitude: StatisticData
+    """The statistics of latitude."""
+    longitude: StatisticData
+    """The statistics of longitude."""
+    altitude: StatisticData
+    """The statistics of altitude."""
+    horizontal: StatisticData
+    """The statistics of horizontal."""
+
+
+@dataclass(frozen=True, repr=False)
+class ParData:
+    """Par data obj."""
+
+    format: _types.FormatType
+    """The format of par file.
+
+    See :obj:`.FormatType` for detail of :obj:`'PatchJGD_HV'`.
+    """
+
+    parameter: dict[int, Parameter]
+    """The transformation parameter.
+
+    The entry represents single line of the par file's parameter section,
+    the key is meshcode, and the value is a :class:`.Parameter`
+    (a triplet of latitude [sec], longitude [sec] and altitude [m]).
+    """
+
+    description: str | None = None
+    """The description."""
+
+    def __repr__(self):
+        # the parameter is too long for display
+        fmt = "{}(format={}, parameter=<{} ({} length) at 0x{:x}>, description={})"
+        return fmt.format(
+            self.__class__.__qualname__,
+            self.format,
+            self.parameter.__class__.__qualname__,
+            len(self.parameter),
+            id(self.parameter),
+            (
+                repr(textwrap.shorten(self.description, width=11))
+                if isinstance(self.description, str)
+                else self.description
+            ),
+        )
+
+    def get(self, meshcode: int) -> Parameter | None:
+        """Returns :class:`Parameter` associated with `meshcode`, otherwise :class:`None`."""
+        return self.parameter.get(meshcode)
+
+    def mesh_unit(self) -> Literal[1, 5]:
+        """Returns a mesh unit."""
+        return _mesh.mesh_unit(self.format)
+
+    @classmethod
+    def from_dict(cls, obj: _types.ParDataLikeMappingType) -> Self:
+        """Makes a :class:`ParData` obj from :obj:`Mapping` obj.
+
+        This parses meshcode, the key of `parameter`, into :obj:`int`.
+
+        See :obj:`.FormatType` for detail of :obj:`'PatchJGD_HV'`.
+
+        Args:
+            obj: the :obj:`Mapping` of the format, the parameters,
+                 and the description (optional)
+
+        Returns:
+            the :class:`ParData` obj
+
+        Raises:
+            DeserializeError: when fail to parse the meshcode
+
+        Examples:
+            >>> mapping = {
+            ...     'format': 'SemiDynaEXE',
+            ...     'parameter': {
+            ...         12345678: {
+            ...             'latitude': 0.1
+            ...             'longitude': 0.2
+            ...             'altitude': 0.3
+            ...         },
+            ...         ...
+            ...     },
+            ...     'description': 'important my param',  # optional
+            ... }
+            >>> data = ParData.from_dict(mapping)
+            >>> data.format
+            'SemiDynaEXE'
+            >>> data.parameter
+            {12345678: Parameter(0.1, 0.2, 0.3), ...}
+            >>> data.description
+            'important my param'
+
+            >>> mapping = {
+            ...     'format': 'SemiDynaEXE',
+            ...     'parameter': {
+            ...         '12345678': {
+            ...             'latitude': 0.1
+            ...             'longitude': 0.2
+            ...             'altitude': 0.3
+            ...         },
+            ...         ...
+            ...     },
+            ... }
+            >>> data = ParData.from_dict(mapping)
+            >>> data.format
+            'SemiDynaEXE'
+            >>> data.parameter
+            {12345678: Parameter(0.1, 0.2, 0.3), ...}
+            >>> data.description
+            None
+
+        See Also:
+            - :meth:`ParData.to_dict`
+        """
+        parameter = {}
+        for k, v in obj["parameter"].items():
+            try:
+                key = int(k)
+            except ValueError:
+                raise ValueError(f"expected integer for the key of the parameter field, we got {repr(k)}") from None
+
+            parameter[key] = Parameter(
+                latitude=v["latitude"],
+                longitude=v["longitude"],
+                altitude=v["altitude"],
+            )
+
+        return cls(
+            format=obj["format"],
+            parameter=parameter,
+            description=obj.get("description"),
+        )
+
+    def to_dict(self) -> _types.ParDataDictType:
+        """Returns a :obj:`dict` which represents `self`.
+
+        This method is an inverse of :meth:`ParData.from_dict`.
+
+        Returns:
+            the :obj:`dict` obj which typed as :obj:`.TransformerDict`
+
+        Examples:
+            >>> data = ParData(
+            ...     description="my param",
+            ...     format="SemiDynaEXE",
+            ...     parameter={12345678: Parameter(0.1, 0.2, 0.3)},
+            ... )
+            >>> data.to_dict()
+            {
+                'format': 'SemiDynaEXE',
+                'parameter': {
+                    12345678: {
+                        'latitude': 0.1,
+                        'longitude': 0.2,
+                        'altitude': 0.3,
+                    }
+                },
+                'description': 'my param',
+            }
+
+        See Also:
+            - :meth:`Transformer.from_dict`
+        """
+
+        def convert(v: Parameter) -> _types.ParameterDictType:
+            return _types.ParameterDictType(latitude=v.latitude, longitude=v.longitude, altitude=v.altitude)
+
+        return _types.ParDataDictType(
+            format=self.format,
+            parameter={k: convert(v) for k, v in self.parameter.items()},
+            description=self.description,
+        )
+
+    def statistics(self) -> Statistics:
+        """Returns the statistics of the parameter.
+
+        See :class:`StatisticData` for details of result's components.
+
+        Returns:
+            the statistics of the parameter
+
+        Examples:
+            From `SemiDynaEXE2023.par`
+
+            >>> data = ParData(
+            ...     format='SemiDynaEXE'
+            ...     parameter={
+            ...         54401005: Parameter(-0.00622, 0.01516, 0.0946),
+            ...         54401055: Parameter(-0.0062, 0.01529, 0.08972),
+            ...         54401100: Parameter(-0.00663, 0.01492, 0.10374),
+            ...         54401150: Parameter(-0.00664, 0.01506, 0.10087),
+            ...     }
+            ... )
+            >>> data.statistics()
+            StatisticalSummary(
+                latitude=Statistics(
+                    count=4,
+                    mean=-0.006422499999999999,
+                    std=0.00021264700797330775,
+                    abs=0.006422499999999999,
+                    min=-0.00664,
+                    max=-0.0062
+                ),
+                longitude=Statistics(
+                    count=4,
+                    mean=0.0151075,
+                    std=0.00013553136168429814,
+                    abs=0.0151075,
+                    min=0.01492,
+                    max=0.01529
+                ),
+                altitude=Statistics(
+                    count=4,
+                    mean=0.0972325,
+                    std=0.005453133846697696,
+                    abs=0.0972325,
+                    min=0.08972,
+                    max=0.10374
+                )
+            )
+        """
+        # Surprisingly, the following code is fast enough.
+
+        # ensure summation order
+        params = sorted(((k, v) for k, v in self.parameter.items()), key=lambda t: t[0])
+
+        kwargs = {}
+        for name, arr in (
+            ("latitude", tuple(map(lambda p: p[1].latitude, params))),
+            ("longitude", tuple(map(lambda p: p[1].longitude, params))),
+            ("altitude", tuple(map(lambda p: p[1].altitude, params))),
+            ("horizontal", tuple(map(lambda p: p[1].horizontal, params))),
+        ):
+            if not arr:
+                kwargs[name] = StatisticData(None, None, None, None, None, None)
+                continue
+
+            sum_ = math.fsum(arr)
+            length = len(arr)
+
+            if math.isnan(sum_):
+                kwargs[name] = StatisticData(length, math.nan, math.nan, math.nan, math.nan, math.nan)
+                continue
+
+            mean = sum_ / length
+            std = math.sqrt(math.fsum(tuple((mean - x) ** 2 for x in arr)) / length)
+
+            kwargs[name] = StatisticData(
+                count=length,
+                mean=mean,
+                std=std,
+                abs=math.fsum(map(abs, arr)) / length,
+                min=min(arr),
+                max=max(arr),
+            )
+
+        return Statistics(**kwargs)
+
+
 def parse(
     text: str,
     header: slice,
@@ -56,7 +379,7 @@ def parse(
     longitude: Callable[[str], float],
     altitude: Callable[[str], float],
     description: str | None = None,
-) -> tuple[dict[int, _trans.Parameter], str | None]:
+) -> tuple[dict[int, Parameter], str | None]:
     """Returns the arguments of :class:`.Transformer` constructor by parsing `s`.
 
     Args:
@@ -66,7 +389,6 @@ def parse(
         latitude: the parser of latitude
         longitude: the parser of longitude
         altitude: the parser of altitude
-        format: the format of par file
         description: the description
 
     Returns:
@@ -84,7 +406,7 @@ def parse(
 
     desc = ("\n".join(lines[header]) + "\n") if description is None else description
 
-    parameters: dict[int, _trans.Parameter] = {}
+    parameters: dict[int, Parameter] = {}
     lineno = header.stop
     for line in lines[lineno:]:
         lineno += 1
@@ -117,7 +439,7 @@ def parse(
                 f"unexpected value for 'altitude', we got a line '{line}' [lineno {lineno}]"
             ) from None
 
-        parameters[_mesh_code] = _trans.Parameter(latitude=_latitude, longitude=_longitude, altitude=_altitude)
+        parameters[_mesh_code] = Parameter(latitude=_latitude, longitude=_longitude, altitude=_altitude)
 
     return parameters, desc
 
@@ -127,8 +449,8 @@ def loads(  # noqa: C901
     format: _types.FormatType,
     *,
     description: str | None = None,
-):
-    """Deserialize a par-formatted :obj:`str` into a :class:`.Transformer`.
+) -> ParData:
+    """Deserialize a par-formatted :obj:`str` into a :class:`ParData`.
 
     This fills by 0.0 for altituse parameter when :obj:`'TKY2JGD'` or :obj:`'PatchJGD'` given to `format`,
     and for latitude and longitude when :obj:`'PatchJGD_H'` or :obj:`'HyokoRev'` given.
@@ -141,7 +463,7 @@ def loads(  # noqa: C901
         description: the description of the parameter, defaulting the `s` header
 
     Returns:
-        the :class:`.Transformer` obj
+        the :class:`ParData` obj
 
     Raises:
         ParseParFileError: when invalid data found
@@ -150,7 +472,8 @@ def loads(  # noqa: C901
         >>> s = '''<15 lines>
         ... MeshCode dB(sec)  dL(sec) dH(m)
         ... 12345678   0.00001   0.00002   0.00003'''
-        >>> tf = loads(s, format="SemiDynaEXE")
+        >>> data = loads(s, format="SemiDynaEXE")
+        >>> tf = Tramsformer(data=data)
         >>> result = tf.transform(35.0, 145.0)
 
         >>> s = '''<15 lines>
@@ -225,7 +548,7 @@ def loads(  # noqa: C901
         altitude=altitude,
         description=description,
     )
-    return _trans.Transformer(format=format, parameter=parameter, description=desc)
+    return ParData(format=format, parameter=parameter, description=desc)
 
 
 def load(
@@ -233,8 +556,8 @@ def load(
     format: _types.FormatType,
     *,
     description: str | None = None,
-):
-    """Deserialize a par-formatted file-like obj into a :class:`.Transformer`.
+) -> ParData:
+    """Deserialize a par-formatted file-like obj into a :class:`ParData`.
 
     This fills by 0.0 for altituse parameter when :obj:`'TKY2JGD'` or :obj:`'PatchJGD'` given to `format`,
     and for latitude and longitude when :obj:`'PatchJGD_H'` or :obj:`'HyokoRev'` given.
@@ -247,14 +570,15 @@ def load(
         description: the description of the parameter, defaulting the `fp` header
 
     Returns:
-        the :class:`.Transformer` obj
+        the :class:`ParData` obj
 
     Raises:
         ParseParFileError: when invalid data found
 
     Examples:
         >>> with open("SemiDyna2023.par") as fp:
-        ...     tf = load(fp, format="SemiDynaEXE")
+        ...     data = load(fp, format="SemiDynaEXE")
+        >>> tf = Tramsformer(data=data)
         >>> result = tf.transform(35.0, 145.0)
 
         >>> s = '''<15 lines>
